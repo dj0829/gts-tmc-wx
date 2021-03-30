@@ -14,7 +14,7 @@
 
 ## 二、使用说明
 
-测试账号： yunying001 密码：888888
+测试账号： yunying001 密码：tempus123
 
 ```
 # tb-web-h5
@@ -68,7 +68,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 作者：腾邦国际商业服务集团有限公司
 
-联系方式：QQ:15998251
+QQ 交流群 ：588329775
 
 
 
