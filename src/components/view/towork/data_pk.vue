@@ -12,9 +12,10 @@
 						<text class="goInHotel2" v-if="choiceDate[0].year + '' + choiceDate[0].month + '' + choiceDate[0].day == today">今天</text>
 						<text class="date-wrappper" v-else>{{ choiceDate[0].month }}月{{ choiceDate[0].day }}日</text>
 					</view>
-					<view class="ti_text">
+					<view style="margin-left:20upx;">-</view>
+					<!-- <view class="ti_text">
 						去
-					</view>
+					</view> -->
 				</view>
 				<view class="time-lit" @click="showCalendar('right')">
 					<view class="t_dat left-hotel" v-if="choiceDate.length < 2">
@@ -26,16 +27,16 @@
 						</text>
 						<text class="date-wrappper" v-else>{{ choiceDate[1].month }}月{{ choiceDate[1].day }}日</text>
 					</view>
-					<view class="ti_text">
+					<!-- <view class="ti_text">
 						回
-					</view>
+					</view> -->
 				</view>
 				<text class="sumCount">{{ dayCount2 }}</text> 
 			</view>
 		</view>
 		<view class="calendar-layer" :animation="animationData" :class="isShow_H5 ? 'show' : 'hide'">
 			<!-- 遮罩层 -->
-			<view class="layer-white-space" @tap="hideCalendar(false)"></view>
+			<view class="layer-white-space" @tap="hideCalendar(false)" v-if="isShow_H5"></view>
 
 			<view class="layer-content" :class="{ choiceDate: singleDate }">
 
@@ -332,8 +333,6 @@
 				///////////////配置初始日期/////////////////
 				let startDate = '';
 				let endDate = '';
-				
-				// console.log(this.Traveltime)
 				if(this.Traveltime.length > 0){
 					startDate = this.Traveltime[0].re;
 					endDate = this.Traveltime[1].re;
@@ -585,7 +584,6 @@
 			dayClick(e) {
 				let indexs = e.currentTarget.dataset.indexs;
 				let index = e.currentTarget.dataset.index;
-				// console.log('selectday ', indexs, index);
 				this.selectday(index, indexs, true);
 			},
 			selectday(index, indexs, isUserClick) {
@@ -761,7 +759,7 @@
 		position: fixed;
 		height: 100%;
 		width: 100%;
-		background-color: #ccc !important;
+		background-color: #333 !important;
 		opacity: 0.5;
 	}
 
@@ -833,9 +831,12 @@
 	.layer-content {
 		position: absolute;
 		height: 100%;
-		bottom: 0;
+		top: 150upx;
+		color: #333333;
 		font-size: 26upx;
 		flex-direction: column;
+		border-top-left-radius: 20upx;
+		border-top-right-radius: 20upx;
 		background-color: #fff;
 	}
 

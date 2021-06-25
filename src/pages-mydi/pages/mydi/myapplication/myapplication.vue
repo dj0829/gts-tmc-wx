@@ -19,8 +19,8 @@
 			<view class="bok_pli">
 				<view class="box_left" @click="opclk">
 					{{optios}}
-					<view class="iconfont" style="color: #C0C0C0;font-size: 24upx;margin-left: 5upx;">&#xe621;</view>
-				</view>
+					<view class="iconfont" style="color: #C0C0C0;font-size: 24upx;margin-left: 8upx;margin-top:4upx;">&#xe621;</view>
+				</view>	
 				<view class="box_right">
 					<view class="iconfont">&#xe6a2;</view>
 					<input type="text" value="" @input="search($event)" placeholder="申请人/关键字/单号" />
@@ -36,7 +36,7 @@
 					我的申请
 				</view>
 				<view class="ts_left" v-if="isfl">
-					<view class="">
+					<view>
 						我的审批
 					</view>
 					<view class="ts_st" @click="bts_ks">
@@ -48,52 +48,58 @@
 			<view v-if="tsarlist">
 				<view v-if="tsarlist!=undefined&&tsarlist.length> 0">
 					<view class="ts_list" @click="searh(item.id)" v-for="(item,index) in tsarlist" :key="index">
+						<view class="custome">
+							<view class="customerNos">
+								<image src="@/static/img/mydi/myordesq.png" mode=""></image>
+								<view>
+									出差单号：{{item.travelNo}}
+								</view>
+							</view>
+							<view class="tsk_o" :class="item.status == 0 || item.status == 1 || item.status == 5 ? 'tsk_pending' : item.status == 2 || item.status == 7 ? 'tsk_ok': item.status == 3 ? 'tsk_no' : item.status == 4 ||item.status == 6 || item.status == 9 ? 'tsk_not' : 'tsk_not'">
+								{{tyname(item.status)}}
+							</view>
+						</view>
+						
 						<view class="tsk_top">
 							<view class="sts">
-								<view class="tsk_top_left" :style="{background: collist(item.status)}"></view>
 								<view class="tsk_top_ops">
 									{{taskty(item.taskType,item)}}
 								</view>
 								<view class="tsk_top_bottom">
-									<view class="tsk_top_bofons" v-for="(ist,ins) in item.tmsGssLink.applyStaffs" :key="ins">
-										<span v-if="ins > 0">,</span>{{ist.userName}}
-									</view>
+									{{reusername(item.tmsGssLink.applyStaffs)}}
 								</view>
 							</view>
-						</view>
-
-						<view class="tsk_ops" v-if="item.apprvTaskLogPersons[0] != null ">
-							<view class="tsk_ops_lefts" v-if="item.apprvTaskLogPersons[0].status == 0">
-								<view class="tsk_ops_left">
+							<view class="tsk_ops" v-if="item.apprvTaskLogPersons[0] != null ">
+								<view class="tsk_ops_left" v-if="item.apprvTaskLogPersons[0].status == 0">
 									{{item.apprvTaskLogPersons[0].staffName}}
 								</view>
-								<view class="tsk_ops_left">
+								<view class="tsk_ops_right">
 									审批中
 								</view>
-							</view>
-							<view class="timeslist" v-if="item.status == 0 && item.isname == 2 && (item.taskType == 2 || item.taskType == 4)">
-								火车占座剩余时间:{{tiemsout(item.createTime)}}
-							</view>
-							<view class="timeslist" v-if="item.status == 0 && item.isname == 3 && (item.taskType == 2 || item.taskType == 4)">
-								火车改签占座剩余时间:{{tiemsout(item.createTime)}}
-							</view>
-						</view>
-						<view class="fals">
-							<view :class="tystatu(item.status) ? 'tsk_qops_bottms':'tsk_qops_bottm'">
-								{{tyname(item.status)}}
-							</view>
-							<view class="okshow" v-if="isfl && item.agree">
-								审批
+								<!-- <view class="timeslist" v-if="item.status == 0 && item.isname == 2 && (item.taskType == 2 || item.taskType == 4)">
+									火车占座剩余时间:{{tiemsout(item.createTime)}}
+								</view>
+								<view class="timeslist" v-if="item.status == 0 && item.isname == 3 && (item.taskType == 2 || item.taskType == 4)">
+									火车改签占座剩余时间:{{tiemsout(item.createTime)}}
+								</view> -->
 							</view>
 						</view>
 						<view class="tlists" v-if="item.tmsGssLinklist.length > 0" v-for="(its,ints) in item.tmsGssLinklist" :key="ints">
 							<view class="tl_right">
 								<view class="tl_tops">
-									<view class="">
-										{{newicname(its)}}
+									<view class="tltop_lefts">
+										<view>
+											{{newicname(its)}}
+										</view>
+										<view class="tlcitys">
+											{{newstaname(its)}}
+										</view>
 									</view>
-									<view style="margin-left: 10upx;">
-										{{newstaname(its)}}
+									<view v-if="its.vehicle == 1 && its.deptDates">
+										[往返]
+									</view>
+									<view v-else-if="its.vehicle == 1">
+										[单程]
 									</view>
 								</view>
 								<view class="tl_bots" v-if="newdata(its)">
@@ -101,12 +107,20 @@
 								</view>
 							</view>
 						</view>
-						<view class="customerNos">
-							出差单号：{{item.travelNo}}
+						<view class="cubottoms">
+							<view class="craetime">
+								{{item.createTime}}
+							</view>
+							<view class="cubtns">
+								<view class="add_lis" @click.stop="add_new(item)" v-if="item.taskType == 1 && !isfl">
+									再次申请
+								</view>
+								<view class="add_lis okshow" v-if="isfl && item.agree">
+									审批
+								</view>
+							</view>
 						</view>
-						<view class="craetime">
-							创建时间：{{item.createTime}}
-						</view>
+						
 					</view>
 				</view>
 				<no-data v-else></no-data>
@@ -230,6 +244,11 @@
 			}, 500);
 		},
 		methods: {
+			add_new(item){
+				uni.navigateTo({
+					url: './cationchirder/initiatetravelapplications?no=' + item.id
+				})
+			},
 			onPageScroll(res){//距离页面顶部距离
 				if(res.scrollTop <600){
 					this.scrolltops = false;
@@ -284,6 +303,8 @@
 					return '[预定]'
 				} else if (it == 4) {
 					return '[改签]'
+				} else if (it == 3) {
+					return '[超规]'
 				} else if (it == 5) {
 					if (item.tmsGssLink.applyHotels.length > 0) {
 						return '[退房]'
@@ -293,12 +314,18 @@
 				}
 			},
 			rblcok() {
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
+			},
+			reusername(item){//返回名字
+				let su = '';
+				for (let k = 0;k<item.length;k++) {
+					if(k == 0){
+						su+=item[k].userName
+					} else {
+						su+= ',' + item[k].userName
+					}
+				}
+				return su
 			},
 			searh(id) { //查看详情
 				let ti = "";
@@ -322,14 +349,22 @@
 			newdata(tm) { //回显时间
 				if (tm.vehicle == 3) {
 					return tm.inDate.substring(0, 10) + '   入住   ' + tm.outDate.substring(0, 10) + '   离店'
-				} else if (tm.vehicle == 1) {
-					if (tm.deptDates) {
-						return tm.deptDate.substring(0, 10) + '   往   ' + tm.deptDates.substring(0, 10) + '   返'
+				} else {
+					if(tm.deptDate == undefined || tm.deptDate == null){
+						return ''
 					} else {
-						return tm.deptDate.substring(0, 10) + '   出发'
+						if (tm.vehicle == 1) {
+							if (tm.deptDates) {
+								return tm.deptDate.substring(0, 10) + '   往   ' + tm.deptDates.substring(0, 10) + '   返'
+							} else {
+								return tm.deptDate.substring(0, 10) + '   出发'
+							}
+						} else if (tm.vehicle == 2) {
+							return tm.deptDate.substring(0, 10) + '   出发'
+						} else if (tm.vehicle == 5) {
+							return tm.deptDate.substring(0, 10) + '   出发'
+						}
 					}
-				} else if (tm.vehicle == 2) {
-					return tm.deptDate.substring(0, 10) + '   出发'
 				}
 			},
 			newstaname(tm) { //回显城市名称
@@ -355,12 +390,7 @@
 				}
 			},
 			citname(code) {
-				let datcy = citys.addressAirportAll;
-				for (let i = 0; i < datcy.length; i++) {
-					if (datcy[i].airportCode == code) {
-						return datcy[i].cityCName
-					}
-				}
+				return this.utils.airportCtName(code);
 			},
 			newicname(tm) { //回显类型
 				if (tm.vehicle == 1) {
@@ -552,7 +582,6 @@
 			// modata(it){ //时间转换
 			// 	let times = it.replace("-", "/").replace("-", "/");
 			// 	let dat = new Date(times.replace(/-/g, '/'));
-			// 	console.log(dat.getMonth())
 			// 	let month = this.bumodata(dat.getMonth() + 1);
 			// 	let dats = this.bumodata(dat.getDate());
 			// 	let hous = this.bumodata(dat.getHours());
@@ -567,22 +596,17 @@
 			// 		return tiem
 			// 	}
 			// },
-			collist(it) {
-				if (it == 2 || it == 5) {
-					return "$uni-color-primary"
-				} else if (it == 1) {
-					return 'yellow'
-				} else if (it == 3 || it == 4) {
-					return "red"
-				} else if (it == 0 || it == 9) {
-					return "#f1f1f1"
-				}
-			},
 			tystatu(it) {
-				if (it == 0 || it == 3 || it == 4 || it == 5 || it == 9) {
-					return false
+				if (it == 0 || it == 1 || it == 5 ) {
+					return 'tsk_pending'
+				} else if(it == 2){
+					return 'tsk_ok'
+				} else if(it == 3){
+					return 'tsk_no'
+				}else if(it == 4 || it == 9 ){
+					return 'tsk_not'
 				} else {
-					return true
+					return 'tsk_not'
 				}
 			},
 			sfstatus(it) {
@@ -611,13 +635,17 @@
 					return '免审'
 				} else if (it == 9) {
 					return '已过期'
+				} else if (it == 6) {
+					return '已取消'
+				} else if (it == 7) {
+					return '已使用'
 				} else {
 					return it
 				}
 			},
 			addcation() {
 				uni.navigateTo({
-					url: './cationchirder/initiatetravelapplications'
+					url: './cationchirder/initiatetravelapplications?no=0'
 				})
 			},
 			seachopt(item) { //选择类型
@@ -639,6 +667,11 @@
 	}
 </script>
 
+<style>
+	page{
+		background-color: #F1F1F1;
+	}
+</style>
 <style lang="scss" scoped>
 	.muappli {
 		padding: 180upx 0 60upx 0;
@@ -722,7 +755,7 @@
 			top: 0;
 			left: 0;
 			background: #FFFFFF;
-
+			z-index: 99;
 			.bok_pli {
 				width: calc(100% - 40upx);
 				height: 70upx;
@@ -748,6 +781,7 @@
 					input {
 						margin-left: 10upx;
 						width: 100%;
+						font-size:20upx;
 					}
 				}
 			}
@@ -799,13 +833,50 @@
 			}
 
 			.ts_list {
-				width: calc(100% - 40upx);
-				padding: 10upx 20upx;
-				border-bottom: 2upx solid #F1F1F1;
+				width: calc(100% - 80upx);
+				padding: 25upx 20upx 0 20upx;
+				margin:  25upx 20upx 0 20upx;
+				border-radius: 20upx;
 				background: #FFFFFF;
+				.custome{
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					.customerNos {
+						display: flex;
+						align-items: center;
+						color: #000000;
+						font-size: 25upx;
+						text-indent: 10upx;
+						image{
+							width: 28upx;
+							height: 29upx;
+						}
+					}
+					.tsk_o{
+						font-size: 20upx;
+						padding:8upx 15upx;
+						border-radius: 8upx;
+					}
+					.tsk_pending{
+						background-color: #e0efff;
+						color: #007AFF;
+					}
+					.tsk_ok{
+						background-color: #e6f6f0;
+						color: #4cb580;
+					}
+					.tsk_no{
+						background-color: #ffe6d5;
+						color: #fa6803;
+					}
+					.tsk_not{
+						background-color: #F1F1F1;
+						color: #999999;
+					}
+				}
 				.tsk_top {
 					width: 100%;
-					height: 70upx;
 					font-size: 35upx;
 					display: flex;
 					justify-content: space-between;
@@ -813,147 +884,108 @@
 
 					.sts {
 						display: flex;
+						height: 60upx;
 						align-items: center;
-						width: 100%;
-
-						.tsk_top_left {
-							width: 12upx;
-							height: 12upx;
-							background: red;
-							border-radius: 50%;
-						}
-
+						width: 50%;
+						font-size: 30upx;
 						.tsk_top_ops {
-							width: 150upx;
-							margin-left: 20upx;
+							width: 120upx;
+							color: #fa6803;
 						}
 
 						.tsk_top_bottom {
-							display: flex;
-							padding-right: 20upx;
-							align-items: center;
-							flex-wrap: nowrap;
-							overflow-x: auto;
-							white-space: nowrap;
-
-							.tsk_top_bofons {
-								margin-left: 10upx;
-							}
+							width: calc(100% - 120upx);
+							overflow:hidden; //超出的文本隐藏
+							text-overflow:ellipsis; //溢出用省略号显示
+							white-space:nowrap; //溢出不换行
+							font-weight: 600;
+							color: #333333;
+						}
+					}
+					.tsk_ops {
+						width: 50%;
+						font-size: 24upx;
+						color: #333333;
+						text-align: right;
+						display: flex;
+						.tsk_ops_left {
+							width: 70%;
+							overflow:hidden; //超出的文本隐藏
+							text-overflow:ellipsis; //溢出用省略号显示
+							white-space:nowrap; //溢出不换行
+						}
+						.tsk_ops_right{
+							width: 30%;
+							text-align: center;
+						}
+						.timeslist {
+							font-size: 24upx;
+							color: red;
 						}
 					}
 				}
-
-				.craetime {
+				.cubottoms{
 					width: 100%;
-					color: #999999;
-					text-align: right;
-					font-size: 25upx;
-				}
-
-				.customerNos {
-					line-height: 40upx;
-					color: #999999;
-					font-size: 25upx;
-					text-indent: 30upx;
-				}
-
-				.fals {
-					width: calc(100% - 60upx);
-					height: 50upx;
 					display: flex;
+					margin-top: 20upx;
+					height: 88upx;
 					align-items: center;
 					justify-content: space-between;
-					padding: 10upx 30upx;
-
-					.tsk_qops_bottms {
-						font-size: 35upx;
-						background: #e5f9f0;
-						text-align: center;
-						line-height: 50upx;
-						width: 130upx;
-						color: $uni-color-primary;
-						height: 50upx;
+					border-top: 2upx solid #e7e7e7;
+					.craetime {
+						flex: 1;
+						color: #999999;
+						font-size: 22upx;
 					}
-
-					.tsk_qops_bottm {
-						font-size: 35upx;
-						background: #F1F1F1;
+					.add_lis{
+						width: 150upx;
+						height: 54upx;
+						background-color: #007AFF;
+						color: #FFFFFF;
+						font-size: 30upx;
+						line-height: 54upx;
 						text-align: center;
-						line-height: 50upx;
-						width: 130upx;
-						color: #C0C0C0;
-						height: 50upx;
+						border-radius: 8upx;
 					}
-
-					.okshow {
-						width: 120upx;
-						height: 50upx;
-						border-radius: 60upx;
-						line-height: 50upx;
-						text-align: center;
-						font-size: 35upx;
-						color: $uni-color-primary;
-						border: 2upx solid $uni-color-primary;
+					.okshow{
+						background-color: #fa6803;
 					}
-				}
-
+			}
 				.tlists {
 					width: 100%;
-					padding: 5upx 0;
-					height: 70upx;
 					display: flex;
-
 					.tl_right {
-						margin-left: 3%;
-						height: 70upx;
-						width: 87%;
-
+						width: 100%;
 						.tl_tops {
 							display: flex;
+							align-items: center;
 							width: 100%;
 							height: 40upx;
 							font-size: 30upx;
-							line-height: 40upx;
+							line-height: 60upx;
 							color: #333333;
+							.tltop_lefts{
+								display: flex;
+								max-width: 80%;
+								overflow: hidden;/*超出部分隐藏*/
+								text-overflow:ellipsis;/* 超出部分显示省略号 */
+								white-space: nowrap;/*规定段落中的文本不进行换行 */
+								.tlcitys{
+									margin-left: 10upx;
+								}
+							}
 						}
 
 						.tl_bots {
 							width: 100%;
-							height: 40upx;
-							font-size: 25upx;
-							line-height: 30upx;
-							color: #E5E5E5;
+							line-height: 40upx;
+							font-size: 24upx;
+							color: #999999;
 						}
 					}
 				}
 
-				.tsk_ops {
-					width: 100%;
-					// height: 40upx;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					font-size: 30upx;
-					color: #C0C0C0;
-
-					.tsk_ops_lefts {
-						width: 50%;
-						padding-left: 30upx;
-						display: flex;
-
-						.tsk_ops_left {
-							width: 32%;
-							overflow: hidden; //超出的文本隐藏
-							text-overflow: ellipsis; //溢出用省略号显示
-							white-space: nowrap; //溢出不换行
-						}
-					}
-
-					.timeslist {
-						font-size: 24upx;
-						color: red;
-					}
-				}
+				
 			}
 		}
 	}

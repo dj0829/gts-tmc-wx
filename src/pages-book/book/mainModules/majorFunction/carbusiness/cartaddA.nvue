@@ -1,0 +1,1390 @@
+<template>
+	<div class="carA_box" id="carA_box">
+		<loading></loading>
+		<map id="midMap"  v-show="mapisshow"  :polyline="polyline" :include-points="include_points" :style="{height:midMapheig + 'px'}" class="carmap" :scale="scale"  :latitude="latitude" :longitude="longitude" :markers="markers" >
+			<div class="cat_top">
+				<div class="rouck" @click="routblock">
+					<text class="iconfont" style="font-size: 14px;">&#xe61e;</text>
+				</div>
+				<div class="antbns">
+					<text class="iconfont" style="color: #B6B6B6;font-size: 30upx;margin-right: 8upx;">&#xe646;</text><text style="font-size: 12px;">全程{{distance}}，预计行驶{{duration}}</text>
+				</div>
+				<div class="roucks">
+				</div>
+			</div>
+			<div>
+				<div  class="staleve" :style="{height:lxnameheight + 'px'}" v-if="staleve">
+					<list class="stalist" :style="{width:stalistwidth+'px'}">
+						<cell class="statop" v-for="(item,index) in platformlist" :key="index" v-if="(notbooking && item.list.va == 4) || (!notbooking && item.list.va != 4)">
+							<div class="reds">
+								<div class="ts_text">
+									<text class="ts_textfont">{{item.name}}</text>
+								</div>
+							</div>
+							<div class="setlist ts_textfont" v-for="(items,ins) in item.list" :key="ins">
+								<div class="setbod">
+									<div class="styul">
+										<div class="styli_top" v-if="items.va == 4 || items.va == 5">
+											<text style="font-size: 14px;color: red;line-height: 25px;">{{items.name}}</text>
+										</div>
+										<div class="stulis">
+											<div class="styli_left">
+												<text style="font-size: 14px;">超规人员: </text>
+											</div>
+											<div class="styli_right">
+												<text style="font-size: 14px;margin-left: 15px;">{{items.list}}</text>
+											</div>
+										</div>
+									</div>
+									<div class="styul" v-if="items.va == 3">
+										<div class="stulis">
+											<div class="styli_left">
+												<text style="font-size: 14px;">超规原因: </text>
+											</div>
+											<div class="styli_right">
+												<div class="wors">
+													<picker class="worspicker" :range="rulesReasons" :range-key="'chineseDesc'" @change="chineseChange($event,index)">
+														<text style="font-size: 14px;line-height: 25px;margin-left: 15px;">{{ rulesReasons[item.index].chineseDesc }} </text>
+													</picker>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</cell>
+						<cell class="btnsti" v-if="!notbooking">
+							<div class="roblck" @click="notclose" :style="{width:btnswidth+'px'}">
+								<text class="roblckfont">取消</text>
+							</div>
+							<div class="btnok" @click="cits_btn" :style="{width:btnswidth+'px'}">
+								<text class="btnokfont">继续预定</text>
+							</div>
+						</cell>
+					</list>
+				</div>
+			</div>
+		</map>
+		<div class="boxelist" id="boxelist">
+			<div class="catlis">
+				<div class=" cat_topt">
+					<div class="cat_tops" @click="xname">
+						<text class="iconfont at_topsspan" style="font-size: 30upx;">&#xe7e9;</text>
+						<div class="stname">
+							<text class="stnamefont">{{lxusername.name}}</text>
+						</div>
+					</div>
+					<div class="cat_tops" @click="cston">
+						<text class="iconfont at_topsspan" style="font-size: 30upx;">&#xe643;</text>
+						<div class="stnames" v-if="costcenterlist.length == 0">
+							<text class="stnamefont">请选择成本中心</text>
+						</div>
+						<div class="stname" v-else>
+							<text class="stnamefont">{{costnames(costcenterlist)}}</text>
+						</div>
+					</div>
+				</div>
+				<image class="showcarsbg" src="@/static/img/carbus/caraddzw.jpg" v-if="!showcars"></image>
+				<scroller class="verlist" v-if="showcars" show-scrollbar='true' scroll-direction='horizontal'>
+					<div class="veopst"
+						:class="vehid == index ? 'verlis' : ''" 
+						:style="index == 0 ? {marginLeft: '0px'} : ''" 
+						v-for="(item, index) in vehicletype" 
+						@click="vehicleid(index)"
+						:key="index">
+						<text class="ves-text" :class="vehid == index ? 'ves-texts' : ''" >{{item.name }}</text>
+						<image v-if="vehid == index" class='verimg' src='/static/img/carbus/caroks.jpg'></image>
+					</div>
+				</scroller>
+				<list class="catul" v-if="showcars">
+					<cell class="carlisty" v-for="(item, index) in newcarlists" v-if="item.price != 0" :key="index" @click="catcedk(item, index)">
+						<div class="carls">
+							<div class="carleft">
+								<div class="carlog">
+									<image class='carlogimage' :src="item.img" v-if="item.img != null"></image>
+									<image class='carlogimage' v-else src="/static/img/login/logo.png"></image>
+								</div>
+								<text class="carnames">{{ item.stuname }}</text>
+							</div>
+							<div class="carright">
+								<div class="carprice" v-if="item.price != 0">
+									<text class="tems">预估</text>
+									<text class="prics">{{ item.price }}</text>
+									<text class="tems">元</text>
+								</div>
+								<text class="carprice" v-else>暂时无车</text>
+								<image class='carpricemg' v-if="item.carid == true" src="/static/img/carbus/carbusingimg/selected.png"></image>
+								<image class='carpricemg' v-else-if="item.price != 0" src="/static/img/carbus/carbusingimg/notselected.png"></image>
+								<image class='carpricemg' v-else src="/static/img/carbus/carbusingimg/disable.png"></image>
+							</div>
+						</div>
+					</cell>
+				</list>
+			</div>
+			<div class="carbtns" @click="btnopen">
+				<text class="carbtnsfonts">{{btntitl}}</text>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	import Mydi from '@/api/mydi.js'
+	import totok from '@/api/torowk.js'
+	import utils  from '@/untils/util.js'
+	let gdkey = "f34355ae385ced7460e7b1aa59934074";
+	export default {
+		data(){
+			return{
+				newcarlists:[],//当前类型所有的车
+				sevheight:0,
+				stalistwidth:0,
+				btnswidth:0,
+				mapisshow:true,
+				lxnameheight:0,
+				btntitl:'马上叫车',
+				arttime:'',//出发日期
+				pookis:false,//是否超规审批
+				limitNativeRule:{},//未处理的违规信息
+				rulesReasons: [],//超规类型
+				platformlist:[],//处理过的违规信息
+				platformtl:[],//违规原因
+				notbooking:false,//是否违规不可预定
+				staleve:false,//违规
+				platFormType:[],//叫车平台
+				moneys:[],//叫车价格
+				carpaylist:[],//用车估价
+				vehid:1,
+				vehicletype:[],//车类型
+				carlists:[],
+				iponel:'',
+				costcenterlist:[],
+				userlists:{},
+				lxusername:{ //联系人信息
+					name: '',
+					ipone:''
+				},
+				polyline:[],//行程路线
+				distance:0,//行车距离
+				duration:0,//预计行驶时间
+				include_points:[],
+				scale:18,
+				longitude: 0,
+				latitude: 0,
+				markers: [],
+				treeParams: {
+					border: true
+				},
+				shetid: 0,
+				oktl: '\ue611',
+				isoktl: '\ue75d',
+				id_list: [],
+				is_no:1,//点击的左边还是右边
+				is_index:0,//当前点击的下标
+				dtlist:{},
+				typename:0,//1因公2因私
+				lslist:{},//当前选择打车类型参数
+				checkuserlist:[],//当前选择联系人信息
+				ophist:0,
+				opwidt:0,
+				latitudes:0,
+				longitudets:0,
+				latitudets:0,
+				longitudes:'',
+				midMapheig:480,
+				carA_boxhist:0,
+				carA_boxwidt:0,
+				datas: []
+			}
+		},
+		onReady(options) {
+			this.appMap = uni.createMapContext("midMap", this);
+		},
+		onShow() {
+			uni.$on('carcontacts', rets => {
+				this.lxusername.name = rets.name;
+				this.lxusername.ipone = rets.iponel;
+				// 清除监听
+				uni.$off('carcontacts');
+			});
+			uni.$on('carconstlist', rets => {
+				this.costcenterlist = rets.dats;
+				// 清除监听
+				uni.$off('carconstlist');
+			});
+		},
+		onLoad() {
+			uni.getStorage({
+				key:'cartaddA_data',
+				success: (res) => {
+					let dt = JSON.parse(res.data);
+					
+					this.typename = dt.typename;
+					this.datas = dt;//上个页面值
+					let ors = dt.or.location.split(',');//出发经纬度
+					let ends = dt.end.location.split(',');//到达点经纬度
+					let lodats = [{
+						longitude:ends[0],
+						latitude:ends[1]
+						
+					},{
+						longitude:ors[0],
+						latitude:ors[1]
+					}]
+					let locs = utils.getCenter(lodats);//算出两个经纬度的中心点
+					this.longitude = locs[0];
+					this.latitude = locs[1];
+					
+					
+					let dats = {};//参数
+					let times = "";
+					if(dt.opt == 3){ //立即叫车或者预约叫车
+						times = dt.times;
+						dats={
+							startName:dt.or.name,
+							startAddress:dt.or.adress,
+							endName:dt.end.name,
+							endAddress:dt.end.adress,
+							dt:dt.opt,
+							ors:ors,
+							ends:ends,
+							times:times
+						}
+					} else if(dt.opt == 4){
+						
+						dats = {
+							startName:dt.or.name,
+							startAddress:dt.or.adress,
+							endName:dt.end.name,
+							endAddress:dt.end.adress,
+							dt:dt.opt,
+							ors:ors,
+							ends:ends
+						}
+					} else if(dt.opt == 1){
+						dats = {
+							dt:dt.opt,
+							startName:dt.or.name,
+							flt:dt.flt,//航班号
+							flightDate:dt.flightDate,//起飞时间
+							airCode:dt.airCode,//三字码
+							flightDelayTime:dt.flightDelayTime,//飞机延长时间
+							elat: ends[1],
+							elng: ends[0],//目的地
+							endName:dt.end.name,
+							endAddress:dt.end.adress,
+						}
+					} else if(dt.opt == 2){
+						dats = {
+							dt:dt.opt,
+							departureTime:dt.times,//预约时间
+							ors: ors,
+							ends: ends,//目的地
+							startName:dt.or.name,
+							startAddress:dt.or.adress,
+							endName:dt.end.name,
+							endAddress:dt.end.adress,
+						}
+					}
+					this.carprice(dats);//获取车辆信息
+					console.log("获得上个页面传递的数据" + res.data)
+				}
+			})
+		},
+		mounted() {
+			this.getboxs();//获取当前手机屏幕高宽
+			const data = uni.getStorageSync('userinfo'+ uni.getStorageSync('appWxId')); //获取当前预订人信息
+			this.userlists = data;
+			this.lxusername.name = data.user.name;
+			this.lxusername.ipone = data.user.phone;
+			this.costcenterlist = [{
+				passengerNo:data.passengerVo.id,
+				username: data.user.name,
+				costcenterName:data.passengerVo.costcenterName,
+				costcenterId:data.passengerVo.costcenterId,
+				bn:100,
+				deptId:data.user.deptId,
+				deptName:data.user.deptName,
+				userId:data.passengerVo.userID,
+				phone:data.user.phone,
+				employeeType:data.passengerVo.employeeType,
+			}]
+		},
+		methods:{
+			cston() {
+				//选择成本中心
+				if (this.costcenterlist.length == 0) {
+					this.costlist = [{
+						passengerNo: '',
+						username: '',
+						costcenterName: '',
+						costcenterId: 0,
+						bn: 0,
+						deptId: 0,
+						deptName: '',
+						userId: 0,
+						phone: 0,
+						employeeType: ''
+					}];
+				} else {
+					let ts = [...this.costcenterlist];
+					this.costlist = ts;
+				}
+				uni.navigateTo({
+					url: './cartaddlist/carconstlist?data=' + encodeURIComponent(JSON.stringify(this.costlist))
+				});
+			},
+			xname() {
+				//选择联系人
+				this.is_no = 1; //点击的左边
+				let datsy = {
+					namel: this.lxusername.name,
+					iponel: this.lxusername.ipone
+				};
+				uni.navigateTo({
+					url: './cartaddlist/carcontacts?data=' + JSON.stringify(datsy)
+				});
+			},
+			getboxs(){//获取两次才能拿到正确值
+				let res = uni.getSystemInfoSync();
+				this.carA_boxhist = res.windowHeight;//获取屏幕高度
+				this.carA_boxwidt = res.windowWidth;//获取屏幕宽度
+				this.lxnameheight = this.carA_boxhist;//超规提示
+				this.stalistwidth = this.carA_boxwidt - 50;//超规内容高度
+				this.btnswidth = (this.carA_boxwidt - 50) / 2;//违规按钮
+				this.sevheight  = this.carA_boxhist - 125;
+				this.midMapheig = this.carA_boxhist - 210;//地图高度
+			},
+			routblock(){
+				uni.navigateBack({
+				})
+			},
+			setmap(){
+				let that = this;
+				uni.getStorage({
+					key:'cartaddA_data',
+					success: (res) => {
+						let dt = JSON.parse(res.data);
+						let ors = dt.or.location.split(',');//出发经纬度
+						let ends = dt.end.location.split(',');//到达点经纬度
+						this.include_points = [{ //根据两个点缩放地图的大小
+							latitude:ends[1],
+							longitude: ends[0]
+						},{
+							latitude: ors[1],
+							longitude: ors[0]
+						}]
+						setTimeout(()=>{
+							uni.createMapContext("midMap").getScale({
+								success: (e) => { 
+									that.scale = e.scale - 1;
+								}  
+							})  
+						},500)
+						
+						this.markers = [{
+							latitude: ors[1],
+							longitude: ors[0],
+							iconPath: '../../../../static/img/carbus/fit.png',
+							width:13,//图标大小
+							height:26,
+							callout:{
+								content: dt.or.name,
+								color: '#000000',
+								fontSize:10,
+								display:'ALWAYS',
+								padding:5,
+								borderRadius:10
+							},
+							anchor:{x:.5,y:.7} //图标偏移位置
+						},{
+							latitude: ends[1],
+							longitude: ends[0],
+							iconPath: '../../../../static/img/carbus/fend.png',
+							width:13,//图标大小
+							height:26,
+							callout:{
+								content: dt.end.name,
+								color: '#000000',
+								fontSize:10,
+								padding:5,
+								display:'ALWAYS',
+								borderRadius:10
+							},
+							anchor:{x:.5,y:.7} //图标偏移位置
+						}]
+						this.parametes((ors[1] + ',' +ors[0]), (ends[1] + ',' +ends[0])); //画线
+					},
+				})
+				
+			},
+			notclose(){
+				this.staleve = false;
+				this.btntitl = '马上叫车';
+			},	
+			chineseChange(e,index){//选择高等级超规原因
+				this.platformlist[index].index = e.detail.value;
+			},
+			cits_btn(){ //继续用车
+				let plallist = this.platformlist;
+				for (let p in this.limitNativeRule) {
+					for (let i in this.limitNativeRule[p]) {
+						if(i == 3){
+							let ks = 0;
+							for (let k in plallist) {
+								for (let p in plallist[k].list) {
+								  if(plallist[k].list[p].va == 3 && plallist[k].index == 0){
+								  	uni.showToast({
+								  		title:'请选择违规原因',
+								  		duration:1000,
+								  		icon:'none'
+								  	})
+								  	return
+								  }
+								  if(plallist[k].names = p && plallist[k].list[p].va == 3 ){
+								  	ks = plallist[k].index;
+								  }
+								}
+								
+							}
+							this.limitNativeRule[p][i] = {
+								usernames: this.limitNativeRule[p][i],
+								reasons:this.rulesReasons[ks].chineseDesc
+							}
+						}
+					}
+				}
+				this.dalits.wbp['violation'] = JSON.stringify({
+					information: [this.limitNativeRule]
+				});
+				this.dtlist['pookis'] = this.pookis;//是否走超标审批流
+				this.staleve = false;
+				if (this.isarsrl == false) {//因公非免审
+					this.btntitl = '马上叫车';
+					let dats = {
+						dats:JSON.stringify(this.dalits),
+						data:JSON.stringify(this.dtlist)
+					}
+					uni.setStorageSync('carforck_data',JSON.stringify(dats));
+					uni.navigateTo({
+						url: './carforck'
+					});
+				} else {
+					this.dalits.wbp.isviolation = 1;
+					this.createUseCarOrder();
+				}
+			},
+			async createUseCarOrder(){
+				uni.showLoading({
+				    title: '下单中',
+					mask:true
+				});
+				try{
+					let res = await totok.createUseCarOrder(this.dalits);
+					uni.hideLoading();
+					this.btntitl = '马上叫车';
+					if(res.code == 200){
+						uni.showToast({
+							title:'下单成功！',
+							duration:1000,
+							icon:'none'
+						})
+						setTimeout(() => {
+							uni.setStorageSync("sworders_od",{
+								type:'carodd',
+								data:res.data
+							});
+							uni.switchTab({
+								url: '/pages/order/order',
+								success:function(){
+								}
+							})
+						}, 1000);
+					} else {
+						uni.showToast({
+							title:res.message,
+							duration:2000,
+							icon:'none'
+						})
+					}
+				}catch(e){
+					uni.hideLoading();
+					//TODO handle the exception
+				}
+			},	
+			async btnopen(){ //叫车
+				if(this.btntitl != '马上叫车'){
+					return
+				}
+				if(this.lxusername.ipone == ''){
+					uni.showToast({
+						title:'请输入联系电话',
+						duration:1000,
+						icon:'none'
+					})
+					return
+				}
+				let _this =this;
+				let vehid =_this.vehid;//车类型
+				let usnlist = _this.costcenterlist;//用户信息
+				let uset = [];
+				let gysmc = '';//车平台
+				let cxzmc= '';//车类型
+				let lists = _this.newcarlists;//选择的车
+				_this.platFormType = []; //车平台
+				_this.moneys = []; //价格
+				let cartypes = [];
+				let carGroups = ''; //车类型
+				for (let k in lists) {
+					if (lists[k].carid == true) {//判断是否选中
+						carGroups = lists[k].carGroupId;//车型id
+						gysmc = lists[k].stuname;
+						cxzmc = lists[k].name;
+						_this.platFormType.push(lists[k].id);
+						_this.moneys.push(lists[k].price);
+						cartypes.push({
+							estimateId: lists[k].estimateId,
+							carPlatformCode: lists[k].id,
+							estimatePrice: lists[k].price
+						});
+				
+					}
+				}
+				if (_this.platFormType.length == 0) {
+					uni.showToast({
+						title: '请选择一个车',
+						duration: 1000,
+						icon: 'none'
+					});
+					return;
+				}
+				let tripPassengerList = [];
+				let carSaleOrderDetail = [];
+				for (let k in this.costcenterlist) {
+					tripPassengerList.push({
+						deptId: this.costcenterlist[k].deptId,
+						deptName: this.costcenterlist[k].deptName,
+						userId: this.costcenterlist[k].userId,
+						name: this.costcenterlist[k].username,
+						phone: this.costcenterlist[k].phone,
+						employeeType: this.costcenterlist[k].employeeType
+					});
+					carSaleOrderDetail.push({
+						passengerNo: this.costcenterlist[k].passengerNo,
+						passengerName: this.costcenterlist[k].username,
+						percent: parseFloat(this.costcenterlist[k].bn / 100).toFixed(2),
+						phone: this.costcenterlist[k].phone,
+						costCenterId: this.costcenterlist[k].costcenterId,
+						costCenterName: this.costcenterlist[k].costcenterName
+					});
+				}
+				let ordernos = {
+					estimatePirce:1,
+					startCityName:this.datas.or.cityname,
+					destCityName: this.datas.end.cityname,
+					cxzmc:cxzmc,//车类型
+					gysmc: gysmc,//车平台
+					departureTime: this.arttime, //出发日期
+					platformOrderInfo: cartypes,
+					carSaleOrderDetail: carSaleOrderDetail,
+					carGroupId: carGroups,
+					passengerMobile: this.lxusername.ipone,
+					passengerName: this.lxusername.name
+				};
+				let newObj = {};
+				Object.assign(newObj, ordernos, this.lslist);
+				this.dalits = {
+					wbp: {
+						tripPassengerList: tripPassengerList,
+						apprvTaskEntity: {
+							taskType: 2, //1为事前2为事中，
+							beforeMiddle: 2, //1为事前2为事中
+							startDate: this.arttime, //出发日期
+							costId: this.userlists.passengerVo.costcenterId,
+							costName: this.userlists.passengerVo.costcenterName
+						},
+						typename: this.typename,
+						isviolation: 0
+					},
+					carSaleOrderVo: newObj
+				}
+				this.btntitl = "提交中..."
+				if(this.typename == 2){ //因私
+					this.createUseCarOrder();
+				} else {
+					for (let p in usnlist) {
+						uset.push({
+							passengerNo:usnlist[p].passengerNo,
+							percentage:parseFloat(usnlist[p].bn/100).toFixed(2)
+						})
+					}
+					let dat = {
+						platFormType:_this.platFormType,
+						carGroup:vehid,
+						moneys:_this.moneys,
+						passengerList:uset,
+						useCarDate:this.arttime
+					}
+					try{
+						let res = await totok.checkUseCarRule(dat);
+						if(res.code == 200){
+							if(JSON.stringify(res.data.limitNativeRule) == '{}'){ //没有违规
+								this.createUseCarOrder();
+							} else {
+								_this.rulesReasons = res.data.rulesReason;//违规原因
+								_this.rulesReasons.unshift({chineseDesc:'　'})
+								let dal = res.data.limitNativeRule;//违规信息
+								this.limitNativeRule = dal;
+								_this.platformlist = [];
+								_this.notbooking = false;
+								_this.pookis = false;
+								for (let k in dal) {
+									_this.platformlist.push({
+										index:0,
+										name: _this.platnams(k),
+										names:k,
+										list:_this.platname(dal[k])
+									})
+								}
+								let isplatshows = false;
+								for (let p in _this.platformlist) {
+									for (let k in _this.platformlist[p].list) {
+										if(_this.platformlist[p].list[k].va != 1){
+											isplatshows = true;
+											if(_this.platformlist[p].list[k].va == 4){
+												_this.notbooking = true;
+											}
+											if(_this.platformlist[p].list[k].va == 5){
+												_this.pookis = true; //是否超规
+											}
+										}
+									}
+								}
+								if(isplatshows == true){
+									_this.staleve = true;
+								} else {
+									this.createUseCarOrder();
+								}
+							}
+						} else {
+							_this.btntitl = '马上叫车';
+							uni.showToast({
+								duration:1000,
+								title:res.message,
+								icon:'none'
+							})
+						}
+					}catch(e){
+						_this.btntitl = '马上叫车';
+						//TODO handle the exception
+					}
+				}
+			},
+			platnams(name){
+				if(name == 'platformLimit'){
+					return '平台限制超规'
+				} else if(name == 'carGroupLimit'){
+					return '车型限制超规'
+				} else if(name == 'eachTimePriceLimit'){
+					return '金额每次限制超规'
+				} else if(name == 'eachDayPriceLimit'){
+					return '金额每天限制超规'
+				} else if(name == 'eachMonthPriceLimit'){
+					return '金额每月限制超规'
+				}
+			},
+			platname(list){
+				let su = [];
+				for (let k in list) {
+					if(k == 1){
+						su.push({
+							va:k,
+							name: '只记录不提示',
+							list: list[k]
+						})
+					} else if(k==2){
+						su.push({
+							va:k,
+							name: '违规不必选择原因',
+							list: list[k]
+						})
+					} else if(k==3){
+						su.push({
+							va:k,
+							name: '违规必选原因',
+							list: list[k],
+				      reasons:''
+						})
+					} else if(k==4){
+						su.push({
+							va:k,
+							name: '不可预定',
+							list: list[k]
+						})
+					} else if(k==5){
+						su.push({
+							va:k,
+							name: '违规需再次审批',
+							list: list[k]
+						})
+					}
+				}
+				return su
+			},
+			async carprice(dlt){
+				try{
+					let ls = {};
+					let lts = {};
+					let artime = '';
+					if(dlt.dt == 4){ //立即叫车
+						ls = {
+							serviceId:4,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0],
+						}
+						lts = {
+							serviceId:4,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0],
+							startName:dlt.startName,
+							startAddress:dlt.startAddress,
+							endName:dlt.endName,
+							endAddress:dlt.endAddress
+						}
+						let dte = new Date();
+						let year = dte.getFullYear();
+						let mon = (dte.getMonth() + 1) < 10 ? '0' + (dte.getMonth() + 1): (dte.getMonth() + 1);
+						let day = dte.getDate()  < 10 ? '0' + dte.getDate(): dte.getDate();
+						artime =  year + '-' + mon + '-' + day + ' 00:00:00'
+					} else if(dlt.dt == 3){//预约用车
+						ls = {
+							departureTime:this.dataunix(dlt.times),
+							serviceId:3,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0]
+						}
+						lts = {
+							startName:dlt.startName,
+							startAddress:dlt.startAddress,
+							endName:dlt.endName,
+							endAddress:dlt.endAddress,
+							departureTime:dlt.times,
+							serviceId:3,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0]
+						}
+						artime = dlt.times;
+					} else if(dlt.dt == 1){
+						ls = {
+							serviceId:1,
+							flt:dlt.flt,//航班号
+							flightDate: this.dataunix(dlt.flightDate),//起飞时间
+							airCode:dlt.airCode,//三字码
+							flightDelayTime:dlt.flightDelayTime,//飞机延长时间
+							elat: dlt.elat,
+							elng: dlt.elng//目的地
+						}
+						lts = {
+							serviceId:1,
+							flt:dlt.flt,//航班号
+							flightDate: this.dataunix(dlt.flightDate),//起飞时间
+							airCode:dlt.airCode,//三字码
+							flightDelayTime:dlt.flightDelayTime,//飞机延长时间
+							elat: dlt.elat,
+							elng: dlt.elng,//目的地
+							startName:dlt.startName,
+							endName:dlt.endName,
+							endAddress:dlt.endAddress
+						}
+						artime = dlt.flightDate;
+					} else if(dlt.dt ==2){
+						ls = {
+							departureTime:this.dataunix(dlt.departureTime),
+							serviceId:2,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0]
+						}
+						lts = {
+							startName:dlt.startName,
+							startAddress:dlt.startAddress,
+							endName:dlt.endName,
+							endAddress:dlt.endAddress,
+							departureTime:dlt.departureTime,
+							serviceId:2,
+							slat:dlt.ors[1],
+							slng:dlt.ors[0],
+							elat:dlt.ends[1],
+							elng:dlt.ends[0]
+						}
+						artime = dlt.departureTime;
+					}
+					this.arttime = artime;//出发日期
+					this.lslist = lts;
+					let res = await totok.getPlatFormUseCar(ls); //平台类型
+					if (res.code == 200) {
+						this.carlists = [];
+						let da = res.data;
+						for (let k in da) {
+							this.carlists.push({
+								img: da[k].supplierLogoUrl,
+								name: da[k].supplierTypeName,
+								carid: false,
+								id: k,
+								price: 0
+							});
+						}
+					} else {
+						uni.showToast({
+							title: res.message,
+							duration: 1000,
+							icon: 'none'
+						});
+					}
+					let redt = await totok.getUseCarType(ls); //车类型
+					if (redt.code == 200) {
+						this.vehicletype = [];
+						let das = redt.data;
+						for (let k in das) {
+							this.vehicletype.push({
+								name: das[k],
+								id: k,
+								list:[]
+							});
+						}
+						let dats = await totok.getUseCarEstimatedCost(ls); //预估金额
+						if (dats.code == 200) {
+							let dacars = dats.data;
+							let carlist = [];
+							for(let i in dacars){
+								let stu;
+								for(let p in this.carlists){//所有平台值
+									if(this.carlists[p].id == i){
+										stu = this.carlists[p];
+									}
+								}
+								for(let k in dacars[i].pricesMap){
+									carlist.push({
+										carGroupId:dacars[i].pricesMap[k].carGroupId,//车型id
+										estimateId:dacars[i].pricesMap[k].estimateId,
+										name:dacars[i].pricesMap[k].name,//车型价格
+										price:dacars[i].pricesMap[k].price,//价格
+										id:i,//平台
+										img: stu.img,//平台logo
+										stuname: stu.name,//平台名字
+										carid: false
+									})
+								}
+							}
+							for (let k =this.vehicletype.length - 1;k >= 0;k--) {//所有车型
+								for(let o in carlist){//所有车数据
+									if(this.vehicletype[k].id == carlist[o].carGroupId){
+										this.vehicletype[k].list.push(carlist[o])
+									}	
+								}
+								if(this.vehicletype[k].list.length == 0){
+									this.vehicletype.splice(k,1)
+								}
+							}
+						} else {
+							uni.showToast({
+								title: dats.message,
+								duration: 3000,
+								icon: 'none'
+							});
+						}
+					} else {
+						uni.showToast({
+							title: redt.message,
+							duration: 1000,
+							icon: 'none'
+						});
+					}
+					if(this.vehicletype.length > 0){//有车辆服务
+						this.vehicleid(0);
+						this.showcars = true;
+					}
+					this.setmap();
+				}catch(e){
+					//TODO handle the exception
+					console.log(e)
+				}
+			},	
+			catcedk(item, index) {
+				if (item.price == 0) {
+					return;
+				}
+				let its = item.carid;
+				if (its) {
+					this.newcarlists[index].carid = false;
+				} else {
+					for(let i in this.newcarlists){
+						this.newcarlists[i].carid = false;
+					}
+					this.newcarlists[index].carid = true;
+				}
+			},
+			dataunix(time){
+				var new_str = time.replace(/:/g,'-');
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
+				return datum.getTime()/1000
+			},
+			vehicleid(id) {
+				//切换车型
+				this.vehid = id;
+				this.newcarlists = this.vehicletype[id].list;
+			},
+			costnames(list){ //重新拼接成本中心名称
+				if(list.length == 1){
+					return list[0].costcenterName
+				} else {
+					let su = [];
+					for (let i in list) {
+						su.push(list[i].costcenterName)
+					}
+					return su.join(',')
+				}
+			},
+			trim(ev) {
+				//判断是否有值
+				if (ev.trim().length > 0) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			async parametes(fits,end){ //驾车路线规划
+				//驾车路线规划
+				let dats = {
+					from: fits,
+					to: end
+				};
+				try{
+					let res = await totok.direction(dats);
+					let dat = res.result.routes[0];
+					var coors= dat.polyline;
+					for (var i = 2; i < coors.length ; i++)
+					{coors[i] = coors[i-2] + coors[i]/1000000}
+					
+					this.distance = this.dism(dat.distance); //多远 单位米
+					this.duration = this.hous(dat.duration * 60); //多久 单位分钟
+					let points = []; //路径规划
+					
+					for(var k = 1; k < coors.length / 2; k++){
+						points.push({
+							arrowLine: true,
+							longitude: coors[k * 2 - 1],
+							latitude: coors[k * 2 - 2]
+						});
+					}
+					this.polyline = [{
+						strokeOpacity: 1,     // 线透明度
+						strokeStyle: 'solid',  // 线样式
+						lineJoin: 'round',  // 折线拐点的绘制样式
+						points: points,
+						color: '#04be02',
+						arrowLine:true,
+						borderColor:'#016100',
+						borderWidth:3,
+						width: 8
+					}];
+					
+				}catch(e){
+					console.log(e)
+					//TODO handle the exception
+				}
+			},
+			dism(m){//米转为公里
+				if(m  >= 1000){
+					let d = parseFloat(m/1000).toFixed(1)
+					return d + '公里'
+				} else {
+					return m + '米'
+				}
+			},
+			hous(time){
+				let times = '';
+				if (time > 60 && time < 60 * 60) {
+					times = parseInt(time / 60.0) + "分钟" 
+				}
+				else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+					times = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
+						parseInt(time / 3600.0)) * 60) + "分钟"
+				} else if (time >= 60 * 60 * 24) {
+					times = parseInt(time / 3600.0/24) + "天" +parseInt((parseFloat(time / 3600.0/24)-
+						parseInt(time / 3600.0/24))*24) + "小时" 
+				} else {
+					times = parseInt(time) + "秒";
+				}
+				return times
+			},
+			routblock(){
+				uni.navigateBack({
+				})
+			}
+		}
+	}
+</script>
+
+<style scoped>
+.iconfont {  
+	font-family: iconfont;  
+}
+.carA_box{
+	width: 750rpx;
+	background-color: #FFFFFF;
+}
+.carmap{
+	width: 750rpx;
+	flex: 1;
+}
+.cat_top{
+	/* width: 750rpx; */
+	height: 65px;
+	padding: 30px 10px 0 10px;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.rouck{
+	width: 35px;
+	height: 35px;
+	background-color: #FFFFFF;
+	border-radius: 50%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.roucks{
+	width: 35px;
+	height: 35px;
+	/* background-color: #FFFFFF; */
+	border-radius: 5px;
+	font-size: 12px;
+	/* flex-direction: row; */
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}	
+.antbns{
+	padding: 0 10px;
+	height: 35px;
+	font-size: 12px;
+	background-color: #FFFFFF;
+	border-radius: 35px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.boxelist{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 750rpx;
+	border-radius: 10px;
+	background-color: #F1F1F1;
+}
+.catlis{
+	width: 750rpx;
+	padding:10px 20px 10px 20px;
+}
+.cat_topt{
+	flex-direction: row;
+	height: 35px;
+	background-color: #FFFFFF;
+	border-radius: 6px;
+}
+.cat_tops{
+	width: 350rpx;
+	flex-direction: row;
+	align-items: center;
+}
+.at_topsspan{
+	margin: 0 10px;
+	color: #BEBEBE;
+	font-size: 14px;
+}
+.stname{
+}
+.stnamefont{
+	line-height: 35px;
+	font-size: 15px;
+	color: #000000;
+}
+.stnames{
+	color: #C0C0C0;
+}
+.showcarsbg{
+	height: 159px;
+}	
+.verlist{
+	flex-direction: row;
+	padding: 10px 0;
+}
+.veopst{
+	margin-left: 10px;
+	height: 35px;
+	padding: 0 15px;
+	text-align: center;
+	position: relative;
+	border: 1px solid #FFFFFF;
+	border-radius: 6px;
+	color: #007aff;
+	background-color: #FFFFFF;
+}
+
+.verlis {
+	border: 1px solid #007aff;
+	background-color: #e9eff6;
+	color: #007aff;
+}
+.ves-text{
+	font-size: 13px;
+	line-height: 35px;
+	color: #333333;
+}
+.ves-texts{
+	color: #007aff;
+}
+.verimg{
+	position: absolute;
+	right: -2px;
+	top: 0;
+	border-top-right-radius: 5px ;
+	width: 13px;
+	height: 12px;
+}
+.catul{
+	height: 120px;
+	font-size: 12px;
+}
+.carlisty{
+	/* height: 40px; */
+	padding: 0 0 5px 0; 
+}
+.carls{
+	background-color: #FFFFFF;
+	padding: 5px 10px;
+	border-radius: 5px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+.carleft{
+	flex-direction: row;
+	align-items: center;
+}
+.carlog{
+	width: 30px;
+	height: 30px;
+}
+.carlogimage{
+	width: 30px;
+	height: 30px;
+}
+.carnames{
+	color: #333333;
+	font-size: 14px;
+	margin-left: 15px;
+}
+.carright{
+	flex-direction: row;
+	align-items: center;
+}
+.carprice{
+	margin-right: 20px;
+	flex-direction: row;
+	align-items: center;
+}
+
+.prics {
+	color: #ff8f2e;
+	font-size: 22px;
+	line-height:30px ;
+}
+
+.tems {
+	margin: 0 1px;
+	font-size: 12px;
+	line-height: 30px;
+}
+
+.carpricemg {
+	width: 20px;
+	height: 20px;
+}
+.carpricespan{
+	color: #FF8F2E;
+	font-size: 18px;
+	margin: 0 2px;
+}
+.carbtns{
+	width: 750rpx;
+	height: 50px;
+	margin-top: 5px;
+	
+	background-color: #007aff;
+}
+.carbtnsfonts{
+	line-height: 50px;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 16px;
+}
+
+.show {
+	border-style: solid;
+	border-color: #eee;
+	border-bottom-width: 1px;
+	height: 40px;
+	opacity: 1;
+}
+.colors {
+	color: #007aff;
+}
+.rtlock {
+	color: #007aff;
+}
+.showchild:before {
+	transform: rotate(90deg);
+}
+.last:before {
+	opacity: 0;
+}
+.fixd_btn {
+	position: fixed;
+	z-index: 815;
+	bottom: 75px;
+	right: 15px;
+	font-size: 14px;
+	color: #ffffff;
+	text-align: center;
+	line-height: 35px;
+	width: 80px;
+	height: 35px;
+	border-radius: 35px;
+	background-color: #007aff;
+}
+.staleve{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 750rpx;
+	padding: 0 25px;
+	background-color: rgba(0,0,0,.3);
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.stalist{
+	height: 400px;
+	border-radius: 10px;
+	padding-top:10px;
+	background-color: #F1F1F1;
+}
+.statop{
+	padding: 2px;
+}
+.reds{
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.ts_text{
+	border-radius: 25px;
+	padding: 0 10px;
+	border-style: solid;
+	border-color: red;
+	border-width: 1px;
+}
+.ts_textfont{
+	font-size: 14px;
+	text-align: center;
+	line-height: 25px;
+	color: red;
+}
+.setlist{
+	margin: 5px 0;
+}
+.setbod{
+	margin: 0 10px;
+	border-style: solid;
+	border-color: #FFFFFF;
+	border-width: 1px;
+	border-radius:  7px;
+}
+.styul{
+	margin: 5px 0;
+}
+.styli_top{
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.stulis{
+	flex-direction: row;
+}
+.styli_left{
+	width: 180rpx;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+}
+.styli_right{
+	width: 300rpx;
+	margin-left: 30rpx;
+}
+.wors {
+	width: 300rpx;
+	font-size: 14px;
+	height: 30px;
+	line-height: 30px;
+	border-style: solid;
+	border-color: #007aff;
+	border-width: 1px;
+	border-radius: 7px;
+}
+.worspicker{
+	height:25px;
+	border-radius: 7px;
+}
+.btnsti{
+	height: 45px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.roblck{
+	height: 45px;
+	background-color: #FFFFFF;
+	border-bottom-left-radius: 7px;
+}
+.roblckfont{
+	line-height: 45px;
+	text-align: center;
+	color: #007aff;
+	font-size: 15px;
+}
+.btnok{
+	height: 45px;
+	border-bottom-right-radius: 7px;
+	color: #FFFFFF;
+	background-color: #007aff;
+}
+.btnokfont{
+	line-height: 45px;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 15px;
+}
+</style>

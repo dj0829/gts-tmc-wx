@@ -1,0 +1,1294 @@
+<template>
+	<div class="carlist" id="carlist">
+		<div  class="carover"> 
+			<div v-if="cartype == 2 || cartype == 5 || cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype == 14 ||cartype == 16  || cartype == 7 || cartype == 8 || cartype == 9">
+				<div class="Navigationts">
+					<div class="smtists">
+						<text @click="rblcok" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</text>
+					</div>
+					<text class="ongbutnts" v-if="cartype == 5 && (cararr.payStatus == 1 || cararr.payStatus == 2) && cararr.premium != null && cararr.premium > 0">
+						已取消待支付
+					</text>
+					<text class="ongbutnts" v-else>
+						{{statsname(cartype)}}
+					</text>
+					<div class="smtists">
+					</div>
+				</div>
+			</div>
+			<div :class="cartype == 3 || cartype == 4 || cartype == 15 ? 'distopbox':'distopboxs'" v-if="cartype == 3 || cartype == 4 ||  cartype == 7 || cartype == 8 || cartype == 9 || cartype == 15">
+				<div class="distop">
+					<div class="disleft">
+						<div class="disfot">
+							<image class="disfotimage" src="@/static/img/carbus/driverfoto.png" mode=""></image>
+						</div>
+						<div class="dispan" v-if="cararr.carSaleOrderDriver != null">
+							<div style="flex-direction: row;">
+								<text class="disfonts">{{cararr.carSaleOrderDriver.driverName}} </text><text class="iconfont" style="font-size: 28upx;color: #F9EE57;">&#xe63e;</text><text class="disfonts">{{cararr.carSaleOrderDriver.driverScore}}</text>
+							</div>
+							<div class="carpot">
+								<text class="disfonts">{{cararr.carSaleOrderDriver.vehicleNo}}</text>
+							</div>
+							<div>
+								<text class="disfonts">{{cararr.carSaleOrderDriver.vehicleModel}}</text>
+							</div>
+						</div>
+					</div>
+					<div class="disright">
+						<text class="iconfont" style="font-size: 80upx;color: #64C463;" @click="tel">&#xe64c;</text>
+					</div>
+				</div>
+				<div class="cartypes" v-if="cartype == 3 || cartype == 4 || cartype == 15">
+					<div class="carimg">
+						<image class="carimgimage"  :src="carlogoimg" mode=""></image>
+					</div>
+					<text class="disfonts">{{cararr.carSupplierTypeName}}</text>
+					<text class="disfonts">最快接单，将为您提供本次服务</text>
+				</div>
+			</div>
+		</div>
+		<div class="statusl" v-if="cartype == 2 || cartype == 5 ||cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype == 14 ||cartype == 16 ||cartype == 7 || cartype == 8 || cartype == 9">
+			<div class="stname">
+				<div style="flex-direction: row;align-items: center;">
+					<text class="iconfont" style="margin-right: 5px;">&#xe648;</text>
+					<text style="font-size: 14px;">{{cararr.createTime}}</text>
+				</div>
+				<text style="line-height:30px;font-size: 14px;" v-if="cartype == 2 ||cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype == 14 ||cartype == 16 ">{{sercname(cararr.serviceId)}}</text>
+				<div class="carfonto" v-if="cartype == 7 || cartype == 8 || cartype == 9">
+					<image class="carfontoimage" :src="carlogoimg" mode=""></image>
+					<text style="font-size: 13px;">{{cararr.carSupplierTypeName}}</text>
+					<text class="carfotns">{{cararr.carSaleOrderDriver.vehicleNo}}</text>
+					<text class="carfotns">{{carGroupname}}</text>
+				</div>
+				<div class="cacitys" >
+					<div class="catleft">
+						<div class="ca_x" style="border-style: solid;border-color: #52C41A;border-width: 1px;">
+							<div class="ca_xs" style="background-color: #52C41A;">
+							</div>
+						</div>
+					</div>
+					<div class="adresx">
+						<text style="font-size: 14px;line-height: 25px;">{{cararr.startName}}</text>
+					</div>
+				</div>
+				<div class="cacitys">
+					<div class="catleft">
+						<div class="ca_x" style="border-style: solid;border-color: #F98B2A;border-width: 1px;">
+							<div class="ca_xs" style="background-color: #F98B2A;">
+							</div>
+						</div>
+					</div>
+					<div class="adresx" >
+						<text class="fontsize_se" style="line-height: 25px;">{{cararr.endName}}</text>
+					</div>
+				</div>
+				<text class="fontsize_se" style="line-height: 30px;">乘车人：{{cararr.passengerName}} {{cararr.passengerMobile}}</text>
+				<text v-if="cararr.departureTime != null" class="fontsize_se">用车时间：{{cararr.departureTime}}</text>
+				<div v-if="cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13" style="flex-direction: row;align-items: center;">
+					<text class="fontsize_se" >预估金额：</text><text class="pricsy">{{cararr.estimateAmount}}元</text>
+				</div>
+				<div v-if="(cartype == 5 || cartype == 14) && gprice > 0" style="flex-direction: row;align-items: center;">
+					<text class="fontsize_se" >取消费用：</text><text class="pricsy">{{gprice}}元</text>
+				</div>
+				<div v-if="(cartype == 8 && cararr.supplierPaymentStatus == 'paid' )|| cartype == 9 || cartype == 16" class="pricenum">
+					<text class="fontsize_se">总金额：</text><text class="pricsy">{{gprice}}元</text>
+					<div @click="care_d(cararr)" style="flex-direction: row;align-items: center;">
+						<text  style="line-height: 25px;font-size: 14px;" v-if="cartype == 8 || cartype == 9">费用明细</text> <text v-if="cartype == 8 || cartype == 9" class="iconfont">&#xe8a3;</text>
+					</div>
+				</div>
+				<div class="bordop" v-if="(cartype == 5&&gprice > 0 )||cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype == 14 ||cartype == 16 ||cartype == 7 || cartype == 8 || cartype == 9">
+					<div class="borlisop">
+						<text class="bordlist" v-for="(item,index) in acelist" :key="index">{{item.name}}</text>
+					</div>
+					
+					<div class="bordlists" v-for="(item,indexs) in carposi" :key="indexs">
+						<text class="bordlist">{{item.name}}</text>
+						<text class="bordlist">{{item.costCenterName}}</text>
+						<text class="bordlist">{{item.percent}}%</text>
+						<text class="bordlist pricsy">{{gprices(item.percent,gprice)}}</text>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="noplst" v-if="cartype == 10">
+			<text class="nopfont">待审核</text>
+		</div>
+		<div class="noplst openplst" v-if="cartype == 11" @click="openplst">
+			<text class="nopfont">点击继续叫车</text>
+		</div>
+		<div class="noplst payment" v-if="cartype == 8 && cararr.supplierPaymentStatus == ''">
+			<text class="nopfont">正在计算实际金额，请稍等...</text>
+		</div>
+		<div class="noplst payment" @click="payment" v-if="cartype == 5  && (cararr.payStatus== 1 || cararr.payStatus== 2) && cararr.premium != null && cararr.premium > 0">
+			<text class="nopfont">待支付</text>
+		</div>
+		<div class="noplst payment" @click="payment" v-if="cartype == 16 && (cararr.payStatus== 1 || cararr.payStatus== 2) && cararr.tmsOsTransationorderExtend.settlement == 1">
+			<text class="nopfont">待支付</text>
+		</div>
+		<map id="midMap" v-if="ismap"  :polyline="polyline" :style="{height:mapheight+'px'}"  :include-points="include_points" class="carmap" :latitude="latitude" :longitude="longitude" :scale="scale"   :markers="markers" >
+			<cover-view class="dispatclose" v-if="cartype == '3' || cartype == '4' || cartype == '15'">
+				<div class="btns"  @click="cancel" :style="{width:catwidth+'px'}">
+					<text class="btnsfont">取消</text>
+				</div>
+			</cover-view>
+			<cover-view class="cat_bootom" :style="{width:catwidth+'px'}" v-if="cartype == '1'">
+				<div class="cat_tp" :style="{width:catwidth+'px'}">
+					<div class="cattext" :style="{width:catwidth+'px'}">
+						<text class="catts" >正在全力呼叫车辆 . . .</text>
+					</div>
+					<div class="cat_ts" :style="{width:catwidth+'px'}">
+						<div class="carlisty" v-for="(item,index) in platform" :key="index" @click="catcedk(item)">
+							<div class="carleft">
+								<div class="carlog">
+									<image class="carlogimage" :src="item.url" mode=""></image>
+								</div>
+								<text class="carnames">{{item.name}}</text>
+							</div>
+							<div class="carright">
+								<div class="carprice">
+									<text style="font-size: 14px;">预估</text><text class="carpricespan" style="margin-left: 3px;">{{item.price}}元</text>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="btns" @click="cancels" :style="{width:catwidth+'px'}">
+					<text class="btnsfont">取消</text>
+				</div>
+			</cover-view>
+			
+			<cover-view class="sixtop" v-if="cartype == '6'">
+				<div :style="{width:catwidth+'px'}">
+					<text class="antbns">正在前往目的地，剩余{{distance}}，预计行驶{{duration}}</text>
+				</div>
+			</cover-view>
+			<cover-view class="sixlist" v-if="cartype == '6'" :style="{width:catwidth+'px'}">
+				<div class="distop">
+					<div class="disleft">
+						<div class="disfot">
+							<image class="disfotimage" src="@/static/img/carbus/driverfoto.png" mode=""></image>
+						</div>
+						<div class="dispan" v-if="cararr.carSaleOrderDriver != null">
+							<div style="flex-direction: row;">
+								<text class="disfonts">{{cararr.carSaleOrderDriver.driverName}} </text><text class="iconfont" style="font-size: 28upx;color: #F9EE57;">&#xe63e;</text><text class="disfonts">{{cararr.carSaleOrderDriver.driverScore}}</text>
+							</div>
+							<div class="carpot">
+								<text class="disfonts">{{cararr.carSaleOrderDriver.vehicleNo}}</text>
+							</div>
+							<div>
+								<text class="disfonts">{{cararr.carSaleOrderDriver.vehicleModel}}</text>
+							</div>
+						</div>
+					</div>
+					<div class="disright">
+						<text class="iconfont" style="font-size: 40px;color: #64C463;" @click="tel">&#xe64c;</text>
+					</div>
+				</div>
+				<div class="inpos">
+					<image class="in_imgs" src="@/static/img/carbus/car_bj.png" mode=""></image>
+					<text class="inposli" @click="tels">紧急求救</text>
+					<!-- <div class="inposli">
+						行程分享
+					</div> -->
+				</div>
+			</cover-view>
+		</map>
+	</div>
+</template>
+
+<script>
+	import utils from '@/untils/util.js'
+	import order from '@/api/order.js'
+	import totok from '@/api/torowk.js'
+	let gdkey = "f34355ae385ced7460e7b1aa59934074";
+	export default{
+		data(){
+			return{
+				showCaror:false,//显示司机信息
+				showOrdSta:false,//显示导航栏
+				catwidth:0,
+				mapheight:0,//地图高度
+				carGroupname:'',//车类型
+				carlogoimg:'',//平台logo
+				fouts:false,//司机到达状态默认
+				gprice:0,//总价
+				carposi:[],
+				acelist:[{
+					name:'适用人员',
+				},{
+					name:'成本中心'
+				},{
+					name:'分摊比例'
+				},{
+					name:'分摊金额'
+				}],
+				cararr:{},
+				ismap:false,
+				driver:[],//司机信息
+				cartype:'',//订单状态
+				polyline:[],//路线规划
+				include_points:[],
+				scale:18,
+				longitude: 0,
+				latitude: 0,
+				markers: [],
+				distance:0,//距离多远
+				duration:0,//距离多久
+				or:{
+					location:'114.057640,22.502941',
+					name:'我所在地'
+				},
+				end:{
+					location:'114.059747,22.507804',
+					name:'司机所在地'
+				},
+				ismidmap:true,
+				catynum:1,
+				isinter:false,
+				platforms:[],//预估车金额车类型
+				saleOrderNo:0,
+				tradeNo:'',//单号
+				settime:null,
+				isprice:false,
+				sixap:false,
+				carlists:[],//平台类型
+				vehicletype:[],//车类型
+				sttime:0,//叫车时间
+			}
+		},
+		onShow(){
+			if(this.settime) { //如果定时器在运行则关闭
+				clearInterval(this.settime); 
+			}
+			this.salelist();
+		},
+		onReady(options) {
+			this.appMap = uni.createMapContext("midMap", this);
+		},
+		created() {
+		    var domModule = weex.requireModule("dom");  
+		    domModule.addRule('fontFace', {  
+		           'fontFamily': 'iconfont',  
+		           'src': "url(\'https://at.alicdn.com/t/font_1399933_7ttzdrtmwel.ttf\')"  
+		    })  
+		},
+		onLoad() {
+			let list = uni.getStorageSync('carorderlistA_data');
+			this.tradeNo = list.data;//单号
+		},
+		onUnload() { //销毁定时器
+			if(this.settime) { //如果定时器在运行则关闭
+				clearInterval(this.settime); 
+			}
+		},
+		mounted() {
+			this.getboxse();
+			this.cartypes();
+		},
+		methods:{
+			getboxse(){
+				let res = uni.getSystemInfoSync();
+				let hist = res.windowHeight;//获取屏幕高度
+				let widt = res.windowWidth;//获取屏幕宽度
+				this.mapheight = hist;
+				this.catwidth = widt - 40;
+			},
+			async payment(){
+				let that = this;
+				try{
+					let res = await order.confirmPay({
+						businessType: "2",
+						categoryCode: "1000",
+						productType: "13",
+						differenceType: "n",
+						recordNo: this.saleOrderNo,
+						amount: this.gprice,
+						payWayCode: "1000023"
+					})
+					if(res.code == 200){
+						let da = JSON.parse(res.data);
+						// #ifdef  H5 || MP-WEIXIN
+						let ua = window.navigator.userAgent.toLowerCase();
+						if (ua.match(/micromessenger/i) == 'micromessenger') {
+							that.$wechat.readys(da,function(callback) {
+								if(this.settime) { //如果定时器在运行则关闭
+									clearInterval(this.settime); 
+								}
+								if(callback == '200'){
+									that.salelist();
+								} else {
+									uni.showModal({
+										content: '支付失败',
+										showCancel: false
+									});
+								}
+							})
+						} else {
+							uni.showModal({
+								content: '请在微信浏览器中打开',
+								showCancel: false
+							});
+						}
+						// #endif
+					} else {
+						uni.showModal({
+							content: res,
+							showCancel: false
+						});
+					}
+				}catch(e){
+					console.log(e);
+				}
+			},
+			care_d(va){
+				va['cartypename'] = this.carGroupname;
+				uni.navigateTo({
+					url:'carExpensedetails?data=' + JSON.stringify(va)
+				})
+			},
+			async cartypes(){
+				let res = await totok.getPlatFormUseCar();//平台类型
+				if(res.code == 200){
+					this.carlists = [];
+					let da = res.data;
+					for (let k in da) {
+						this.carlists.push({
+							img:da[k].supplierLogoUrl,
+							name:da[k].supplierTypeName,
+							carid:false,
+							id:k,
+							price: 0
+						})
+					}
+				} else {
+					uni.showToast({
+						title:res.message,
+						duration:1000,
+						icon:'none'
+					})
+				}
+				let redt = await totok.getUseCarType(); //车类型
+				if(redt.code == 200){
+					this.vehicletype = [];
+					let das = redt.data;
+					for (let k in das) {
+						this.vehicletype.push({
+							name:das[k],
+							id:k,
+						})
+					}
+				} else {
+					uni.showToast({
+						title:redt.message,
+						duration:1000,
+						icon:'none'
+					})
+				}
+				if(this.cararr.carSupplierTypeNo != null && this.cararr.carSupplierTypeNo !=null){
+					if(this.carlistsva(this.cararr.carSupplierTypeNo) != undefined ){
+						this.carlogoimg = this.carlistsva(this.cararr.carSupplierTypeNo) ;
+					}
+					this.carGroupname = this.vehicletypeva(this.cararr.carGroupId);
+				}
+				
+			},
+			gprices(i,k){
+				return parseFloat(k * (i/100)).toFixed(2)
+			},
+			carlistsva(va){ //获取用车平台logo
+				for(let k in this.carlists){
+					if(va == this.carlists[k].id){
+						return this.carlists[k].img
+					}
+				}
+			},
+			vehicletypeva(va){ //获取用车平台logo
+				for(let k in this.vehicletype){
+					if(va == this.vehicletype[k].id){
+						return this.vehicletype[k].name
+					}
+				}
+			},
+			async openplst(){ //立即叫车
+				try{
+					let res = await order.apprvPass({
+						saleOrderNo: this.saleOrderNo
+					})
+					if(res.code != 200){
+						uni.showToast({
+							title:res.message,
+							duration:1000,
+							icon:'none'
+						})
+					} else{
+						this.isprice =false;
+						if(this.settime) { //如果定时器在运行则关闭
+							clearInterval(this.settime); 
+						}
+						this.salelist();
+					}
+				}catch(e){
+					//TODO handle the exception
+				}
+			},
+			sercname(id){
+				if(id == 4){
+					return '现在约车'
+				}else if(id== 3){
+					return '预约约车'
+				} else if(id ==  1){
+					return '接机'
+				} else if(id == 2){
+					return '送机'
+				}
+			},
+			statsname(id){
+				let arr = [{
+					id:1,
+					name:'正在叫车'
+				},{
+					id:2,
+					name:'订单已无效'
+				},{
+					id:3,
+					name:'已派单'
+				},{
+					id:4,
+					name:'已到达'
+				},{
+					id:5,
+					name:'已取消'
+				},{
+					id:6,
+					name:'已开始服务'
+				},{
+					id:7,
+					name:'已结束服务'
+				},{
+					id:8,
+					name:'已提交费用'
+				},{
+					id:9,
+					name:'已完成'
+				},{
+					id:10,
+					name:'待审批'
+				},{
+					id:11,
+					name:'审批通过'
+				},{
+					id:12,
+					name:'审批拒绝'
+				},{
+					id:13,
+					name:'审批超时'
+				},{
+					id:14,
+					name:'取消中'
+				},{
+					id:15,
+					name:'已出发'
+				},{
+					id:16,
+					name:'待支付'
+				}]
+				for(let i in arr){
+					if(arr[i].id == id){
+						return arr[i].name
+					}
+				}
+			},
+			async salelist(){
+				let that = this;
+				try{
+					let res = await order.getUseCarOrderDetail({
+						tradeNo: this.tradeNo
+					})
+					if(res.code == 200){
+						let da = res.data;
+						this.saleOrderNo = da.saleOrderNo;
+						this.cartype = da.status;
+						let cartype = this.cartype;//订单状态
+						this.cararr= da;
+						this.carposi = [];
+						for (let k in da.carSaleOrderDetail) {//预估金额信息
+							this.carposi.push({
+								name:da.carSaleOrderDetail[k].passengerName,
+								costCenterName:da.carSaleOrderDetail[k].costCenterName,
+								percent:da.carSaleOrderDetail[k].percent * 100,
+							})
+						}
+						//获取预约金额
+						if((cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype == 1) && this.cararr.serviceId == 4){
+							if(this.isprice == false){ //判断只获取一次当前接口
+								let ret = await order.getUseCarEstimateData({ //获取预估金额
+									saleOrderNo: this.saleOrderNo
+								})
+								this.isprice = true;
+								if(ret.code == 200){
+									let platform =  ret.data;
+									this.platform= [];
+									this.sttime = platform.dispatchingCountdown;
+									for (let k in platform.platformOrderInfo) {
+										for (let p in platform.platFormSetting) {
+											if(platform.platformOrderInfo[k].carPlatformCode == p){
+												this.platform.push({
+													name:platform.platFormSetting[p].supplierTypeName,
+													price: platform.platformOrderInfo[k].estimatePrice,
+													url:platform.platFormSetting[p].supplierLogoUrl
+												})
+											}
+										}
+									}
+								} else {
+									uni.showToast({
+										title:ret.message,
+										duration:2000,
+										icon:'none'
+									})
+								}
+							}
+						}
+						if(cartype == 1 && this.cararr.serviceId == 4){ //正在叫车 才有倒计时
+						} else {
+							this.carlogoimg = this.carlistsva(this.cararr.carSupplierTypeNo) ;
+						}
+						if(cartype == 15 || cartype == 4 || cartype == 6){ //获取司机位置
+							if(this.fouts && cartype == 5){
+								return
+							}
+							try{
+								let rsev = await order.getDriverLocation({
+									platFormKey: this.cararr.carSupplierTypeNo,
+									outOrderId: this.cararr.supplierOrderId
+								})
+								if(rsev.code == 200){ //司机位置
+									if( rsev.data.driverLng != 0){
+										this.end.location = rsev.data.driverLng + ',' + rsev.data.driverLat
+									} else {
+										if(cartype == 15){//司机正在路上
+											this.end.location = this.cararr.elng + ',' + this.cararr.elat;//测试用的数据
+										} else if(cartype == 6){ //服务中
+											this.end.location = this.cararr.slng + ',' + this.cararr.slat;//测试用的数据
+										}
+									}
+								}
+							}catch(e){
+								//TODO handle the exception
+							}
+						}
+						if(cartype == 9 || cartype == 10 || cartype == 11 || cartype == 12 || cartype == 13 || cartype== 5 || cartype== 16){ //审核状态
+							this.ismap = false;//是否需要地图
+						} else {
+							if(cartype == 8 && this.cararr.supplierPaymentStatus == ''){
+							}	
+							this.isinter = true;
+							this.setmap(this.catynum);
+							
+						}
+						
+						if(cartype == 8 || cartype == 9|| cartype == 16){ //获取结束后的总金额
+							this.gprice = da.premium;
+						}
+						if(cartype == 5 || cartype == 14 ){
+							if(da.premium > 0){
+								this.gprice = da.premium;
+							}
+						}
+						if(this.cartype == 1 || this.cartype == 3 || this.cartype == 4 ||this.cartype == 6 || this.cartype == 7 ||this.cartype == 8 || this.cartype == 14 || this.cartype == 15){
+							this.settime = setTimeout(()=>{
+								that.salelist();
+							},3000)
+						}
+					}
+				}catch(e){
+					//TODO handle the exception
+				}
+			},
+			cancel(){//订单取消
+				uni.navigateTo({
+					url:'car_cancel?saletype=' + this.cararr.tmsOsTransationorderExtend.settlement +'&data=' + this.tradeNo + '&id=' + this.cararr.carSupplierTypeNo + '&saleOrderNo=' + this.saleOrderNo
+				})
+			},
+			async cancels(){//未接单之前取消
+				let _this = this;
+				try{
+					let res = await order.carCancelOrder({
+						saleOrderNo: _this.saleOrderNo,
+						force:false,
+						reason:'1',
+						reasonId:''
+					});
+					if(res.code == 200){
+						uni.showToast({
+							title:'取消成功',
+							duration:1000,
+							icon:'none'
+						})
+						if(this.settime) { //如果定时器在运行则关闭
+							clearInterval(this.settime); 
+						}
+						_this.salelist()
+					} else {
+						uni.showToast({
+							title:res.message,
+							duration:1000,
+							icon:'none'
+						})
+					}
+				}catch(e){
+					//TODO handle the exception
+				}
+			},
+			async setmap(catynum){//生成路线图
+				let that = this;
+				try{
+					if(this.cartype == '1' || this.cartype == '3'){ //正在叫车 - 司机已接单
+						this.ismap = true;//是否需要地图
+						this.longitude = this.cararr.slng;
+						this.latitude = this.cararr.slat;
+						if(this.markers.length == 0){
+							this.markers = [{
+							        latitude: this.cararr.slat,
+							        longitude: this.cararr.slng,
+							        iconPath: '../../../../static/img/carbus/locast.png',
+									width:20,//图标大小
+									height:20,
+									callout:{
+										content: this.cararr.startName,
+										color: '#000000',
+										fontSize:12,
+										padding:4,
+										display:'ALWAYS',
+										borderRadius:12
+									},
+							}]
+						}
+					} else if(this.cartype == '15'){ //司机正在路上
+						this.ismap = true;//是否需要地图
+						this.or.location = this.cararr.slng + ',' + this.cararr.slat;
+						let ors = this.or.location.split(',');//我的位置
+						let ends = this.end.location.split(',');//司机位置
+						if(catynum == 1){
+							let lodats = [{
+								longitude:ends[0],
+								latitude:ends[1]
+								
+							},{
+								longitude:ors[0],
+								latitude:ors[1]
+							}]
+							that.scale = 14;
+							that.include_points = lodats;
+							
+							setTimeout(()=>{
+								uni.createMapContext("midMap").getScale({
+									success: (e) => { 
+										that.scale = e.scale - 1;
+									}  
+								})  
+							},500)
+							let locs = utils.getCenter(lodats);//算出两个经纬度的中心点
+							this.longitude = locs[0];
+							this.latitude = locs[1];
+						}
+						await this.parametes( ends[1] + ','  + ends[0],ors[1] + ',' + ors[0]);//画线
+						this.markers = [{
+							latitude: ors[1],
+							longitude: ors[0],
+							iconPath: '../../../../static/img/carbus/locations.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: this.or.name,
+								color: '#000000',
+								fontSize:10,
+								display:'ALWAYS',
+								borderRadius:10
+							},
+							anchor:{x:.5,y:1} //图标偏移位置
+						},{
+							latitude: ends[1],
+							longitude: ends[0],
+							iconPath: '../../../../static/img/carbus/cats.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: '距您'+ this.distance + ',预计' + this.duration + '到达' ,
+								color: '#000000',
+								fontSize:12,
+								padding:4,
+								display:'ALWAYS',
+								borderRadius:12
+							},
+						}]
+						this.catynum = 2;
+					} else if(this.cartype == '4'){ //已到达
+						if(this.fouts){
+							return
+						}
+						this.ismap = true;//是否需要地图
+						
+						this.polyline = [];
+						let ors = this.or.location.split(',');//我的位置
+						let ends = this.end.location.split(',');//司机位置
+						this.longitude = ors[0]; //我的位置
+						this.latitude = ors[1];
+						this.scale = 18;
+						
+						this.markers = [];
+						this.markers = [{
+							latitude: ors[1],
+							longitude: ors[0],
+							iconPath: '../../../../static/img/carbus/locations.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: this.or.name,
+								color: '#000000',
+								fontSize:10,
+								display:'ALWAYS',
+								borderRadius:10
+							},
+							anchor:{x:.5,y:1} //图标偏移位置
+						},{
+							latitude: ends[1],
+							longitude: ends[0],
+							iconPath: '../../../../static/img/carbus/cats.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: '司机已到达，请您尽快上车' ,
+								color: '#000000',
+								fontSize:12,
+								padding:4,
+								display:'ALWAYS',
+								borderRadius:12
+							},
+						}]
+						this.fouts = true;
+					} else if(this.cartype == '6'){ //服务中
+						if(!this.sixap){
+							this.ismidmap = false;
+							this.ismap = true;//是否需要地图
+						}
+						this.or.location = this.cararr.elng + ',' + this.cararr.elat; //目的地位置
+						this.or.name = this.cararr.endName;
+						let ors = this.or.location.split(',');//我的位置
+						let ends = this.end.location.split(',');//司机位置
+						let lodats = [{
+							longitude:ends[0],
+							latitude:ends[1]
+							
+						},{
+							longitude:ors[0],
+							latitude:ors[1]
+						}]
+						if(!this.sixap){
+							this.scale = 14;
+							this.include_points = lodats;
+							setTimeout(()=>{
+								uni.createMapContext("midMap").getScale({
+									success: (e) => { 
+										that.scale = e.scale - 1;
+									}  
+								})  
+							},500)
+							let locs = utils.getCenter(lodats);//算出两个经纬度的中心点
+							this.longitude = locs[0];
+							this.latitude = locs[1];
+						}
+						
+						await this.parametes( ends[1] + ','  + ends[0],ors[1] + ',' + ors[0]);//画线	
+						this.markers = [];
+						this.markers = [{
+							latitude: ors[1],
+							longitude: ors[0],
+							iconPath: '../../../../static/img/carbus/locations.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: this.or.name,
+								color: '#000000',
+								fontSize:12,
+								padding:4,
+								display:'ALWAYS',
+								borderRadius:12
+							},
+							anchor:{x:.5,y:1} //图标偏移位置
+						},{
+							latitude: ends[1],
+							longitude: ends[0],
+							iconPath: '../../../../static/img/carbus/cats.png',
+							width:20,//图标大小
+							height:20,
+							callout:{
+								content: '我的位置' ,
+								color: '#000000',
+								fontSize:12,
+								padding:4,
+								display:'ALWAYS',
+								borderRadius:12
+							},
+							anchor:{x:.5,y:.7} //图标偏移位置
+						}]
+						this.sixap = true;
+					} else {
+						this.ismap = false;//是否需要地图
+					}
+				}catch(e){
+					console.log(e)
+					//TODO handle the exception
+				}
+				
+			},
+			tel(){
+				uni.makePhoneCall({
+					phoneNumber: this.cararr.carSaleOrderDriver.virtualPhonePassenger //司机电话
+				});
+			},
+			tels(){
+				uni.makePhoneCall({
+					phoneNumber: '110' //报警电话
+				});
+			},
+			async parametes(fits,end){ //驾车路线规划
+				let dats = {
+					from: fits,
+					to: end
+				};
+				try{
+					await totok.direction(dats).then((res)=>{
+						let dat = res.result.routes[0];
+						var coors= dat.polyline;
+						for (var i = 2; i < coors.length ; i++)
+						{coors[i] = coors[i-2] + coors[i]/1000000}
+						
+						this.distance = this.dism(dat.distance); //多远 单位米
+						this.duration = this.hous(dat.duration * 60); //多久 单位分钟
+						let points = []; //路径规划
+						
+						for(var k = 1; k < coors.length / 2; k++){
+							points.push({
+								arrowLine: true,
+								longitude: coors[k * 2 - 1],
+								latitude: coors[k * 2 - 2]
+							});
+						}
+						
+						this.polyline = [{
+							strokeOpacity: 1,     // 线透明度
+							strokeStyle: 'solid',  // 线样式
+							lineJoin: 'round',  // 折线拐点的绘制样式
+							points: points,
+							color: '#04be02',
+							arrowLine:true,
+							borderColor:'#016100',
+							borderWidth:3,
+							width: 8
+						}];
+					});
+				}catch(e){
+					console.log(e)
+					//TODO handle the exception
+				}
+			},
+			dism(m){//米转为公里
+				if(m  >= 1000){
+					let d = parseFloat(m/1000).toFixed(1)
+					return d + '公里'
+				} else {
+					return m + '米'
+				}
+			},
+			hous(time){
+				let times = '';
+				if (time > 60 && time < 60 * 60) {
+					times = parseInt(time / 60.0) + "分钟"
+				}
+				else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+					times = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
+						parseInt(time / 3600.0)) * 60) + "分钟"
+				} else if (time >= 60 * 60 * 24) {
+					times = parseInt(time / 3600.0/24) + "天" +parseInt((parseFloat(time / 3600.0/24)-
+						parseInt(time / 3600.0/24))*24) + "小时" 
+				} else {
+					times = parseInt(time) + "秒";
+				}
+				return times
+			},
+			houst(second_time){
+				var time = parseInt(second_time);  
+				if( parseInt(second_time )> 60){  
+				  
+				    var second = parseInt(second_time) % 60;  
+				    var min = parseInt(second_time / 60);  
+				    time = this.zero(min) + ":" + this.zero(second);  
+				      
+				    if( min > 60 ){  
+				        min = parseInt(second_time / 60) % 60;  
+				        var hour = parseInt( parseInt(second_time / 60) /60 );  
+				        time = this.zero(hour) + ":" + this.zero(min) + ":" + this.zero(second);  
+				  
+				        // if( hour > 24 ){  
+				        //     hour = parseInt( parseInt(second_time / 60) /60 ) % 24;  
+				        //     var day = parseInt( parseInt( parseInt(second_time / 60) /60 ) / 24 );  
+				        //     time = day + "天" + hour + "小时" + min + "分" + second + "秒";  
+				        // }  
+				    }  
+					return time
+				} else {
+					return '00:' + this.zero(parseInt(time))
+				}
+				
+			},
+			zero(ti){
+				if(ti<10){
+					return '0' + ti
+				} else {
+					return ti
+				}
+			},
+			rblcok(){
+				uni.navigateBack({
+				})
+			},
+		}
+	}
+</script>
+
+<style scoped>
+.iconfont {
+	font-family: iconfont;  
+}
+.fontsize_se{
+	font-size: 14px;
+}
+.carover{
+}
+.Navigationts {
+	width: 750rpx;
+	padding-top: 30px;
+	height: 65px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	font-size: 14px;
+	color: #ffffff;
+	background-image: linear-gradient(to right, #4e92fd, #6e46fe);
+}
+.ongbutnts {
+	width: 600rpx;
+	color: #ffffff;
+	text-align: center;
+}
+.smtists {
+	width: 75rpx;
+}
+.carpot{
+	width: 90px;
+	flex-direction: row;
+	height: 20px;
+	align-items: center;
+	justify-content: center;
+	background-color: #F1F1F1;
+}
+.pricsy{
+	color: #FF9000;
+}
+.btns{
+	height: 40px;
+	margin-top: 10px;
+	background-color: #DD031E;
+	border-radius: 4px;
+	
+}
+.btnsfont{
+	text-align: center;
+	color: #FFFFFF;
+	line-height: 40px;
+}
+.carlist{
+	width: 750rpx;
+	flex: 1;
+}
+.noplst{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 750rpx;
+	height: 55px;
+	background-color: #86837E;
+}
+.nopfont{
+	line-height: 55px;
+	text-align: center;
+	font-size: 16px;
+	color: #FFFFFF;
+}
+.payment{
+	background-color: #F48F00;
+}	
+.openplst{
+	background-color: #007aff;
+}
+.statusl{
+	width: 750rpx;
+	background-color: #FFFFFF;
+	margin-top: 5px;
+	padding: 20px 10px;
+}
+.stname{
+	font-size: 14px;
+	line-height: 20px;
+}
+.carfonto{
+	height: 40px;
+	flex-direction: row;
+	align-items: center;
+}
+.carfontoimage{
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+.carfotns{
+	padding: 0 10px;
+	background-color: #F1F1F1;
+	height: 20px;
+	line-height: 20px;
+	color: #333333;
+	font-size: 12px;
+	margin-left: 10px;
+}
+.bordop{
+	width:704rpx;
+	margin-top: 10px;
+	border-style: solid;
+	border-color: #787771;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+}
+.borlisop{
+	flex-direction: row;
+	width:700rpx;
+}
+					
+.bordlists{
+	width:700rpx;
+	flex-direction: row;
+}
+.bordlist{
+	font-size: 14px;
+	width: 175rpx;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	border-style: solid;
+	border-color: #787771;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	lines:1;
+	text-overflow:ellipsis;
+}
+				
+.pricenum{
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.cacitys{
+	flex-direction: row;
+}
+.catleft{
+	width: 25px;
+	height: 25px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.ca_x{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background-color: #ffffff;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.ca_xs{
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+}
+.adresx{
+	width: 500rpx;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+}
+.distopbox{
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding-top: 30px;
+	background-color: #FFFFFF;
+}
+.distopboxs{
+	background-color: #FFFFFF;
+}
+.distop{
+	padding: 10px 20px 5px 20px;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.disleft{
+	flex-direction: row;
+	align-items: center;
+}
+.disfot{
+	width: 40px;
+	height: 40px;
+	margin-right: 5px;
+}
+.disfotimage{
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+.disfonts{
+	font-size: 12px;
+	line-height: 19px;
+}
+.disright{
+	flex-direction: row;
+	align-items: center;
+}
+			
+.cartypes{
+	width: 750rpx;
+	height: 30px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+}
+.carimg{
+	width: 40upx;
+	height: 40upx;
+	margin-right: 10px;
+}
+.carimgimage{
+	width: 40upx;
+	height: 40upx;
+}
+.dispatclose{
+	margin: 0 20px;
+	position: fixed;
+	left: 0;
+	bottom: 10px;
+}
+.sixtop{
+	position: fixed;
+	left: 0;
+	top: 30px;
+	margin: 0 20px;
+	height: 30px;
+	border-radius: 30px;
+	background-color: #FFFFFF;
+}
+.antbns{
+	font-size: 12px;
+	text-align: center;
+	line-height: 30px;
+}
+.sixlist{
+	position: fixed;
+	left: 0;
+	bottom: 20px;
+	margin: 0 20px;
+	background-color: #FFFFFF;
+}
+.inpos{
+	margin-top: 10px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	color: #333333;
+	height: 35px;
+	font-size: 13px;
+	background-color: #ffe7ae;
+}
+.in_imgs{
+	width: 15px;
+	height: 15px;
+}
+.inposli{
+	margin-left: 10px;
+	line-height: 35px;
+	font-size: 13px;
+	text-align: center;
+}
+.cat_bootom{
+	margin: 0 20px;
+	position: fixed;
+	left: 0;
+	bottom: 20px;
+}
+.cat_tp{
+	padding: 10px 0;
+	background-color: #FFFFFF;
+	border-radius: 4px;
+}
+.cattext{
+	height: 35px;
+	text-align: center;
+}
+.catts{
+	color: #333333;
+	font-size: 14px;
+	line-height: 35px;
+	text-align: center;
+}
+.cat_ts{
+	padding:0 10px 0 30px;
+	font-size: 14px;
+}
+.carlisty{
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	height: 40px;
+}
+.carleft{
+	flex-direction: row;
+	align-items: center;
+}
+.carlog{
+	width: 30px;
+	height: 30px;
+}
+.carlogimage{
+	width: 30px;
+	height: 30px;
+}
+.carnames{
+	font-size: 14px;
+	margin-left: 15px;
+}
+.carright{
+	flex-direction: row;
+	align-items: center;
+}
+.carprice{
+	flex-direction: row;
+	align-items: center;
+	font-size: 12px;
+	margin-right: 20px;
+}
+.carpricespan{
+	color: #FF8F2E;
+	font-size: 16px;
+}
+</style>

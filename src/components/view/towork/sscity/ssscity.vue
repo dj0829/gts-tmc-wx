@@ -16,7 +16,7 @@
 					出发城市
 				</view>
 			</view>
-			<view class="" v-if="current == 'Train'">
+			<view   v-if="current == 'Train'">
 				<view v-if="Busitraiket[0].name != ''">
 						{{Busitraiket[0].name}} 
 				</view>
@@ -24,7 +24,7 @@
 					出发城市
 				</view>
 			</view>
-			<view class="" v-if="current == 'Hotel'">
+			<view   v-if="current == 'Hotel'">
 				<view v-if="sta_Hotelket.name">
 						{{sta_Hotelket.name}} 
 				</view>
@@ -37,14 +37,14 @@
 			<view class="iconfont" style="color: #007aff;font-size: 65upx;">&#xe60e;</view>
 		</view>
 	    <view class="padding-lr padding-lr_r" :class="animation?'animation-slide-left' :''" @click="startClick('right')">
-			<view class="cu_li_right" v-if="current == 'Hotel'">
+			<!-- <view class="cu_li_right" v-if="current == 'Hotel'">
 				位置
-			</view>
+			</view> -->
 			<view class="cu_li_right" v-if="current != 'Hotel'">
 				到达
 			</view>
 			<view v-if="current == 'Planeticket'">
-				<view class="" v-if="Busirticket[1].name != ''">
+				<view   v-if="Busirticket[1].name != ''">
 					{{Busirticket[1].name}}
 				</view>
 				<view style="color: #C0C0C0;" v-else>
@@ -52,21 +52,21 @@
 				</view>
 			</view>
 			<view v-if="current == 'Train'">
-				<view class="" v-if="Busitraiket[1].name != ''">
+				<view   v-if="Busitraiket[1].name != ''">
 					{{Busitraiket[1].name}}
 				</view>
 				<view style="color: #C0C0C0;" v-else>
 					到达城市
 				</view>
 			</view>
-			<view v-if="current == 'Hotel'">
-				<view class="" v-if="end_Hotelket">
-					{{end_Hotelket}}
+			<!-- <view v-if="current == 'Hotel'">
+				<view   v-if="end_Hotelket.name">
+					{{end_Hotelket.name}}
 				</view>
 				<view style="color: #C0C0C0;" v-else>
 					入住位置
 				</view>
-			</view>
+			</view> -->
 	    </view>
 	</view>
 </template>
@@ -91,19 +91,17 @@
 				default: {} //出差酒店城市
 			},
 			send_Hotelket:{
-				type:String,
-				dafault:''
+				type:Object,
+				dafault:{}
 			}
 		},
 		data() {
 			return {
-				
-				
 				animation: false,
 				Busirticket: [{name: '',id: ''},{name:'',id: ''}],
 				Busitraiket: [{name: '',id: ''},{name:'',id: ''}],
 				sta_Hotelket: {},//出差酒店城市
-				end_Hotelket: '',//出差酒店地址
+				end_Hotelket: {},//出差酒店地址
 			}
 		},
 		mounted() {
@@ -152,15 +150,14 @@
 					if(ts == 'left'){
 						list = this.sta_Hotelket.name
 						uni.navigateTo({
-							url: '../../myapplication/cationchirder/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list,
+							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list,
 						});
 					} else {
 						if(JSON.stringify(this.sta_Hotelket) == '{}'){
 							this.showToasts("请选择城市")
 						} else {
-							list = this.end_Hotelket
 							uni.navigateTo({
-								url: '../../myapplication/cationchirder/sselect-city/selectcity?sta=right&type=' + cus + '&list=' + list + '&citys=' + this.sta_Hotelket.name,
+								url: '/pages/book/sselect-city/selectcity?sta=right&type=' + cus + '&list=' + this.sta_Hotelket.name + '&wx_hotels=' + this.end_Hotelket.name,
 							});
 						}
 					}
@@ -172,7 +169,7 @@
 						list = JSON.stringify([{name:this.Busitraiket[0].name},{name:this.Busitraiket[1].name}])
 					}
 					uni.navigateTo({
-						url: '../../myapplication/cationchirder/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list,
+						url: '/pages/book/sselect-city/selectcity?sta=' + ts +'&type=' + cus + '&list=' + list,
 					});
 				}
 			},

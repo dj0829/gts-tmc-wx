@@ -1,36 +1,41 @@
-﻿var Fly = require('flyio/dist/npm/wx');
+var Fly = require('flyio/dist/npm/wx');
 var fly = new Fly();
-import store from "store";
+import store from "../store";
 //配置请求基地址 
 if (process.env.NODE_ENV == 'development') {
 	// 开发环境
 	// #ifdef H5
-	fly.config.baseURL = 'http://api.test.gssok.com';
+	// fly.config.baseURL = 'http://172.16.51.74:9988';//钰哥本地
+	// fly.config.baseURL = 'http://172.16.9.114:9988';//键文老板本地
+	// fly.config.baseURL = 'http://172.16.50.56:9988';//郑跃宗
+	// fly.config.baseURL = 'http://172.16.9.225:9988';//叶青
+	// fly.config.baseURL = 'http://172.16.51.65:9988';//王和君
+	// fly.config.baseURL = 'https://api.feiren.com'; //生产
+	// fly.config.baseURL = 'https://api.dev.gssok.com';//开发
+	fly.config.baseURL = 'http://api.test.gssok.com';//测试
+	// fly.config.baseURL = 'http://wx.fishtravel.net/dpv';//鱼游生产
 	// #endif
 	// #ifdef MP-WEIXIN
-	fly.config.baseURL = 'https://api.test.gssok.com';
+	fly.config.baseURL = 'http://api.test.gssok.com';
 	// #endif
 	// #ifdef APP-PLUS
-	fly.config.baseURL = 'https://api.test.gssok.com';
+	fly.config.baseURL = 'http://api.dev.gssok.com';
 	// #endif
 	uni.setStorageSync('baseURL', fly.config.baseURL);
 } else {
 	// 生产环境
 	// #ifdef H5
-	fly.config.baseURL = 'https://api.test.gssok.com';
+	fly.config.baseURL = '/dpv';
 	// #endif
 	// #ifdef MP-WEIXIN
-	fly.config.baseURL = 'https://api.test.gssok.com'
+	fly.config.baseURL = 'http://api.test.gssok.com'
 	// fly.config.baseURL = 'https://api.feiren.com';
 	// #endif
 	// #ifdef APP-PLUS
-	fly.config.baseURL = 'https://api.test.gssok.com';
+	fly.config.baseURL = 'http://api.dev.gssok.com';
 	// #endif
 	uni.setStorageSync('baseURL', fly.config.baseURL);
 }
-
-
-
 //添加请求拦截器
 fly.interceptors.request.use(request => {
 	//给所有请求添加自定义header
@@ -100,8 +105,7 @@ fly.interceptors.response.use(
 		} else if (err.status == "500") {
 			it = '服务器出点小差...'
 		} else {
-			//it = '服务器维护中!'
-			it = err.status + fly.config.baseURL
+			it = '服务器维护中!'
 		}
 		console.log(it)
 		uni.showToast({

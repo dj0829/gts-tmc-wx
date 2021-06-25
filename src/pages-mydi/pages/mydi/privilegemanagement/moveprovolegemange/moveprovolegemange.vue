@@ -50,7 +50,7 @@
 						<view class="iconfont" style="margin-right: 20upx;" v-if="!item.lastRank && !item.showChild">
 							&#xe8a3;
 						</view>
-						<view class="" style="width: 60upx;" v-if="item.lastRank">
+						<view   style="width: 60upx;" v-if="item.lastRank">
 						</view>
 						<view @click.stop="addlists(item, index)">
 							<checkbox :checked="item.ischeckd"></checkbox>

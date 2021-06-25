@@ -4,9 +4,9 @@
 		<view class="order-time" v-if="!modal">
 			<view class="time-viewer">
 				<view class="time-lit" @click="showCalendar('left')" v-if="current == 'Planeticket'">
-					<view class=""><text class="left-hotel">去程</text>
+					<view  ><text class="left-hotel">去程</text>
 					</view>
-					<view class="" v-if="Object.keys(sta_Flightbus).length > 0">
+					<view   v-if="Object.keys(sta_Flightbus).length > 0">
 						<text class="date-wrappper">{{ sta_Flightbus.date.month }}月{{ sta_Flightbus.date.day }}日</text>
 						<text class="goInHotel2" v-if="sta_Flightbus.date.year + '' + sta_Flightbus.date.month + '' + sta_Flightbus.date.day == today">今天</text>
 					</view>
@@ -32,9 +32,9 @@
 					</view>
 				</view>
 				<view class="time-lit" @click="showCalendar('left')" v-if="current == 'Hotel'">
-					<view class=""><text class="left-hotel">去程</text>
+					<view  ><text class="left-hotel">去程</text>
 					</view>
-					<view class="" v-if="Object.keys(sta_Hotelkettime).length > 0">
+					<view   v-if="Object.keys(sta_Hotelkettime).length > 0">
 						<text class="date-wrappper">{{ sta_Hotelkettime.date.month }}月{{ sta_Hotelkettime.date.day }}日</text>
 						<text class="goInHotel2" v-if="sta_Hotelkettime.date.year + '' + sta_Hotelkettime.date.month + '' + sta_Hotelkettime.date.day == today">今天</text>
 					</view>
@@ -57,9 +57,9 @@
 					</view>
 				</view>
 				<view class="time-lit" @click="showCalendar('left')" v-if="current == 'Train'">
-					<view class=""><text class="left-hotel">去程</text>
+					<view  ><text class="left-hotel">去程</text>
 					</view>
-					<view class="" v-if="Object.keys(sta_Traveltrain).length > 0">
+					<view   v-if="Object.keys(sta_Traveltrain).length > 0">
 						<text class="date-wrappper">{{ sta_Traveltrain.date.month }}月{{ sta_Traveltrain.date.day }}日</text>
 						<text class="goInHotel2" v-if="sta_Traveltrain.date.year + '' + sta_Traveltrain.date.month + '' + sta_Traveltrain.date.day == today">今天</text>
 					</view>
@@ -163,7 +163,6 @@
 		},
 		watch: {
 			bsta_Flightbus(date){//出差飞机出发时间
-				console.log(date)
 				this.sta_Flightbus = date;
 			},
 			bend_Flightbus(date){//出差飞机返回时间
@@ -179,8 +178,6 @@
 				if(date.length > 0){
 					this.sta_Hotelkettime = date[0];
 					this.end_Hotelkettime = date[1];
-          console.log("sta",JSON.stringify(date[0]))
-
 				}
 			}
 		},

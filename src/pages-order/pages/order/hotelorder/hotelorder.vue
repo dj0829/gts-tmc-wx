@@ -23,27 +23,27 @@
 							<view class="iconfont" style="color: #007aff;">
 								&#xe63b;
 							</view>
-							酒店订单
+							<view style="margin-left:10upx">酒店订单</view>
 						</view>
 						<view class="lstt_r">
 							{{rest(item.hotelOrder.orderStatus)}}
 						</view>
 					</view>
-					<view style="line-height: 50upx;display: flex;justify-content: space-between;">
+					<view style="line-height: 50upx;display: flex;justify-content: space-between;font-size:32upx;font-weight:bold;color:#333333;margin-top:10upx">
 						<view>
 							{{item.hotelOrder.hotelName}}
 						</view>
-						<view style="color: #FF9000;">
+						<view style="color: #FFA63E;">
 							￥{{item.hotelOrder.totalPrice}}
 						</view>
 					</view>
-					<view style="font-size: 28upx;line-height: 60upx;">
+					<view style="font-size: 24upx;line-height: 60upx;">
 						入住时间: {{arrivalDate(item.hotelOrder.arrivalDate)}}
 					</view>
-					<view style="color: #C8C7CC;font-size: 28upx;width: 100%;overflow: scroll;">
+					<view style="color: #333333;font-size: 24upx;width: 100%;overflow: scroll;">
 						入住人: {{item.hotelOrder.guestName}}
 					</view>
-					<view style="color: #C8C7CC;font-size: 28upx;text-align: right;">
+					<view style="color: #999999;font-size: 24upx;margin:10upx 0;">
 						下单时间：{{item.hotelOrder.createOrderTime}}
 					</view>
 				</view>
@@ -183,6 +183,27 @@
 				}, {
 					name: '新单',
 					id: 300
+				}, {
+					name: '需客服介入退款',
+					id: 16
+				}, {
+					name: '审批撤回',
+					id: 125
+				}, {
+					name: '二次待审核',
+					id: 126
+				}, {
+					name: '二次审批驳回',
+					id: 127
+				}, {
+					name: '二次审批超时',
+					id: 128
+				}, {
+					name: '退款成功',
+					id: 410
+				}, {
+					name: '退款中',
+					id: 411
 				}]
 				for (let i in arr) {
 					if (arr[i].id == ite) {
@@ -306,26 +327,26 @@
 			display: flex;
 			white-space: nowrap;
 			font-size: 30upx;
-
+			border-bottom:1px solid #dfdfdf;
 			.selsit {
 				display: inline-block;
 				line-height: 90upx;
 				text-align: center;
-				color: #999999;
+				color: #666666;
 				padding: 0 25upx;
 				height: 86upx;
 				border-bottom: 6upx solid #FFFFFF;
 			}
 
 			.seclk {
-				border-bottom: 6upx solid $uni-color-primary;
+				border-bottom: 6upx solid #007aff;
+				color: #007aff;
 			}
 		}
 
 		.searchs {
-			margin-top: 20upx;
 			width: 100%;
-			height: 80upx;
+			height: 100upx;
 			background-color: #FFFFFF;
 			display: flex;
 			align-items: center;
@@ -336,13 +357,13 @@
 				margin-left: 20upx;
 				text-indent: 15upx;
 				height: 60upx;
-				border-radius: 10upx;
-				background: #E5E5E5;
+				border-radius: 7upx;
+				border: 1px solid #dfdfdf;
 			}
 
 			.btnstlist {
 				width: calc(30% - 80upx);
-				border-radius: 10upx;
+				border-radius: 7upx;
 				margin-left: 20upx;
 				height: 60upx;
 				line-height: 60upx;
@@ -368,13 +389,12 @@
 			.listtops {
 				width: 100%;
 				display: flex;
-				color: #C0C0C0;
-
+				color: #333333;
+				font-size: 20upx;
 				.lstt_l {
 					display: flex;
 					align-items: center;
 					flex: 1;
-
 					image {
 						width: 35upx;
 						height: 35upx;
@@ -382,8 +402,11 @@
 				}
 
 				.lstt_r {
-					flex: 1;
-					text-align: right;
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #007AFF;
+					background: #dbf0ff;
+					border-radius: 10upx;
 				}
 			}
 		}

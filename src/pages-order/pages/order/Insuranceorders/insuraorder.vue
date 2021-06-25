@@ -16,13 +16,13 @@
 							<view class="iconfont" style="color: #007aff;">
 								&#xe638;
 							</view>
-							保险订单
+							<view style="margin-left:10upx">保险订单</view>
 						</view>
-						<view class="lstt_r">
+						<view class="lstt_r" :class="item.saleOrder.orderChildStatus == 3 ? 'lstt_rs':''">
 							{{rest(item.saleOrder.orderChildStatus)}}
 						</view>
 					</view>
-					<view style="line-height: 50upx;display: flex;justify-content: space-between;">
+					<view style="line-height: 50upx;display: flex;justify-content: space-between;font-size:32upx;font-weight:bold;color:#333333;margin-top:10upx;">
 						<view>
 							{{item.saleOrder.goodsName}}
 						</view>
@@ -30,10 +30,10 @@
 							￥{{item.totalPremium}}
 						</view>
 					</view>
-					<view style="font-size: 28upx;line-height: 60upx;">
+					<view style="font-size: 24upx;line-height: 60upx;">
 						{{item.saleOrder.orderingTime}}
 					</view>
-					<view style="color: #C8C7CC;font-size: 28upx;width: 100%;overflow: scroll;">
+					<view style="color: #333333;font-size: 24upx;width: 100%;overflow: scroll;">
 						被保人: {{item.productKey}}
 					</view>
 				</view>
@@ -282,17 +282,19 @@
 			display: flex;
 			white-space: nowrap;
 			font-size: 30upx;
+			border-bottom: 1px solid #dfdfdf;
 			.selsit{
 				display: inline-block; 
 				line-height: 90upx;
 				text-align: center;
-				color: #999999;
+				color: #666666;
 				padding: 0 25upx;
 				height: 86upx;
 				border-bottom: 6upx solid #FFFFFF;
 			}
 			.seclk{
-				border-bottom: 6upx solid $uni-color-primary;
+				border-bottom: 6upx solid #007AFF;
+				color: #007AFF;
 			}
 		}
 		.selsops::-webkit-scrollbar {
@@ -308,19 +310,34 @@
 			.listtops{
 				width: 100%;
 				display: flex;
-				color: #C0C0C0;
+				color: #333333;
+				font-size: 20upx;
 				.lstt_l{
 					display: flex;
 					align-items: center;
 					flex: 1;
+					
 					image{
 						width: 35upx;
 						height: 35upx;
 					}
+					.iconfont{
+						// margin-right: 10upx;
+					}
 				}
 				.lstt_r{
-					flex: 1;
-					text-align: right;
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #007AFF;
+					background: #dbf0ff;
+					border-radius: 10upx;		
+				}
+				.lstt_rs{
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #999999;
+					background: #f0f0f0;
+					border-radius: 10upx;
 				}
 			}
 		}

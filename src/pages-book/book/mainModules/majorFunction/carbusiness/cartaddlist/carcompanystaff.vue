@@ -38,9 +38,9 @@
 							<view v-if="!item.ischecds" class="tsd">
 								<view class="iconfont" style="color: #007aff;" v-if="!item.lastRank && item.showChild">&#xe8a0;</view>
 								<view class="iconfont" v-if="!item.lastRank && !item.showChild">&#xe636;</view>
-								<view class="" style="width: 40upx;" v-if="item.lastRank"></view>
+								<view   style="width: 40upx;" v-if="item.lastRank"></view>
 								{{ item.name }}
-								<view class="" v-if="item.rank == 0 && item.userCount > 0">({{ item.userCount }})</view>
+								<view   v-if="item.rank == 0 && item.userCount > 0">({{ item.userCount }})</view>
 							</view>
 							<view v-if="item.ischecds" class="tsd">
 								<view class="iconfont" :style="{ color: '#f1f1f1' }">{{  isoktl }}</view>

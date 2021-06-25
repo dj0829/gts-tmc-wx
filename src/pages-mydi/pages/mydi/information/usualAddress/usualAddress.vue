@@ -18,7 +18,7 @@
 									<view class="bs_left">
 										<view class="le_top">
 											<view class="le_text">{{it.name}}</view>
-											<view class="ls_margn">{{it.phone}}</view>
+											<view class="ls_margn">{{utils.TuoMin(it.phone,1)}}</view>
 										</view>
 										<view class="le_top" >
 											<!-- <view>{{is_CD(it.certificateList[0].cardType)}}</view> -->
@@ -97,7 +97,6 @@
 			},
 			bindClickBtn(item, index) {
 				this.messageIndex = -1;
-				console.log(item.text +'message第'+ index+ '项');
 				
 			},
 			touchStart(event) {

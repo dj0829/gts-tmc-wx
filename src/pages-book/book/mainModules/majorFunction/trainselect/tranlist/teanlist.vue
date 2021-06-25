@@ -3,71 +3,63 @@
 		<loading>
 		</loading>
 		
-		<headnavigation titles="订单填写"></headnavigation>
+		<headnavigation titles="车次详情"></headnavigation>
 		<view class="tan_top">
 			<view class="tan_t_t">
-				<view class="tants_t">
-					{{times(taanlist.item.dats)}}
-					{{type(taanlist.item.trainClass)}}
-				</view>
-				<view class="tans_o">
-					<view class="tans_os tanst" style="text-align: left;">
-						{{taanlist.item.fromTime}}
+				<view class="above">
+					<!-- 时间地址 -->
+					<view class="above_left">
+						<view style="font-size:26upx;text-align: left;margin-bottom:10upx;margin-left:5upx;">{{times(taanlist.item.dats)}}</view>
+						<view class="go_off">
+							{{taanlist.item.fromTime}}
+						</view>
+						<view class="arrival_time">
+							{{taanlist.item.fromStation}}
+						</view>
 					</view>
-					<view class="tans_os tans_li">
-						<view class="">
+					<view class="above_centre">
+						<view style="font-size: 20upx;color:#DBDBFF">
+							{{taanlist.item.trainNo}}
+						</view>
+						<view>
+							<image src="@/static/img/home/home_stopover.png"></image>
+						</view>
+						<view style="font-size: 20upx;color:#DBDBFF">
 							{{timey(taanlist.item.runTimeSpan)}}
 						</view>
-						<view class="tancks">
-							<view class="iconfont" style="font-size: 35upx;">
-								&#xe64f;
-							</view>
-							<view class="iconfont" style="font-size: 35upx;">
-								&#xe64f;
-							</view>
-						</view>
+						<view class="tan_bt" @click="gettrainWs">经停信息</view>
 					</view>
-					<view class="tans_os tanst" style="text-align: right;">
-						<view style="text-align: right;flex: 5;">
+					<view class="above_right" style="text-align: left;">
+						<view style="font-size:26upx;text-align: left;margin-bottom:10upx;margin-left:30upx;">{{times(taanlist.item.dats)}}</view>
+						<view class="go_off">
 							{{taanlist.item.toTime}}
 						</view>
-						<view style="font-size: 20upx;line-height: 32upx;text-align: left;" v-if="taanlist.item.days > 0">
-							+{{taanlist.item.days}}
+						<view class="arrival_time">
+							{{taanlist.item.toStation}}
 						</view>
 					</view>
 				</view>
-				<view class="tans_o">
-					<view class="tans_tl">
-						{{taanlist.item.fromStation}}
-					</view>
-					<view class="tans_tr">
-						{{taanlist.item.toStation}}
-					</view>
-				</view>
-			</view>
-			<view class="tan_bt" @click="gettrainWs">
-				经停站>
 			</view>
 		</view>
 		<view class="trambtm">
 			<view class="trlist" v-for="(item,index) in taanlist.item.seats" :key="index">
-				<view class="trasli">
+				<view class="trasli" style="font-weight: bold;">
 					{{item.seatName}}
 				</view>
-				<view class="trasli" style="text-align: center;" v-if="item.seats >= 0">
-					{{item.seats}}张
-				</view>
-				<view class="trasli" style="text-align: center;" v-else>
-					{{item.seats}}
-				</view>
-				<view class="trasli" style="color: #FF9000;text-align: center;">
+				<view class="trasli" style="color: #FFA63E;text-align: center;font-ize:24upx;">
 					￥{{item.price}}
 				</view>
+				<view class="trasli" style="text-align: center;font-ize:26upx;" v-if="item.seats >= 0">
+					{{item.seats}}张
+				</view>
+				<view class="trasli" style="text-align: center;font-ize:26upx;" v-else>
+					{{item.seats}}
+				</view>
 				<view class="trasli" style="display: flex;align-items: center;justify-content: center;">
-					<view class="traybt trayes" v-if="item.seats > 0 || item.seats == '有'" @click="oktran(item)">
+					<view class="traybt trayes" v-if="item.seats > 0 || item.seats == '有'" @click="oktran(item,index)">
 						预定
 					</view>
-					<view class="traybt trano" v-else>
+					<view class="traybt trano" v-else @click="noticket">
 						无票
 					</view>
 				</view>
@@ -98,115 +90,25 @@
 				</view>
 			</view>
 		</view>
-		<view class="staleve" v-if="staleve" @click="staleve = false">
-			<view class="stalist" @click.stop>
-				<view class="statop" v-if="nativeTrainl.length > 0">
-					<view class="reds">
-						<view class="ts_text">
-							座位等级超规
-						</view>
-					</view>
-					<view class="setlist" v-for="(item,index) in nativeTrainl" :key="index">
-						<view class="setbod" v-if="item.name == 4">
-							<view class="styul">
-								<view class="styli_top">
-									不可预定
-								</view>
-								<view class="stulis">
-									<view class="styli_left">
-										超规人员:
-									</view>
-									<view class="styli_right">
-										{{item.list}}
-									</view>
-								</view>
-							</view>
-						</view>
-						<view class="setbod" v-if="item.name == 5 && !notbooking">
-							<view class="styul">
-								<view class="styli_top">
-									超规需重新审核
-								</view>
-								<view class="stulis">
-									<view class="styli_left">
-										超规人员:
-									</view>
-									<view class="styli_right">
-										{{item.list}}
-									</view>
-								</view>
-							</view>
-						</view>
-						<view class="setbod" v-if="item.name == 2 && !notbooking">
-							<view class="styul">
-								<view class="styli_top">
-									超规不必选择原因
-								</view>
-								<view class="stulis">
-									<view class="styli_left">
-										超规人员:
-									</view>
-									<view class="styli_right">
-										{{item.list}}
-									</view>
-								</view>
-							</view>
-						</view>
-						
-						<view class="setbod" v-if="item.name == 3 && !notbooking">
-							<view class="styul">
-								<view class="styli_top">
-									超规必须选择原因
-								</view>
-								<view class="stulis">
-									<view class="styli_left">
-										超规人员:
-									</view>
-									<view class="styli_right">
-										{{item.list}}
-									</view>
-								</view>
-							</view>
-							<view class="styul">
-								<view class="stulis">
-									<view class="styli_left">
-										超规原因:
-									</view>
-									<view class="styli_right">
-										<view class="wors">
-											<picker :range="rulesReasons" :range-key="'chineseDesc'" @change="chineseChange($event)">
-												{{ rulesReasons[chines.index].chineseDesc }} 
-											</picker>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="btnsti" v-if="!notbooking">
-					<view class="roblck" @click="staleve = false">
-						取消
-					</view>
-					<view class="btnok" @click="cits_btn">
-						继续预定
-					</view>
-				</view>
-			</view>
-		</view>
+		<violation @emviolation="emviolation" :platformlist="platformlist" :notbooking="notbooking" :limitNativeRule="nativeTrainRules" :rulesReasons="rulesReasons"></violation>
 	</view>
 </template>
 
 <script>
 	import order from '@/api/order.js'
 	import tork from '@/api/torowk.js'
+	import violation from '@/components/view/book/violation/violation.vue'
 	export default {
+		components:{
+			violation
+		},
 		data() {
 			return {
 				isblckt:false,//事前是否2次审批
 				chines:{
 					index:0
 				},
+				platformlist:[],//超规信息
 				isarsrl: false,//改签因公是否需要审核
 				astlis: [], //当前座位信息
 				notbooking: false,
@@ -214,7 +116,7 @@
 				rulesReasons: [],
 				nativeTrainl: [],
 				pricdesc: '', //座位等级超规原因
-				nativeTrainRules: [], //座位等级超规信息
+				nativeTrainRules: {}, //座位等级超规信息
 				staleve: false,
 				fxli: false,
 				
@@ -240,43 +142,39 @@
 			}
 		},
 		onLoad(tms) {
-			let dat = JSON.parse(tms.data);
+			let dat = uni.getStorageSync('teanlistData');
 			this.taanlist = dat;
 		},
 		mounted() {
 			
 		},
 		methods: {
+			emviolation(wa){//继续预订
+				this.nativeTrainRules = wa.davalue;//处理过的违规信息
+				this.othotrlis(); //跳转订单页面
+			},	
+			noticket(){
+				this.showToasts('没票了哦！');
+			},
 			chineseChange(e){//选择高等级超规原因
 				this.chines.index = e.detail.value;
 			},
-			cits_btn() {
-				let datlist = {}
-				if (this.idstarle) {
-					for (let k in this.nativeTrainRules) {
-						if (k == 3) {
-							if(this.chines.index==0){
-								this.showToasts('请选择超规原因！');
-								return
-							}
-							this.nativeTrainRules[k] = {
-								usernames: this.nativeTrainRules[k],
-								reasons: this.rulesReasons[this.chines.index].chineseDesc
-							}
-						}
-					}
-				}
-				this.othotrlis(); //跳转订单页面
-			},
-			async oktran(item) { //点击预定判断是否超规
+			async oktran(item,index) { //点击预定判断是否超规
 				this.isblckt = false;
+				if(item.seatName == '无座'){//无座的时候 类型传人最低等座位类型
+					if(('GDC'.indexOf(this.taanlist.item.trainClass) == -1)){//不是高铁
+						item.seatType = '1';
+					} else { //是高铁
+						item.seatType = 'O';
+					}
+				}	
 				this.astlis = item;
 				if(this.taanlist.isbtd == 2){ //因私
 					this.othotrlis(); //跳转订单页面
 				} else if(this.taanlist.isbtd == 1) { //因公
 					let ast = [];
 					let arr = [];
-					if(this.taanlist.isblcks == 4){
+					if(this.taanlist.isblcks == 4){//改签
 						arr = this.taanlist.userlistnos;
 						for (let i = 0; i < arr.length; i++) {
 							ast.push({
@@ -295,16 +193,7 @@
 					}
 					
 					try{
-						let rest = await order.judgeApprv({passengerNos:arr});//判断当前出行人是否都免审
-						
-						if(rest.code == 200){
-							if(rest.data == true){ //判断是否需要审核 true为不需要审核
-								this.isarsrl = true;
-							}
-						} else {
-							this.showToasts(rest.message);
-							return
-						}
+						this.isarsrl = await this.apiutils.judgeApprv(arr);//用户是否免审  true为免审
 					}catch(e){
 						console.log(e)
 						
@@ -318,41 +207,47 @@
 						const res = await tork.checkTrainRule(dat);//获取是否超规
 						
 						if (res.code == 200) {
-							//1=只记录不提示，2=提示超规不必选择原因，3=提示超规必选原因，4=不可预定
-							if (res.data.nativeTrainRules != undefined) {
-								this.nativeTrainRules = res.data.nativeTrainRules;
-							}
+							//1=只记录不提示，2=提示超规不必选择原因，3=提示超规必选原因，4=不可预定 5超规
+							this.nativeTrainRules = {};
 							this.rulesReasons = res.data.rulesReason; //原因
 							this.rulesReasons.unshift({chineseDesc:'　'})
-							if (JSON.stringify(this.nativeTrainRules) == '{}') { //没有违反政策直接跳到预定页面
+							if (JSON.stringify(res.data.nativeTrainRules) == '{}') { //没有违反政策直接跳到预定页面
 								this.othotrlis(); //跳转订单页面
 							} else {
-								this.nativeTrainl = [];
-								for (let i in this.nativeTrainRules) {
-									if (i == 4) {
-										this.notbooking = true;
-									}
-									if (i == 3) {
-										this.idstarle = true
-									}
-									if (i != 1 && i != 5) {
-										this.nativeTrainl.push({
-											name: i,
-											list: this.nativeTrainRules[i]
-										})
-									}
-									if(i == 5 && this.taanlist.isblcks == 1){
-										this.isblckt = true;
-										this.nativeTrainl.push({
-											name: i,
-											list: this.nativeTrainRules[i]
-										})
+								let dal = {nativeTrainRules:res.data.nativeTrainRules}; //违规信息
+								this.nativeTrainRules = dal;
+								let sus = [];
+								this.notbooking = false;
+								this.isblckt = false;
+								this.platformlist = [];
+								for (let k in dal) { //插入所有的违规信息
+									sus.push({
+										index: 0,
+										name: '座位等级超规',
+										names: k,
+										list: this.platname(dal[k]),
+										ishow:false
+									})
+								}
+								let sitshows = false;
+								for (let p in sus) {
+									for (let k in sus[p].list) {
+										if(sus[p].list[k].va != 1){
+											sitshows = true;
+											sus[p].ishow = true;
+											if (sus[p].list[k].va == 4) {
+												this.notbooking = true;
+											}
+											if (sus[p].list[k].va == 5) {
+												this.isblckt = true; //是否再次审批
+											}
+										}
 									}
 								}
-								if (this.nativeTrainl.length > 0) {
-									this.staleve = true;
+								if(sitshows == true){
+									this.platformlist = sus;
 								} else {
-									this.othotrlis(); //跳转订单页面
+									this.othotrlis();
 								}
 							}
 						} else {
@@ -364,16 +259,57 @@
 					}
 				}
 			},
+			platname(list) {
+				let su = [];
+				for (let k in list) {
+					if (k == 1) {
+						su.push({
+							va: k,
+							name: '只记录不提示',
+							list: list[k]
+						})
+					} else if (k == 2) {
+						su.push({
+							va: k,
+							name: '超规不必选择原因',
+							list: list[k]
+						})
+			
+					} else if (k == 3) {
+						su.push({
+							va: k,
+							name: '超规必须选择原因',
+							list: list[k],
+							reasons: ''
+						})
+			
+					} else if (k == 4) {
+						su.push({
+							va: k,
+							name: '不可预定',
+							list: list[k]
+						})
+					} else if (k == 5) {
+						su.push({
+							va: k,
+							name: '超规需重新审核',
+							list: list[k]
+						})
+					}
+				}
+				return su;
+			},
 			othotrlis() {
 				let data = {
 					ranst: this.taanlist,
 					nativeTrainRules: this.nativeTrainRules,
 					astlis: this.astlis,
 					isarsrl: this.isarsrl,//是否免审
-					isblckt: this.isblckt,//事前是否2次审批
+					isblckt: this.isblckt,//事中改签走超标审批流 事前是否2次审批
 				}
+				uni.setStorageSync('reanadlistData',data)
 				uni.navigateTo({
-					url: './reanadlist?data=' + JSON.stringify(data)
+					url: './reanadlist'
 				})
 			},
 			async gettrainWs() { //获取当前经停站
@@ -401,14 +337,14 @@
 				let sti = ''
 				if (time > dat * 60) {
 					sti = time - (dat * 60);
-					return '约' + dat + '时' + sti + '分'
+					return dat + '小时' + sti + '分'
 				} else {
-					return '约' + dat + '时'
+					return dat + '小时'
 				}
 			},
 			times(item) {
 				let tiem = item.split('-');
-				return tiem[0] + ' 年' + tiem[1] + '月' + tiem[2] + '日'
+				return tiem[1] + '月' + tiem[2]
 			},
 			type(item) {
 				for (let i = 0; i < this.tasi.length; i++) {
@@ -439,131 +375,6 @@
 
 			}
 		}
-
-		.staleve {
-			position: fixed;
-			left: 0;
-			top: 0;
-			width: calc(100% - 100upx);
-			height: 100%;
-			padding: 0 50upx;
-			background: rgba(0, 0, 0, .3);
-			z-index: 100;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			.stalist {
-				width: 100%;
-				border-radius: 20upx;
-				min-height: 300upx;
-				font-size: 35upx;
-				line-height: 90upx;
-				background: #F1F1F1;
-
-				.statop {
-					padding: 20upx;
-
-					.reds {
-						width: 100%;
-						height: 70upx;
-						text-align: center;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						color: red;
-
-						.ts_text {
-							padding: 0 20upx;
-							line-height: 50upx;
-							border-radius: 50upx;
-							border: 2upx solid red;
-						}
-					}
-
-					.setlist {
-						line-height: 50upx;
-						font-size: 30upx;
-						margin: 10upx 0;
-
-						.setbod {
-							border: 2upx solid #FFFFFF;
-							border-radius: 15upx;
-
-							.styul {
-								width: 100%;
-								margin: 10upx 0;
-
-								.styli_top {
-									width: 100%;
-									color: red;
-									text-align: center;
-									font-size: 30upx;
-									line-height: 45upx;
-								}
-
-								.stulis {
-									display: flex;
-
-									.styli_left {
-										width: 25%;
-										display: flex;
-										align-items: center;
-										justify-content: flex-end;
-									}
-
-									.styli_right {
-										width: 75%;
-										margin-left: 5%;
-
-										.wors {
-											width: 80%;
-											font-size: 30upx;
-											height: 60upx;
-											line-height: 60upx;
-											border: 2upx solid $uni-color-primary;
-											border-radius: 15upx;
-										
-											picker{
-												width: 100%;
-												height: 50upx;
-												text-indent: 20upx;
-												border-radius: 15upx;
-												overflow: hidden;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				.btnsti {
-					width: 100%;
-					height: 90upx;
-					line-height: 90upx;
-					text-align: center;
-					display: flex;
-
-					.roblck {
-						flex: 1;
-						height: 90upx;
-						background: #FFFFFF;
-						border-bottom-left-radius: 15upx;
-					}
-
-					.btnok {
-						flex: 1;
-						height: 90upx;
-						border-bottom-right-radius: 15upx;
-						color: #FFFFFF;
-						background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
-					}
-				}
-			}
-		}
-
 		.fixs_list {
 			position: fixed;
 			bottom: -100%;
@@ -619,17 +430,92 @@
 		}
 
 		.tan_top {
-			width: calc(100% - 30upx);
-			margin: 15upx;
+			width: 100%;
+			.above {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin:0 46upx 40upx 46upx;
+				.above_left {
+					width: calc(50% - 130upx);
+					text-align: right;
+					// margin-right: 20upx;
+					.city {
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						color: #abbdd3;
+					}
+
+					.go_off {
+						font-size: 56upx;
+						font-weight: bold;
+						text-align: left;
+						// margin-left: 80upx;
+					}
+
+					.arrival_time {
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						color: #FFFFFF;
+						font-size: 26upx;
+						text-align: left;
+						margin-top: 10upx;
+						margin-left: 5upx;
+					}
+				}
+				.above_right {
+					width: calc(50% - 130upx);
+					text-align: right;
+					// margin-right: 20upx;
+					.go_off {
+						font-size: 56upx;
+						font-weight: bold;
+						text-align: right;
+						// margin-left: 80upx;
+					}
+					.arrival_time {
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						color: #FFFFFF;
+						font-size: 26upx;
+						text-align: left;
+						margin-left: 30upx;
+						margin-top:10upx;
+					}
+				}
+				.above_centre {
+					width: 200upx;
+					text-align: center;
+					margin-bottom: 10upx;
+					margin: 0 20upx;
+					position: relative;
+					view{
+						margin-top:15upx;
+						image{
+							width: 200upx;
+							height: 44upx;
+						}
+					}
+					.tan_bt{
+						position: absolute;
+						top: 50upx;
+						left: 50upx;
+						font-size: 20upx;
+						color: #FFFFFF;
+					}
+				}
+			}
+
 
 			.tan_t_t {
 				width: calc(100% - 40upx);
-				border-top-left-radius: 15upx;
-				border-top-right-radius: 15upx;
-				padding: 20upx 20upx 40upx 20upx;
+				padding: 20upx;
 				color: #FFFFFF;
 				font-size: 35upx;
-				background: #4089E8;
+				background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
 
 				.tants_t {
 					line-height: 70upx;
@@ -645,6 +531,10 @@
 
 						.tancks {
 							display: flex;
+							img{
+								width: 270upx;
+								height: 54upx;
+							}
 						}
 					}
 
@@ -669,17 +559,6 @@
 					}
 				}
 			}
-
-			.tan_bt {
-				width: 100%;
-				height: 70upx;
-				border-bottom-left-radius: 15upx;
-				border-bottom-right-radius: 15upx;
-				background: #FFFFFF;
-				line-height: 70upx;
-				font-size: 30upx;
-				text-indent: 20upx;
-			}
 		}
 
 		.trambtm {
@@ -687,9 +566,9 @@
 			margin-top: 40upx;
 
 			.trlist {
-				padding: 0 20upx;
+				padding: 0 40upx;
 				font-size: 30upx;
-				width: calc(100% - 40upx);
+				width: calc(100% - 80upx);
 				height: 90upx;
 				line-height: 90upx;
 				display: flex;
@@ -700,7 +579,8 @@
 
 				.trasli {
 					flex: 1;
-
+					font-size: 32upx;
+					color: #000000;
 					.traybt {
 						width: 140upx;
 						height: 60upx;

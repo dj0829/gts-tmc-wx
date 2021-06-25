@@ -17,7 +17,7 @@
 		<view class="black_mu" @click="isshow" v-if="switfals">
 			<view class="isswflist" @click.stop="" :class="switfal ? 'show' : ''">
 				<view class="isstop">
-					<view class="">
+					<view  >
 						{{sittext}}
 					</view>
 					<view @click="isshow" class="iconfont" style="color: #C0C0C0;font-size: 50upx;">
@@ -30,128 +30,126 @@
 			</view>
 		</view>
 		<view class="navstop" v-if="dtolist.no">
-			<view class="">
+			<view class="toptext">
+				<view style="font-size:42upx;font-weight:bold;">{{dtolist.statusname}}</view>
+				<view>
 				订单号：{{dtolist.no}}
-			</view>
-			<view class="">
-				销售单号：{{dtolist.saleNo}}
-			</view>
-			<view class="">
-				改签状态：{{dtolist.statusname}}
-			</view>
-			<view class="">
-				申请时间：{{dtolist.createTime}}
-			</view>
-			<view style="color: #FF9000;">
-				改签费用：￥{{dtolist.changeFee}}
+				</view>
+				<view>
+					销售单号：{{dtolist.saleNo}}
+				</view>
+				<!-- <view>
+					改签状态：{{dtolist.statusname}}
+				</view> -->
+				<view>
+					申请时间：{{dtolist.createTime}}
+				</view>
+				<view>
+					改签费用：￥{{dtolist.changeFee}}
+				</view>
 			</view>
 			<view class="lisst" v-if="orderDetailListy.length > 0">	
 				<view class="citst" style="margin-top: 30upx;" v-for="(item,index) in orderDetailListy" :key="index">
 					<view class="cits_t">
-						<view class="cits_sa">
-							<view class="no_t" style="display: flex;"> 
-								<view v-if="index == 0" style="color: #007aff;border: #007aff 1upx solid;width: 40upx;height: 40upx;margin-top: 10upx;text-align: center;line-height: 40upx;">
-									往
-								</view>
-								<view v-if="index == 1" style="color: #007aff;border: #007aff 1upx solid;width: 40upx;height: 40upx;margin-top: 10upx;text-align: center;line-height: 40upx;">
-									返
-								</view>
-								<image :src="item.ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
-								{{item.airlines}}{{item.flightNo}}
-							</view>
-							<view class="no_t" style="text-align: right;">
-								{{item.departTimes}}
-							</view>
+						<view class="no_t">
+							<image :src="item.ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
+							<view>{{item.airlines}}{{item.flightNo}}</view>
 						</view>
 						<view class="citys">
 							<view class="citys_l">
 								<view class="scis_t">
-									{{item.departTimer}}
+									{{item.departTimes}}
 								</view>
 								<view class="scis_o">
-									{{item.origDeparts}}
+									{{item.departTimer}}
 								</view>
 								<view class="scis_b">
+									{{item.origDeparts}}
 								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
+								<view class="scis_t" v-if="index == 0" style="color:#007aff;">
+									去程
+								</view>
+								<view class="scis_t" v-if="index == 1" style="color:#007aff;">
+									回程
 								</view>
 								<view class="scis_s">
-									{{item.arriveTimer}}
-									<view class="sci_l">
-									</view>
-									<view class="sci_r">
-									</view>
+									<view>{{item.arriveTimetr}}</view>
+									<image src="@/static/img/home/home_bj.png"></image>
+								</view>
+								<view class="scis_b" style="text-align: center;">
 								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
+								<view class="scis_t" style="margin-left:10upx;">
 									{{item.arriveTimes}}
 								</view>
 								<view class="scis_o">
+									{{item.arriveTimer}}
+								</view>
+								<view class="scis_b">
 									{{item.origArrives}}
 								</view>
 							</view>
 						</view>
 					</view>
-					<view class="Check" v-if="item.stkus && orderStatus == '8'">
+					<!-- <view class="Check" v-if="item.stkus && orderStatus == '8'">
 						<view class="updatas" @click="updatas(1,item,index)">
 							单程改签
 						</view>
 						<view class="deletes" @click="updatas(2,item,index)">
 							单程退票
 						</view>
-					</view>
+					</view> -->
 				</view>
-				
-				<view class="btuserlist" >
-					<view class="btuse">
-						乘机人
-						<view class="btul" v-for="(item,index) in newuserlist" :key="index">
-							<view class="user_t">
-								<view class="user_l">
-									{{item.itd.name}}
-								</view>
-								<view class="user_o" style="margin-left: 88upx;">
-									成人票
-								</view>
-								<view style=" color: #007aff;" v-if="item.itd">
-									往:{{item.itd.statusname}}
-								</view>
-								<view style=" color: #007aff;" v-if="item.isd">
-									,&nbsp;返:{{item.isd.statusname}}
-								</view>
+			</view>
+		</view>
+		<view class="btuserlist" >
+				<view class="btuse">
+					<view style="font-size:34upx;color:#333333;font-weight:bold;">乘机人</view>
+					<view class="btul" v-for="(item,index) in newuserlist" :key="index">
+						<view class="user_t">
+							<view class="user_l">
+								{{item.itd.name}}
 							</view>
-							<view class="user_t">
-								<view class="user_l">
-									{{catype(item.itd.origCardType)}}
-								</view>
-								<view class="user_o">
-									{{item.itd.cardNo}}
-								</view>
+							<view class="user_o" style="margin-left: 88upx;">
+								成人票
 							</view>
-							<view class="user_t">
-								<view class="user_l">
-									手机号
-								</view>
-								<view class="user_o">
-									{{item.itd.phone}}
-								</view>
+							<view style=" color: #007aff;" v-if="item.itd">
+								去程:{{item.itd.statusname}}
 							</view>
-							<view class="user_t">
-								<view class="user_l">
-									出差事由
-								</view>
-								<view class="user_o">
-									{{Reason}}
-								</view>
+							<view style=" color: #007aff;" v-if="item.isd">
+								,&nbsp;回程:{{item.isd.statusname}}
+							</view>
+						</view>
+						<view class="user_t">
+							<view class="user_l">
+								{{catype(item.itd.origCardType)}}
+							</view>
+							<view class="user_o">
+								{{utils.TuoMin(item.itd.cardNo,item.itd.origCardType)}}
+							</view>
+						</view>
+						<view class="user_t">
+							<view class="user_l">
+								手机号
+							</view>
+							<view class="user_o">
+								{{utils.TuoMin(item.itd.phone,1)}}
+							</view>
+						</view>
+						<view class="user_t">
+							<view class="user_l">
+								出差事由
+							</view>
+							<view class="user_o">
+								{{Reason}}
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
 		<view class="btnfixd">
 			<paybtns businessType="4" productType="1" :recordNo="recordNos" :amount="amounts" @payok="payok" v-if="(typename == 2 && payStatus== 1)||(typename==1 && payStatus == 1 && settlement == 1 &&  (apprvTask.status == 2 || apprvTask.status == 5 ))"></paybtns>
 			<view class="tobeaudited" v-if="typename == 1 && orderStatus== 3">
@@ -160,12 +158,12 @@
 			<view class="tobeaudited" v-if="dtolist.status == 7">
 				运营处理中..
 			</view>
-			<view class="updatas" @click="updataslist(1)" v-if="usersli && dtolist.status ==5">
+			<!-- <view class="updatas" @click="updataslist(1)" v-if="usersli && dtolist.status ==5">
 				往返改签
 			</view>
 			<view class="deletes" @click="updataslist(2)" v-if="usersli && dtolist.status ==5">
 				往返退票
-			</view>
+			</view> -->
 		</view>
 		<view class="userlist" :class="shos ? 'show' : ''">
 			<view class="userlist_top">
@@ -192,6 +190,8 @@
 	export default{
 		data(){
 			return{
+				tuipiao: 0, //判断点击的是单程退票还是返回退票还是往返退票
+				insOrders:false,
 				apprvTask:{},
 				istext:'',
 				payStatus: 0,//支付状态1:未支付(默认); 2:部分支付; 3:已支付; 4:部分退款; 5:已退款
@@ -259,7 +259,8 @@
 				isclsks: false,//是否从列表点进详情
 				accountInfo:{},  //联系信息
 				orderDetailList:[] ,//飞机票详情信息
-				RuleMas: false,//火车退票是否需要审核
+				RuleMa: '', //
+				RuleMas: false, //飞机退票是否需要审核
 				isnum: 1,//1为改签2为退票
 				isttype:0,
 				saleOrderNo: "",//当前销售单号
@@ -286,11 +287,7 @@
 			    this.slet('wx');
 			},
 			citys(its){//回显城市
-				for (let j = 0; j < this.address.length; j++) {  //循环城市
-					if(this.address[j].airportCode == its){
-						return this.address[j].cityCName
-					}
-				}
+				return this.utils.airportCName(its);
 			},
 			deletli(){
 				let that = this;
@@ -384,6 +381,9 @@
 						})
 					}
 				}
+				if (num == 2) {
+					this.tuipiao = 3;
+				}
 				this.shos = true;
 				this.isnum = num;
 			},
@@ -401,6 +401,11 @@
 				this.isnum = num;
 				this.usersnamelist = []; //可操作用户列表
 				let userli = this.newuserlist;//当前用户列表
+				if (index == 0) {
+					this.tuipiao = 1;
+				} else {
+					this.tuipiao = 2;
+				}
 				if(index == 0){
 					for (let i = 0; i < userli.length; i++) {
 						if(userli[i].itd.status == 1){
@@ -460,17 +465,25 @@
 				let city = "";
 				let citys = "";
 				let detime= "";
+				let detimes = "";
+				let passengerNos = [];
 				for (let i in this.usersnamelist) {
 					if(this.usersnamelist[i].istrue){
 						city = this.usersnamelist[i].city;
 						citys = this.usersnamelist[i].citys;
 						detime = this.usersnamelist[i].departTime;
+						if (this.sione) { //单程
+							detimes = ''
+						} else { //往返
+							detimes = this.usersnamelist[i].departTimes;
+						}
 						userlist.push({
 							phone:this.usersnamelist[i].phone,
 							certNo: this.usersnamelist[i].cardNo,//证件号码
 							certType: this.catype(this.usersnamelist[i].cardType),//证件类型
 							name:this.usersnamelist[i].name,//名字
 						});
+						passengerNos.push(this.usersnamelist[i].passengerId)
 						names.push(this.usersnamelist[i].name)
 					}
 				}
@@ -497,11 +510,44 @@
 							userlistnos.push(dat[i].passengerNo)
 						}
 					}
+					try {
+						let res = await order.RuleMainSetting();
+						this.RuleMa = res.data.examinePattern;
+						let stw = this.RuleMa.split(',');
+						for (let i in stw) {
+							/**
+							 * 审批模式，多选用,隔开。1=按成本中心设置审批流程，2=按员工设置审批流程，5=火车票改签需要审批，6火车票退票需要审批，7=酒店取消需要审批
+							 */
+							if (stw[i] == 10) {
+								let res = await order.judgeApprv({
+									passengerNos: userlistnos
+								}); //判断当前出行人是否都免审
+								if (res.code == 200) {
+									if (res.data == true) { //判断是否需要审核
+										this.RuleMas = true;
+									} else {
+										this.RuleMas = false;
+									}
+								} else {
+									this.showToasts(res.data.message);
+								}
+							}
+						}
+					} catch (e) {
+						console.log(e)
+					}
 					this.shos = false;
 					if(isnum == 1){     //改签
+					let none = ''; //往返
+						if (this.sione) { //单程
+							none = 'single'
+						} else { //往返
+							none = 'returns'
+						}
 						let dat = {
+							insOrders:this.insOrders,//是否购买保险
 							tradeNo: this.traExtend.transationOrderNo,//交易单号
-							none:"single",
+							none:none,
 							type:"Planeticket",
 							userlistnos: userlistnos,//用户信息
 							saleOrderNo: this.dtolist.saleNo,//航班出差单号
@@ -512,11 +558,45 @@
 							butalist: userlist,//出行人员
 							isblcks: 4,//4改签
 							isbtd: nu,//1因公2因私
+							isto:1
 						}
+						uni.setStorageSync("ticketinquiry_data", JSON.stringify(dat));
 						uni.navigateTo({
-							url:'/pages-book/book/mainModules/majorFunction/ticketInquiry/ticketinquiry?data=' + JSON.stringify(dat)
+							url: '/pages-book/book/mainModules/majorFunction/ticketInquiry/ticketinquiry'
 						})
-					} else {    //退票
+					} else {//退票
+						let none = ''; //往返
+						if (this.sione) { //单程
+							none = 'single'
+						} else { //往返
+							none = 'returns'
+						}
+						let dat = {
+							transactionOrderNo: this.traExtend.transationOrderNo,
+							saleOrderNo: this.traExtend.tr.orderDetailList[0].mainDetail.saleOrderNo,
+							userslist: this.traExtend,
+							userlist: userlist,
+							none: none,
+							tuipiao: this.tuipiao,
+							RuleMas: this.RuleMas,
+							fromSource: 0,
+							isbtd: nu, //1因公2因私
+						}
+						if (nu == 2 || nu == 1 && this.RuleMas == true) { //判断是否因私或者因公    因私不需要审核
+							uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
+							uni.navigateTo({
+								url: '../retirement'
+							})
+						} else {
+							if(this.RuleMas == false){ //需要审核
+								dat['passengerNo'] = passengerNos;
+								dat['linkType'] ='1';
+								uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
+								uni.navigateTo({
+									url: '../retirement'
+								})
+							}
+						}
 					}
 				}catch(e){
 					console.log(e)
@@ -548,16 +628,16 @@
 					this.blac_show = false;
 				},200)
 			},
-			yeada(item,num){
-				if(num == 0){
-					return item.substring(11,16)
-				} else if(num == 1){
+			yeada(item, num) {
+				if (num == 0) {
+					return item.substring(11, 16)
+				} else if (num == 1) {
 					let week = new Date(item.replace(/-/g, '/')).getDay();
-					if(week == 0){
+					if (week == 0) {
 						week = 7
 					}
-					let ts = item.substring(5,10).split('-');
-					return ts[0] + '月' + ts[1] + '日' + ' 周' + this.weeks[week-1]
+					let ts = item.substring(5, 10).split('-');
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week - 1]
 				}
 			},
 			busdate(num,num1){//总时长
@@ -602,9 +682,34 @@
 							const ret = await certifi.queryAirlineList();//获取航空公司名称
 							
 							that.tiltext = '改签单详情';
-							if(rea.data.apprvTask != undefined){
-								that.Reason = rea.data.apprvTask.reason; //出差事由
-							}
+							
+							
+							// if(rea.data.apprvTask != undefined){
+							// 	let resonList = [{//出行事由
+							// 		id:22,
+							// 		name:'见客户'
+							// 	},{
+							// 		id:33,
+							// 		name:'参观学习'
+							// 	},{
+							// 		id:44,
+							// 		name:'其他'
+							// 	}]
+							// 	if(rea.data.apprvTask.reason != '' && rea.data.apprvTask.reason != null){//出差事由
+							// 		for(let k in resonList){
+							// 			if(resonList[k].id == rea.data.apprvTask.reason){
+							// 				that.Reason = resonList[k].name; //出差理由
+							// 				break;
+							// 			}
+							// 		}
+							// 		if(that.Reason == ''){
+							// 			that.Reason = rea.data.apprvTask.reason;
+							// 		}
+							// 	}
+							// }
+							
+							that.Reason = rea.data.apprvTask.reason;
+							
 							that.dtolist = rea.data.dto;//改签单信息
 							that.hang = ret.data.airlineDds; //航空公司名
 							that.traExtend = rea.data.traExtend;
@@ -651,12 +756,13 @@
 							}
 							for (let k in forshowlist) {
 								forshowlist[k]['statuss'] = this.yeada(forshowlist[k].departTime,1);
-								forshowlist[k]['departTimes'] = this.yeada(forshowlist[k].departTime,1);
+								forshowlist[k]['departTimes'] = this.yeada(forshowlist[k].departTime,1);//出发时间和日期
 								forshowlist[k]['airlines'] = this.company(forshowlist[k].airline);
-								forshowlist[k]['departTimer'] = this.yeada(forshowlist[k].departTime,0);
-								forshowlist[k]['arriveTimes'] = this.yeada(forshowlist[k].arriveTime,0);
+								forshowlist[k]['departTimer'] = this.yeada(forshowlist[k].departTime,0);//出发时间 
+								forshowlist[k]['arriveTimer'] = this.yeada(forshowlist[k].arriveTime,0);//到达时间
+								forshowlist[k]['arriveTimes'] = this.yeada(forshowlist[k].arriveTime,1);//到达时间日期
 								forshowlist[k]['origDeparts'] = this.citys(forshowlist[k].origDepart);
-								forshowlist[k]['arriveTimer'] = this.busdate(forshowlist[k].departTime,forshowlist[k].arriveTime);
+								forshowlist[k]['arriveTimetr'] = this.busdate(forshowlist[k].departTime,forshowlist[k].arriveTime);
 								forshowlist[k]['origArrives'] = this.citys(forshowlist[k].origArrive);
 								forshowlist[k]['ims'] = 'http://file.feiren.com/00/02/' + forshowlist[k].airline + '.png'  //航空公司图标
 							}
@@ -731,7 +837,7 @@
 			height: 90upx;
 			display: flex;
 			align-items: center;
-			background: #109DED;
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
 			justify-content: space-between;
 			.ongbutns{
 				color: #FFFFFF;
@@ -953,38 +1059,42 @@
 			font-size: 30upx;
 		}
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
+			.toptext{
+				margin-left:50upx;
+				font-size: 22upx;
+				view{
+					margin:10upx 0;
+				}
+			}
 			.show {
 				-webkit-transform: translateY(0);
 				transform: translateY(0);
 			}
 			.lisst{
-				position: absolute;
 				left: 0;
 				top: 200upx;
-				width: calc(100% - 40upx);
-				padding:  0 20upx;
+				// width: calc(100% - 40upx);
+				// padding:  0 20upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
 						color: #333333;
-						.cits_sa{
+						.no_t{
+							width: 100%;
+							height: 60upx;
+							line-height: 60upx;
 							display: flex;
-							.no_t{
-								flex: 1;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
+							image{
+								margin: 0 10upx;
 							}
 						}
 						.citys{
@@ -999,26 +1109,42 @@
 								align-items: center;
 								.scis_t{
 									line-height: 60upx;
-									font-size: 55upx;;
+									font-size: 26upx;
+									color:#333333;
 								}
 								.scis_o{
 									line-height: 80upx;
-									font-size: 35upx;;
+									font-size: 54upx;
+									font-weight: bold;
+									color:#333333;
 								}
 								.scis_b{
 									line-height: 60upx;
-									font-size: 28upx;
-									color: #C8C7CC;
+									font-size: 20upx;
+									color: #666666;
+									text-align: center;
 								}
 								.scis_s{
 									position: relative;
-									margin: 0 auto;
+									margin: 5upx auto;
 									border-radius: 35upx;
 									width: 130upx;
-									line-height: 35upx;
+									display: flex;
+									justify-content: center;
+									align-items: center;
 									height: 35upx;
 									color: $uni-color-primary;
-									border: 2upx solid $uni-color-primary;
+									view{
+										position: absolute;
+										font-size: 20upx;
+										color: #666666;
+										z-index: 1;
+									}
+									image{
+										position: absolute;
+										width: 200upx;
+										height: 40upx;
+									}
 									.sci_l{
 										position: absolute;
 										width: 30upx;
@@ -1086,59 +1212,60 @@
 						}
 					}
 				}
-				.btuserlist{
-					width: 100%;
-					margin-top: 20upx;
-					// margin-bottom: 300upx;
-					border-radius: 15upx;
-					background: #FFFFFF;
-					.btuse{
-						color: #C8C7CC;
-						font-size: 35upx;
-						width: calc(100% - 40upx);
-						padding: 20upx;
-						.btul{
-							margin-top: 10upx;
-							color: #333333;
-							.user_t{
-								display: flex;
-								width: 100%;
-								height: 50upx;
-								line-height: 50upx;
-								font-size: 28upx;
-								.user_l{
-									flex: 3;
-								}
-								.user_o{
-									flex: 5;
-								}
-								.user_r{
-									flex: 4;
-									justify-content: flex-end;
-									display: flex;
-								}
-							}
-						}
-					}
-					.liass{
-						width: calc(100% - 40upx);
-						padding: 0 20upx;
+			}
+		}
+		.btuserlist{
+			width: calc(100% - 40upx);
+			margin: 20upx;
+			margin-top: 20upx;
+			// margin-bottom: 300upx;
+			border-radius: 15upx;
+			background: #FFFFFF;
+			.btuse{
+				color: #333333;
+				font-size: 35upx;
+				width: calc(100% - 40upx);
+				padding: 20upx;
+				.btul{
+					margin-top: 10upx;
+					color: #333333;
+					.user_t{
 						display: flex;
-						color: #C8C7CC;
-						line-height: 80upx;
-						.liass_l{
-							font-size: 35upx;
-							flex: 1;
+						width: 100%;
+						height: 50upx;
+						line-height: 50upx;
+						font-size: 28upx;
+						.user_l{
+							flex: 3;
 						}
-						.liass_r{
-							color: #333333;
-							flex: 1.7;
+						.user_o{
+							flex: 5;
 						}
-						.liass_p{
-							font-size: 35upx;
-							color: #FF9000;
+						.user_r{
+							flex: 4;
+							justify-content: flex-end;
+							display: flex;
 						}
 					}
+				}
+			}
+			.liass{
+				width: calc(100% - 40upx);
+				padding: 0 20upx;
+				display: flex;
+				color: #C8C7CC;
+				line-height: 80upx;
+				.liass_l{
+					font-size: 35upx;
+					flex: 1;
+				}
+				.liass_r{
+					color: #333333;
+					flex: 1.7;
+				}
+				.liass_p{
+					font-size: 35upx;
+					color: #FF9000;
 				}
 			}
 		}

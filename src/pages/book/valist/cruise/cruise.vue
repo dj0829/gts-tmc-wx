@@ -55,14 +55,12 @@
 		},
 		methods: {
 			rblcok(){
-				// #ifdef  APP-PLUS
+				// #ifdef  APP-PLUS || MP-WEIXIN
 					uni.navigateBack({
 					})
 				// #endif
-				// #ifdef  H5 || MP-WEIXIN
-					uni.navigateTo({
-						url: '../valist/valist',
-					})
+				// #ifdef  H5 
+					history.back();
 				// #endif
 			},	
 			addcruise(item){//预定邮轮

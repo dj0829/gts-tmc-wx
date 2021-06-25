@@ -2,7 +2,7 @@
 	<view class="trandetails">
 		<loading>
 		</loading>
-		<headnavigation titles="车票详情"></headnavigation>
+		<headnavigation titles="火车票详情"></headnavigation>
 		<view class="fixs_list" :class="fxli ? 'shows' : 'hides'">
 			<view class="Navigation">
 				<view @click="fxli = false" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</view>
@@ -31,25 +31,29 @@
 			</view>
 		</view>
 		<view class="navstop" v-if="Object.keys(cont).length != 0">
-			<view class="">
+			<view style="font-size:42upx;font-weight:bold;margin-left:30upx;">{{userstatus(cont.status)}}</view>
+			<view style="font-size:22upx;margin:10upx 30upx;">
 				订单号：{{cont.saleOrderNo}}
+			</view>
+			<view style="font-size:22upx;margin:10upx 30upx;" v-if="cont.passenagerTicketNo != null">
+				取票号：{{cont.passenagerTicketNo}}
 			</view>
 			<view class="lisst">
 				<view class="citst">
 					<view class="cits_t">
-						<view class="no_t" v-if="cont.passenagerTicketNo != null">
+						<!-- <view class="no_t" v-if="cont.passenagerTicketNo != null">
 							取票号:{{cont.passenagerTicketNo}}
-						</view>
+						</view> -->
 						<view class="citys">
 							<view class="citys_l">
 								<view class="scis_t">
-									{{cont.changeFromStation}}
+									{{yeada(cont.departTime,1)}}
 								</view>
 								<view class="scis_o">
 									{{yeada(cont.departTime,0)}}
 								</view>
 								<view class="scis_b">
-									{{yeada(cont.departTime,1)}}
+									{{cont.changeFromStation}}
 								</view>
 							</view>
 							<view class="citys_l">
@@ -57,66 +61,73 @@
 									{{cont.trainno}}
 								</view>
 								<view class="scis_s" @click="gettrainWs">
-									经停信息
-									<view class="sci_l">
-									</view>
-									<view class="sci_r">
-									</view>
+									<view>经停信息</view>
+									<image src="@/static/img/home/home_bj.png"></image>
 								</view>
-								<view class="scis_b">
+								<view class="scis_b" style="text-align: center;">
 									{{busdate(cont.departTime,cont.arrivalTime)}}
 								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
-									{{cont.changeToStation}}
+								<view class="scis_t" style="margin-left:10upx;">
+									{{yeada(cont.arrivalTime,1)}}
 								</view>
 								<view class="scis_o">
 									{{yeada(cont.arrivalTime,0)}}
 								</view>
 								<view class="scis_b">
-									{{yeada(cont.arrivalTime,1)}}
+									{{cont.changeToStation}}
 								</view>
 							</view>
 						</view>
+						<!-- <view class="money">
+							<view class="moneytext">
+								<span>票价：</span>
+								<span style="color:#FFA63E;">￥{{cont.changeOrderPrice}}</span>
+							</view>
+						</view> -->
 					</view>
 				</view>
-				<view class="btuserlist">
+			</view>
+		</view>
+		<view class="btuserlist">
 					<view class="btuse">
-						乘车人
+						<view style="font-size:34upx;color:#333333;font-weight:bold;">乘车人</view>
 						<view class="btul">
 							<view class="user_t">
 								<view class="user_l">
 									{{cont.passenagerName}}
 								</view>
 								<view class="user_o">
-									<view>
-										成人票
+									<view class="usertext">
+										<view>成人票</view>
 									</view>
-									<view style=" color: #007aff;">
-										{{userstatus(cont.status)}}
-									</view>
-								</view>
-								<view class="user_r">
-									{{cont.changeSeatType}}￥{{cont.changeOrderPrice}}
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									{{catype(cont.certType)}}
-								</view>
-								<view class="user_o">
-									{{cont.certNo}}
 								</view>
 								<view class="user_r">
 									{{cont.changeSeatClass}}
 								</view>
 							</view>
+							<view class="user_t">
+								<!-- <view class="user_l">
+									{{catype(cont.certType)}}
+								</view> -->
+								<view class="user_o" style="color:#999999;">
+									{{cont.certNo}}
+								</view>
+								<view class="user_r">
+									<span style="margin-right:20upx;">{{cont.changeSeatType}}</span><span style="color:#FFA63E;">￥{{cont.changeOrderPrice}}</span>
+								</view>
+								
+							</view>
 						</view>
 					</view>
+					<!-- <view class="btuses">
+						<view class="btuls">
+							<view style="color:#000000;font-size:30upx;">联系信息</view>
+							<view style="color:#000000;font-size:30upx;">运营　{{conts.saleOrder.cellphone}}</view>
+						</view>
+					</view> -->
 				</view>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -249,7 +260,7 @@
 						week = 7
 					}
 					let ts = item.substring(5,10).split('-');
-					return ts[0] + '月' + ts[1] + '日' + ' 周' + this.weeks[week-1]
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week-1]
 				}
 			},
 			busdate(num,num1){//总时长
@@ -322,34 +333,34 @@
 			transition: bottom 0.4s;
 		}
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
-			.cits_bls{
+			background:linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);
+			.cits_bls{		
 				display: flex;
 			}
 			.lisst{
-				position: absolute;
 				left: 0;
 				top: 110upx;
-				width: calc(100% - 40upx);
-				padding:  0 20upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
 						color: #333333;
 						.no_t{
 							width: 100%;
 							height: 60upx;
 							line-height: 60upx;
+						}
+						.money{
+							font-size: 26upx;
+							color: #333333;
+							margin-left: 40upx;
 						}
 						.citys{
 							width: 100%;
@@ -363,20 +374,25 @@
 								align-items: center;
 								.scis_t{
 									line-height: 60upx;
-									font-size: 35upx;;
+									font-size: 26upx;
+									color:#333333;
 								}
 								.scis_o{
 									line-height: 80upx;
-									font-size: 55upx;;
+									font-size: 54upx;
+									font-weight: bold;
+									color:#333333;
 								}
 								.scis_b{
 									line-height: 60upx;
-									font-size: 28upx;
-									color: #C8C7CC;
+									font-size: 20upx;
+									color: #666666;
+									width: 140upx;
+									text-align: left;
 								}
 								.scis_s{
 									position: relative;
-									margin: 0 auto;
+									margin: 5upx auto;
 									border-radius: 35upx;
 									width: 130upx;
 									display: flex;
@@ -384,7 +400,17 @@
 									align-items: center;
 									height: 35upx;
 									color: $uni-color-primary;
-									border: 2upx solid $uni-color-primary;
+									view{
+										position: absolute;
+										font-size: 20upx;
+										color: #666666;
+										z-index: 999;
+									}
+									image{
+										position: absolute;
+										width: 200upx;
+										height: 40upx;
+									}
 									.sci_l{
 										position: absolute;
 										width: 30upx;
@@ -406,39 +432,70 @@
 						}
 					}
 				}
-				.btuserlist{
-					width: 100%;
+			}
+		}
+		.btuserlist{
+					width: calc(100% - 40upx);
+					margin: 20upx;
 					margin-top: 20upx;
-					border-radius: 15upx;
-					background: #FFFFFF;
+					
 					.btuse{
 						color: #C8C7CC;
 						font-size: 35upx;
-						width: calc(100% - 40upx);
 						padding: 20upx;
+						margin-top: 20upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
 						.btul{
-							margin-top: 10upx;
+							margin-top: 20upx;
 							color: #333333;
+							font-size: 24upx;
+							font-weight: bold;
 							.user_t{
 								display: flex;
 								width: 100%;
 								height: 50upx;
 								line-height: 50upx;
-								font-size: 28upx;
+								font-size: 26upx;
 								.user_l{
-									flex: 3;
+									flex: 2.5;
+									font-size: 30upx;
 								}
 								.user_o{
 									flex: 5;
 									display: flex;
 									justify-content: space-between;
+									.usertext{
+										border:1upx solid #999999;
+										color: #999999;
+										border-radius: 10upx;
+										font-size: 20upx;
+										padding: 0 10upx;
+									}
 								}
 								.user_r{
 									flex: 4;
 									justify-content: flex-end;
 									display: flex;
+									font-size: 26upx;
 								}
 							}
+						}
+					}
+					.btuses{
+						color: #C8C7CC;
+						font-size: 35upx;
+						padding: 20upx;
+						margin-top: 20upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
+						.btuls{
+							color: #333333;
+							font-size: 24upx;
+							font-weight: bold;
+							padding: 10upx 0;
+							display: flex;
+							justify-content: space-between;
 						}
 					}
 					.liass{
@@ -464,7 +521,5 @@
 						}
 					}
 				}
-			}
-		}
 	}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<view class="Navigation">
 		<view class="smtis">
-			<view @click="rblcok" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</view>
+			<view v-if="istoblock == 1" @click="rblcok" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</view>
 		</view>
 		<view class="ongbutn" style="font-size: 35upx;">
 			{{title}}
@@ -19,6 +19,10 @@
 			}
 		},
 		props: {
+			istoblock:{
+				type:Number,
+				default:1
+			},
 			titles: {
 				type: String,
 				default: ''
@@ -29,12 +33,7 @@
 		},
 		methods: {
 			rblcok() {
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			}
 		}
 	}

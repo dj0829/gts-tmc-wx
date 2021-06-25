@@ -375,7 +375,6 @@
 					tax:this.datlist.taxation,//税费
 					fare:0,//加价
 				}
-				console.log(dats)
 			},
 			price_list(){
 				this.onprice = (parseInt(this.datlist.taxation) + parseInt(this.datlist.prices)) * this.userlist.length;
@@ -445,7 +444,6 @@
 			nameInput(itm,id){
 				this.abstid = id;
 				var va = itm.mp.detail.value.trim();
-				console.log(va)
 			},
 			blurInput(itm,id){//国籍输入失去焦点时
 				this.abstid = id;

@@ -178,28 +178,6 @@
 				</cover-view>
 			</cover-view>
 		</map>
-		<view class="ticketckls" v-if="ticketck">
-			<headnavigation titles="选择航班"></headnavigation>
-			<view class="l_list">
-				<view class="i_nas" style="border-bottom: 1upx solid #F1F1F1;">
-					<span class="iconfont">&#xe658;</span>
-					<input type="text" v-model="finos" value="" placeholder="请输入航班号,如:CZ3503" />
-					<span class="iconfont" @click="finos= ''">&#xe641;</span>
-				</view>
-				<view class="i_nas" @click="showPop">
-					<span class="iconfont">&#xe649;</span>
-					<view class="">
-						{{fistatime}}
-					</view>
-					<view class="places" v-if="fistatime == ''">
-						请选择航班日期
-					</view>
-				</view>
-			</view>
-			<view class="fibtns" @click="finbtn">
-				确定
-			</view>
-		</view>
 	</view>
 </template>
 <script>
@@ -228,7 +206,6 @@
 					cityname:''
 				},
 				catys: false, //选择地点
-				ticketck: false, //接机航班选择
 				timeop: '', //预约用车时间
 				hotCitys: [],
 				ser_int: '',
@@ -356,27 +333,6 @@
 								cityname: res.city
 							}
 						}
-						// if (this.markers.length == 1) {
-						// 	this.markers.push({
-						// 		latitude: parseFloat((Number(res.latitude) * 100).toFixed(6)),
-						// 		longitude: parseFloat((Number(res.longitude) * 100).toFixed(6)),
-						// 		iconPath: '../../../../static/img/carbus/locaend.png',
-						// 		width: 24, //图标大小
-						// 		height: 24,
-						// 		label: {
-						// 			content: res.name,
-						// 			color: '#000000',
-						// 			fontSize: 10
-						// 		},
-						// 		anchor: {
-						// 			x: .5,
-						// 			y: .9
-						// 		} //图标偏移位置
-						// 	})
-						// } else {
-						// 	this.markers[1].longitude = res.longitude;
-						// 	this.markers[1].latitude = res.latitude;
-						// }
 						this.atst(res.catopvalue); //跳转查询用车页面
 					}
 				} else if (res.catopvalue == 3) { //接机/送机
@@ -704,7 +660,6 @@
 			citck(it) {
 				this.addfor = it; //用车类型
 				// if (it == 3) {
-				// 	console.log(it)
 				// 	this.citval = '';
 				// 	this.seatck('');
 				// }
@@ -772,8 +727,7 @@
 				this.getCenter();
 			},
 			roublock() {
-				uni.navigateBack({
-				});
+				this.toBlock();
 			},
 			getCenter() { //视野发生移动时更改当前坐标
 				let _that = this;

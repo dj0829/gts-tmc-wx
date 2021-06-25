@@ -1,9 +1,9 @@
 {
-    "name" : "腾邦差旅",
-    "appid" : "__UNI__3452ADA",
+    "name" : "易行天下",
+    "appid" : "__UNI__D40D370",
     "description" : "",
-    "versionName" : "1.00",
-    "versionCode" : 100,
+    "versionName" : "1.03",
+    "versionCode" : 103,
     "transformPx" : false,
     "networkTimeout" : {
         "uploadFile" : 20000,
@@ -11,6 +11,9 @@
     },
     /* 5+App特有相关 */
     "app-plus" : {
+        "compatible" : {
+            "ignoreVersion" : true //true表示忽略版本提示
+        },
         "usingComponents" : true,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -64,42 +67,43 @@
                 "ad" : {},
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "14c047148a486f13697dcf32e9fe91f7",
-                        "appkey_android" : "14c047148a486f13697dcf32e9fe91f7"
+                        "appkey_ios" : "2c383edc5dd3d6db5b975a7e1df8db9c",
+                        "appkey_android" : "2c383edc5dd3d6db5b975a7e1df8db9c"
                     }
                 }
             },
             "icons" : {
                 "android" : {
-                    "xxxhdpi" : "",
-                    "xxhdpi" : "",
-                    "xhdpi" : "",
-                    "hdpi" : ""
+                    "xxxhdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                    "xxhdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                    "xhdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                    "hdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png"
                 },
                 "ios" : {
                     "iphone" : {
-                        "app@2x" : "",
-                        "app@3x" : "",
-                        "spotlight@2x" : "",
-                        "spotlight@3x" : "",
-                        "settings@2x" : "",
-                        "settings@3x" : "",
-                        "notification@2x" : "",
-                        "notification@3x" : ""
+                        "app@2x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "app@3x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "spotlight@2x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "spotlight@3x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "settings@2x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "settings@3x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "notification@2x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png",
+                        "notification@3x" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png"
                     },
-                    "appstore" : ""
+                    "appstore" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210428144854.png"
                 }
             },
             "splashscreen" : {
                 "android" : {
-                    "hdpi" : "",
-                    "xhdpi" : "",
-                    "xxhdpi" : ""
+                    "hdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210506084532.png",
+                    "xhdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210506084532.png",
+                    "xxhdpi" : "C:/Users/Administrator.SC-202101051358/Desktop/微信图片_20210506084532.png"
                 },
                 "iosStyle" : "common",
                 "ios" : {
                     "storyboard" : "C:/Users/admin/Desktop/CustomStoryboard.zip"
-                }
+                },
+                "androidStyle" : "default"
             }
         }
     },
@@ -117,15 +121,6 @@
                     "secure" : false,
                     "pathRewrite" : {
                         "/dpv" : ""
-                    }
-                },
-                "/dpe" : {
-                    //测试服务器本地代理
-                    "target" : "http://tmcapitest.gssok.com/",
-                    "changeOrigin" : true,
-                    "secure" : false,
-                    "pathRewrite" : {
-                        "^/dpe" : ""
                     }
                 }
             }

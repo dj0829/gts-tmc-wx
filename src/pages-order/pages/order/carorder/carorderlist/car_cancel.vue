@@ -156,9 +156,7 @@
 				this.car_nos = this.car_lish;
 			},
 			rblcok(){
-        uni.reLaunch({
-					url:'carorderlist?data=' + this.tradeNo
-				})
+				this.toBlock();
 			},
 			carclick(it){
 				this.car_cenid = it.id;

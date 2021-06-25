@@ -22,45 +22,47 @@
 				<view class="listshow" v-for="(item,index) in shomlist" :key="index" @click="slsts(item)">
 					<view v-if="item[0].departTime.length < 25">
 						<view class="listtops">
+							<view style="margin-right:10upx;">
+								<image :src="item[0].ims" mode="" style=""></image>
+							</view>
+							<view style="font-size: 28upx;">{{companys(item[0].airline)}}{{(item[0].flightNo.split('/'))[0]}}</view>
 							<view class="lstt_l">
-								<view class="iconfont" style="color:#007aff;">&#xe637;</view>
 								国内机票
 							</view>
-							<view class="lstt_z" v-if="item.length == 2" style="color: #007aff;">
-								往返
-							</view>
-							<view class="lstt_z" v-if="item.length == 1" style="color: #007aff;">
-								单程
-							</view>
 							<view class="lstt_r">
-								{{conpan(item[0].orderStatus)}}
+								<view class="lstt_Approval" :class="item[0].orderStatus == 6 ? 'lstt_Approvals':''">
+									{{conpan(item[0].orderStatus)}}
+								</view>
 								<span class="stri">
 									{{item[0].itemStatusname}}
 								</span>
 							</view>
 						</view>
 						<view class="pash" style="line-height: 50upx;">
-							<view style="flex: 2;text-align: left;color: #3B4246;">{{cityname(item[0].voyagea)}}-{{cityname(item[0].voyages)}}</view>
-							
-							<view style="flex: 1;text-align: right;color:#F48F00">￥{{item[0].dealingTicketTotalPrice}}</view>
-						</view>
-						<view class="pash" style="line-height: 50upx;">
-							<view>
-								<image :src="item[0].ims" mode="" style=""></image>
+							<view style="text-align: left;color: #3B4246;margin-right:30upx;">{{cityname(item[0].voyagea)}}-{{cityname(item[0].voyages)}}</view>
+							<view v-if="item.length == 2">
+								[往返]
 							</view>
-							<view style="font-size: 28upx;">{{company(item[0].airline)}}{{item[0].flightNo}}</view>
+							<view v-if="item.length == 1">
+								[单程]
+							</view>
+							<view style="flex: 1;text-align: right;color:#FFA63E">￥{{item[0].dealingTicketTotalPrice}}</view>
 						</view>
-						<view style="font-size: 28upx;line-height: 40upx;display: flex;">
+						<view style="font-size: 24upx;line-height: 50upx;display: flex;">
 							启程时间：<view>{{item[0].departTime}}</view>
 							<view style="margin-left: 20upx;">{{item[0].arriveDate}}</view>
 						</view>
-						<view v-if="item.length == 2" style="font-size: 28upx;line-height: 40upx;display: flex;">
+						<view v-if="item.length == 2" style="font-size: 24upx;line-height: 40upx;display: flex;">
 							返程时间：<view>{{item[1].departTime}}</view>
 							<view style="margin-left: 20upx;">{{item[1].arriveDate}}</view>
 						</view>
 					</view>
 					<view v-else>
 						<view class="listtops">
+							<view style="margin-right:10upx;">
+								<image :src="item[0].ims" mode="" style=""></image>
+							</view>
+							<view style="font-size: 28upx;">{{companys(item[0].airline)}}{{(item[0].flightNo.split('/'))[0]}}</view>
 							<view class="lstt_l">
 								<view class="iconfont" style="color:#007aff;">&#xe637;</view>
 								国内机票
@@ -69,28 +71,35 @@
 								往返
 							</view>
 							<view class="lstt_r">
-								{{conpan(item[0].orderStatus)}}
+								<view class="lstt_Approval">
+									{{conpan(item[0].orderStatus)}}
+								</view>
+								<span class="stri">
+									{{item[0].itemStatusname}}
+								</span>
 							</view>
 						</view>
 						<view class="pash" style="line-height: 50upx;">
 							<view style="flex: 2;text-align: left;color: #3B4246;">{{cityname(item[0].voyagea)}}-{{cityname(item[0].voyages)}}</view>
-							<view>
-								<image :src="item[0].ims" mode="" style=""></image>
+							<view v-if="item.length == 2">
+								[往返]
 							</view>
-							<view style="font-size: 28upx;">{{companys(item[0].airline)}}{{(item[0].flightNo.split('/'))[0]}}</view>
-							<view style="flex: 1;text-align: right;color:#F48F00">￥{{item[0].dealingTicketTotalPrice}}</view>
+							<view v-if="item.length == 1">
+								[单程]
+							</view>
+							<view style="flex: 1;text-align: right;color:#FFA63E">￥{{item[0].dealingTicketTotalPrice}}</view>
 						</view>
-						<view style="font-size: 28upx;line-height: 60upx;display: flex;">
+						<view style="font-size: 24upx;line-height: 60upx;display: flex;">
 							<view>{{(item[0].departTime.split('/'))[0]}}</view>
 							<view style="margin-left: 20upx;">{{(item[0].arriveDate.split('/'))[0]}}</view>
 						</view>
 					</view>
 					<view style="display: flex;">
-						<view style="color: #C8C7CC;font-size: 28upx;flex: 1;">
+						<view style="font-size: 24upx;flex: 1;">
 							乘机人: {{item[0].passengers}}
 						</view>
 					</view>
-					<view style="color: #C8C7CC;font-size: 28upx;text-align: right;">
+					<view style="color: #999999;font-size: 24upx;margin:10upx 0;">
 						下单时间：{{item[0].orderingTime}}
 					</view>
 				</view>
@@ -98,42 +107,39 @@
 			<view v-if="( seid == 11 || seid == 9 ) && shomlist.length>0">
 				<view class="listshow" v-for="(item,index) in shomlist" :key="index" @click="slstst(item)">
 					<view class="listtops">
+						<view style="margin-right:10upx;">
+							<image :src="item.ims" mode="" style=""></image>
+						</view>
+						<view style="font-size: 28upx;">{{companys(item.items[0].airline)}}{{(item.items[0].flightNo.split('/'))[0]}}</view>
 						<view class="lstt_l">
-							<view class="iconfont" style="color:#007aff;">&#xe637;</view>
 							国内机票
 						</view>
 						<view class="lstt_r">
+							<view class="lstt_Approval">
 							{{item.statusName}}
+							</view>
 						</view>
 					</view>
 					<view class="pash" style="line-height: 50upx;" v-if=" seid == 11 ">
 						<view style="flex: 2;text-align: left;color: #3B4246;">{{item.citynames}}-{{item.citynamey}}</view>
-						<view>
-							<image :src="item.ims" mode="" style=""></image>
-						</view>
-						<view style="font-size: 28upx;">{{item.companys}}{{item.items[0].flightNo}}</view>
-						<view style="flex: 1;text-align: right;color:#F48F00">￥{{item.changeFee}}</view>
+						<view style="flex: 1;text-align: right;color:#FFA63E">￥{{item.changeFee}}</view>
 					</view>
-					<view style="font-size: 28upx;line-height: 60upx;display: flex;" v-if=" seid == 11 ">
+					<view style="font-size: 24upx;line-height: 50upx;display: flex;" v-if=" seid == 11 ">
 						启程时间：<view>{{item.items[0].departTime}}</view>
 					</view>
 					<view class="pash" style="line-height: 50upx;" v-if=" seid == 9 ">
 						<view style="flex: 2;text-align: left;color: #3B4246;">{{item.citynames}}-{{item.citynamey}}</view>
-						<view>
-							<image :src="item.ims" mode="" style=""></image>
-						</view>
-						<view style="font-size: 28upx;">{{item.companys}}{{item.items[0].flightNo}}</view>
-						<view style="flex: 1;text-align: right;color:#F48F00" v-if="item.status == 7 ||item.status == 8  ">￥{{item.refundAmount}}</view>
-					</view>
-					<view style="font-size: 28upx;line-height: 60upx;display: flex;" v-if=" seid == 9 ">
-						退票时间:<view>{{item.items[0].createTime}}</view>
+						<view style="flex: 1;text-align: right;color:#FFA63E" v-if="item.status == 7 ||item.status == 8  ">￥{{item.refundAmount}}</view>
 					</view>
 					<view style="display: flex;">
-						<view style="color: #C8C7CC;font-size: 28upx;flex: 1;">
+						<view style="font-size: 24upx;flex: 1;color: #333333;">
 							乘机人: {{item.namelist}}
 						</view>
 					</view>
-					<view style="color: #C8C7CC;font-size: 28upx;text-align: right;" v-if=" seid == 11 ">
+					<view style="color: #999999;font-size: 24upx;margin:10upx 0;display: flex;" v-if=" seid == 9 ">
+						退票时间:<view>{{item.items[0].createTime}}</view>
+					</view>
+					<view style="color: #999999;font-size: 24upx;margin:10upx 0;" v-if=" seid == 11 ">
 						改签时间：{{item.createTime}}
 					</view>
 				</view>
@@ -305,7 +311,7 @@
 							},
 							mssOrderRequest: {
 								productType: "1", //类型 1为飞机
-								orderState: that.seid,
+								orderState: this.seid,
 								passenger: this.passenger,
 								destination: this.destination,
 							}
@@ -316,57 +322,59 @@
 					if (res.code == 200) {
 						let that = this;
 						that.page++; //得到数据之后page+1
+						let datalist = [];
 						if (that.seid == 9) { //退费票
 							that.ispages = res.data.pageData.total; //总共多少页
-							that.shomlist = res.data.pageData.records || [];
+							datalist = res.data.pageData.records || [];
 						} else {
 							that.ispages = res.data.total; //总共多少页
-							that.shomlist = res.data.rows || [];
+							datalist = res.data.rows || [];
 						}
 						that.address = airports.addressAirportAll; //航空名字
 						if (that.seid == 11 || that.seid == 9) {
-							for (let k in that.shomlist) { //转换城市名
-								that.shomlist[k]['ims'] = 'http://file.feiren.com/00/02/' + that.shomlist[k].items[0].airline + '.png'
-								that.shomlist[k]['namelist'] = that.username(that.shomlist[k].items);
-								that.shomlist[k]['companys'] = that.company(that.shomlist[k].items[0].airline);
+							for (let k in datalist) { //转换城市名
+								datalist[k]['ims'] = 'http://file.feiren.com/00/02/' + datalist[k].items[0].airline + '.png'
+								datalist[k]['namelist'] = that.username(datalist[k].items);
+								datalist[k]['companys'] = that.company(datalist[k].items[0].airline);
 								if (that.seid == 11) {
-									that.shomlist[k]['citynames'] = that.cityname(that.shomlist[k].items[0].origDepart);
-									that.shomlist[k]['citynamey'] = that.cityname(that.shomlist[k].items[0].origArrive);
+									datalist[k]['citynames'] = that.cityname(datalist[k].items[0].origDepart);
+									datalist[k]['citynamey'] = that.cityname(datalist[k].items[0].origArrive);
 								} else {
-									that.shomlist[k]['citynames'] = that.cityname(that.shomlist[k].items[0].depart);
-									that.shomlist[k]['citynamey'] = that.cityname(that.shomlist[k].items[0].arrive);
+									datalist[k]['citynames'] = that.cityname(datalist[k].items[0].depart);
+									datalist[k]['citynamey'] = that.cityname(datalist[k].items[0].arrive);
 								}
 							}
 						} else {
-							for (let k in that.shomlist) { //转换城市名
-								if (that.shomlist[k][0].voyage.length > 10) {
-									that.shomlist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + (that.shomlist[k][0].airline.split('/'))[0] +
+							for (let k in datalist) { //转换城市名
+								if (datalist[k][0].voyage.length > 10) {
+									datalist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + (datalist[k][0].airline.split('/'))[0] +
 										'.png'
-									let nas = that.shomlist[k][0].voyage.split('/');
+									let nas = datalist[k][0].voyage.split('/');
 									let names = nas[0].split('-');
-									that.shomlist[k][0]['voyagea'] = names[0]
-									that.shomlist[k][0]['voyages'] = names[1]
+									datalist[k][0]['voyagea'] = names[0]
+									datalist[k][0]['voyages'] = names[1]
 								} else {
-									that.shomlist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + that.shomlist[k][0].airline + '.png'
-									let names = that.shomlist[k][0].voyage.split('-');
-									that.shomlist[k][0]['voyagea'] = names[0]
-									that.shomlist[k][0]['voyages'] = names[1]
+									datalist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + datalist[k][0].airline + '.png'
+									let names = datalist[k][0].voyage.split('-');
+									datalist[k][0]['voyagea'] = names[0]
+									datalist[k][0]['voyages'] = names[1]
 								}
-								if (that.shomlist[k][0].itemStatus != null && that.shomlist[k][0].itemStatus != undefined) {
-									if (that.shomlist[k][0].itemStatus.includes('2,3')) {
-										that.shomlist[k][0]['itemStatusname'] = '(改,退)';
-									} else if (that.shomlist[k][0].itemStatus.includes('2')) {
-										that.shomlist[k][0]['itemStatusname'] = '(改)';
-									} else if (that.shomlist[k][0].itemStatus.includes('3')) {
-										that.shomlist[k][0]['itemStatusname'] = '(退)';
-									} else if (that.shomlist[k][0].itemStatus.includes('1') || that.shomlist[k][0].itemStatus.includes('1')) {
-										that.shomlist[k][0]['itemStatusname'] = '';
+								if (datalist[k][0].itemStatus != null && datalist[k][0].itemStatus != undefined) {
+									if (datalist[k][0].itemStatus.includes('2,3')) {
+										datalist[k][0]['itemStatusname'] = '(改,退)';
+									} else if (datalist[k][0].itemStatus.includes('2')) {
+										datalist[k][0]['itemStatusname'] = '(改)';
+									} else if (datalist[k][0].itemStatus.includes('3')) {
+										datalist[k][0]['itemStatusname'] = '(退)';
+									} else if (datalist[k][0].itemStatus.includes('1') || datalist[k][0].itemStatus.includes('1')) {
+										datalist[k][0]['itemStatusname'] = '';
 									}
 								} else {
-									that.shomlist[k][0]['itemStatusname'] = '';
+									datalist[k][0]['itemStatusname'] = '';
 								}
 							}
 						}
+						this.shomlist = datalist;
 						if (it == 2) {
 							uni.stopPullDownRefresh();
 						}
@@ -393,12 +401,7 @@
 				}
 			},
 			cityname(name) { //城市名称
-				let that = this;
-				for (let j = 0; j < that.address.length; j++) {
-					if (name == that.address[j].airportCode) {
-						return that.address[j].cityCName;
-					}
-				}
+				return this.utils.airportCtName(name);
 			},
 			async citys() { //获取机场名称
 				try {
@@ -527,54 +530,61 @@
 							return;
 						}
 						that.page++; //每触底一次 page +1
-						that.curPage = res.data.curPage;
-						that.shomlist = that.shomlist.concat(res.data.rows);
+						let datalist = [];
+						if (that.seid == 9) { //退费票
+							that.curPage = res.data.pageData.pages; //当前多少页
+							datalist = res.data.pageData.records || [];
+						} else {
+							that.curPage = res.data.pages; //当前多少页
+							datalist = res.data.rows || [];
+						}
 						that.loadingType = 0; //将loadingType归0重置
 						uni.hideNavigationBarLoading(); //关闭加载动画
 						that.address = airports.addressAirportAll; //航空名字
-						if (that.seid == 11) {
-							for (let k in that.shomlist) { //转换城市名
-								that.shomlist[k]['ims'] = 'http://file.feiren.com/00/02/' + that.shomlist[k].items[0].airline + '.png'
-								that.shomlist[k]['namelist'] = that.username(that.shomlist[k].items);
-								that.shomlist[k]['companys'] = that.company(that.shomlist[k].items[0].airline);
+						if (that.seid == 11|| that.seid == 9) {
+							for (let k in datalist) { //转换城市名
+								datalist[k]['ims'] = 'http://file.feiren.com/00/02/' + datalist[k].items[0].airline + '.png'
+								datalist[k]['namelist'] = that.username(datalist[k].items);
+								datalist[k]['companys'] = that.company(datalist[k].items[0].airline);
 								if (that.seid == 11) {
-									that.shomlist[k]['citynames'] = that.cityname(that.shomlist[k].items[0].origDepart);
-									that.shomlist[k]['citynamey'] = that.cityname(that.shomlist[k].items[0].origArrive);
+									datalist[k]['citynames'] = that.cityname(datalist[k].items[0].origDepart);
+									datalist[k]['citynamey'] = that.cityname(datalist[k].items[0].origArrive);
 								} else {
-									that.shomlist[k]['citynames'] = that.cityname(that.shomlist[k].items[0].depart);
-									that.shomlist[k]['citynamey'] = that.cityname(that.shomlist[k].items[0].arrive);
+									datalist[k]['citynames'] = that.cityname(datalist[k].items[0].depart);
+									datalist[k]['citynamey'] = that.cityname(datalist[k].items[0].arrive);
 								}
 							}
 						} else {
-							for (let k in that.shomlist) { //转换城市名
-								if (that.shomlist[k][0].voyage.length > 10) {
-									that.shomlist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + (that.shomlist[k][0].airline.split('/'))[0] +
+							for (let k in datalist) { //转换城市名
+								if (datalist[k][0].voyage.length > 10) {
+									datalist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + (datalist[k][0].airline.split('/'))[0] +
 										'.png'
-									let nas = that.shomlist[k][0].voyage.split('/');
+									let nas = datalist[k][0].voyage.split('/');
 									let names = nas[0].split('-');
-									that.shomlist[k][0]['voyagea'] = names[0]
-									that.shomlist[k][0]['voyages'] = names[1]
+									datalist[k][0]['voyagea'] = names[0]
+									datalist[k][0]['voyages'] = names[1]
 								} else {
-									that.shomlist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + that.shomlist[k][0].airline + '.png'
-									let names = that.shomlist[k][0].voyage.split('-');
-									that.shomlist[k][0]['voyagea'] = names[0]
-									that.shomlist[k][0]['voyages'] = names[1]
+									datalist[k][0]['ims'] = 'http://file.feiren.com/00/02/' + datalist[k][0].airline + '.png'
+									let names = datalist[k][0].voyage.split('-');
+									datalist[k][0]['voyagea'] = names[0]
+									datalist[k][0]['voyages'] = names[1]
 								}
-								if (that.shomlist[k][0].itemStatus != null && that.shomlist[k][0].itemStatus != undefined) {
-									if (that.shomlist[k][0].itemStatus.includes('2,3')) {
-										that.shomlist[k][0]['itemStatusname'] = '(改,退)';
-									} else if (that.shomlist[k][0].itemStatus.includes('2')) {
-										that.shomlist[k][0]['itemStatusname'] = '(改)';
-									} else if (that.shomlist[k][0].itemStatus.includes('3')) {
-										that.shomlist[k][0]['itemStatusname'] = '(退)';
-									} else if (that.shomlist[k][0].itemStatus.includes('1') || that.shomlist[k][0].itemStatus.includes('1')) {
-										that.shomlist[k][0]['itemStatusname'] = '';
+								if (datalist[k][0].itemStatus != null && datalist[k][0].itemStatus != undefined) {
+									if (datalist[k][0].itemStatus.includes('2,3')) {
+										datalist[k][0]['itemStatusname'] = '(改,退)';
+									} else if (datalist[k][0].itemStatus.includes('2')) {
+										datalist[k][0]['itemStatusname'] = '(改)';
+									} else if (datalist[k][0].itemStatus.includes('3')) {
+										datalist[k][0]['itemStatusname'] = '(退)';
+									} else if (datalist[k][0].itemStatus.includes('1') || datalist[k][0].itemStatus.includes('1')) {
+										datalist[k][0]['itemStatusname'] = '';
 									}
 								} else {
-									that.shomlist[k][0]['itemStatusname'] = '';
+									datalist[k][0]['itemStatusname'] = '';
 								}
 							}
 						}
+						that.shomlist = that.shomlist.concat(datalist);
 					} else {
 						that.showToasts(res.message);
 					}
@@ -622,43 +632,46 @@
 			display: flex;
 			white-space: nowrap;
 			font-size: 30upx;
-
+			border-bottom:1px solid #dfdfdf;
 			.selsit {
 				display: inline-block;
 				line-height: 90upx;
 				text-align: center;
-				color: #999999;
+				color: #666666;
 				padding: 0 25upx;
 				height: 86upx;
 				border-bottom: 6upx solid #FFFFFF;
 			}
 
 			.seclk {
-				border-bottom: 6upx solid $uni-color-primary;
+				border-bottom: 6upx solid #007aff;
+				color: #007aff;
 			}
 		}
 
 		.searchs {
-			margin-top: 20upx;
 			width: 100%;
-			height: 80upx;
+			height: 100upx;
 			background-color: #FFFFFF;
 			display: flex;
 			align-items: center;
-
 			.seinputs {
 				width: 35%;
 				font-size: 30upx;
 				margin-left: 20upx;
 				text-indent: 15upx;
 				height: 60upx;
-				border-radius: 10upx;
-				background: #E5E5E5;
+				border-radius: 5upx;
+				color: #c0c0c0;
+				border:1px solid #dfdfdf;
+			}
+			.uni-input-placeholder{
+				color: #c0c0c0;
 			}
 
 			.btnstlist {
 				width: calc(30% - 80upx);
-				border-radius: 10upx;
+				border-radius: 7upx;
 				margin-left: 20upx;
 				height: 60upx;
 				line-height: 60upx;
@@ -684,28 +697,44 @@
 			.listtops {
 				width: 100%;
 				display: flex;
-				color: #C0C0C0;
-				border-bottom: 1upx solid #f3f3f3;
-
+				color: #666666;
+				font-size: 20upx;
 				.lstt_l {
 					display: flex;
 					align-items: center;
 					flex: 1;
-
+					margin-left: 40upx;
 					image {
 						width: 35upx;
 						height: 35upx;
 					}
 				}
-
+				image {
+					width: 35upx;
+					height: 35upx;
+				}
 				.lstt_z {
 					flex: 0.3;
 				}
 
 				.lstt_r {
-					flex: 1;
+					display: flex;
+					// flex: 1;
 					text-align: right;
-
+					.lstt_Approval{
+						padding: 5upx 10upx;
+						font-size:20upx;
+						color: #007AFF;
+						background: #dbf0ff;
+						border-radius: 10upx;
+					}
+					.lstt_Approvals{
+						padding: 5upx 10upx;
+						font-size:20upx;
+						color: #999999;
+						background: #f0f0f0;
+						border-radius: 10upx;
+					}
 					.stri {
 						color: red;
 						font-size: 26upx;
@@ -716,8 +745,10 @@
 			.pash {
 				width: 100%;
 				display: flex;
-				color: #C0C0C0;
-
+				color: #333333;
+				font-size: 32upx;
+				font-weight: bold;
+				margin-top: 10upx;
 				image {
 					width: 35upx;
 					height: 30upx;

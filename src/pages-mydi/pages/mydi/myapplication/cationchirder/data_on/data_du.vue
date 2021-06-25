@@ -1,12 +1,7 @@
 <template>
 	<view class="calendar-layer">
-
 		<view class="layer-content" :class="{ choiceDate: singleDate }">
-			<view class="layer-header">
-				<view class="layer-close" @tap="hideCalendar()"></view>
-				<text class="layer-title">选择日期</text>
-			</view>
-			<!--  -->
+			<headnavigation titles="选择日期"></headnavigation>
 			<view class="layer-body">
 				<view class="week-box">
 					<text class="week-box-item" v-for="(item, tmpIndex) in weekNameArr" :key="tmpIndex">{{ item }}</text>
@@ -181,12 +176,7 @@ export default {
 			}
 		},
 		hideCalendar(){
-			// #ifdef H5
-			history.back();
-			// #endif
-			// #ifdef MP-WEIXIN
-			uni.navigateBack()
-			// #endif
+			this.toBlock();
 		},
 		//补0
 		pad(num, n) {
@@ -211,7 +201,6 @@ export default {
 			_that.choiceDate.splice(1, 1);
 			// // _that.choiceDate = dat.splice(1,1);
 			_that.isShow_H5 = false;
-			// console.log(_that.choiceDate)
 		},
 		getMonthTitleRectList() {
 			return new Promise(resolve => {

@@ -51,6 +51,7 @@
 							入住
 						</view>
 					</view>
+					<view style="border-left:1px solid #f2f2f2;height:60upx;margin-right:45upx;"></view>
 					<view class="htoslq">
 						<view class="hots_bto">
 							{{ choiceDate[1].month }}月{{ choiceDate[1].day }}日
@@ -59,10 +60,8 @@
 							离店
 						</view>
 					</view>
-					<view class="htoslq" style="width: 10%;">
-						<view class="hots_alk">
-							{{dayCount2}}晚
-						</view>
+					<view class="hots_alk">
+						<view>{{dayCount2}}晚</view>
 					</view>
 				</view>
 			</view>
@@ -166,7 +165,7 @@
 		</view>
 		<view class="calendar-layer" :animation="animationData" :class="isShow_H5 ? 'show' : 'hide'">
 			<!-- 遮罩层 -->
-			<view class="layer-white-space" @tap="hideCalendar(false)"></view>
+			<view class="layer-white-space" @tap="hideCalendar(false)" v-if="isShow_H5"></view>
 
 			<view class="layer-content" :class="{ choiceDate: choice === true || singleDate }">
 
@@ -784,7 +783,6 @@
 			dayClick(e) { //点加当前日期
 				let indexs = e.currentTarget.dataset.indexs;
 				let index = e.currentTarget.dataset.index;
-				// console.log('selectday ', indexs, index);
 				this.selectday(index, indexs, true);
 			},
 			selectday(index, indexs, isUserClick) {
@@ -881,7 +879,6 @@
 						});
 					} else {
 						this.choice = true;
-						// console.log('count', count);
 						this.dayCount = count + 1;
 						this.dayCount2 = count + 1;
 						this.dateFlag = {};
@@ -965,7 +962,7 @@
 		position: fixed;
 		height: 100%;
 		width: 100%;
-		background-color: #ccc !important;
+		background-color: #000 !important;
 		opacity: 0.5;
 	}
 
@@ -1042,10 +1039,12 @@
 	.layer-content {
 		position: absolute;
 		height: 100%;
-		bottom: 0;
+		top: 150upx;
 		color: #333333;
 		font-size: 26upx;
 		flex-direction: column;
+		border-top-left-radius: 20upx;
+		border-top-right-radius: 20upx;
 		background-color: #fff;
 	}
 
@@ -1238,7 +1237,7 @@
 		}
 
 		&.begin {
-			border-radius: 8upx 0 0 8upx;
+			border-radius: 8upx;
 
 			.beginTip {
 				display: block;
@@ -1316,28 +1315,38 @@
 				font-size: 30upx;
 				height: 100upx;
 				display: flex;
+				align-items: center;
 				line-height: 100upx;
 				.htoslq {
-					width: 45%;
+					width: 40%;
 					display: flex;
+					margin-left: 20upx;
 					// align-items: center;
 					color: #333333;
 					.hots_bto {
-						font-size: 38upx;
+						font-size: 36upx;
+						font-weight: bold;
 					}
 					.htos_top{
-						font-size: 24upx;
+						font-size: 20upx;
+						color:#666666;
 						line-height: 112upx;
 						margin-left: 20upx;
 					}
-					.hots_alk {
-						width: 100%;
-						font-size: 24upx;
-						line-height: 112upx;
-						color: #C0C0C0;
-						text-align: right;
-					}
 				}
+				.hots_alk {
+						border: 1px solid #ececec;
+						border-radius: 30upx;
+						width: 66upx;
+						line-height: 35upx;
+						font-size: 18upx;
+						color: #333333;
+						text-align: center;
+						box-shadow: 0 2upx 2upx rgba(233, 233, 233, 0.5);
+						view{
+							margin-left: 12upx;
+						}
+					}
 			}
 		}
 
@@ -1367,6 +1376,7 @@
 					width: 35%;
 					height: 65upx;
 					display: flex;
+					font-size: 26upx;
 					justify-content: center;
 					line-height: 65upx;
 				}
@@ -1379,6 +1389,7 @@
 
 					.time_ms {
 						width: 100%;
+						font-size: 26upx;
 						height: 32upx;
 						display: flex;
 						line-height: 34upx;

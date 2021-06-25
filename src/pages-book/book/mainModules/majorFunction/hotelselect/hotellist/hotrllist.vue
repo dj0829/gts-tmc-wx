@@ -2,27 +2,32 @@
 	<view class="hotsl">
 		<loading>
 		</loading>
-
+		<headnavigation titles="酒店详情"></headnavigation>
 		<image class="imagest" v-if="!datrue" src="@/static/img/hotrllistbg.jpg" mode=""></image>
 		<view v-if="datrue">
-
 			<view class="hot_top">
 				<bwSwiper :w_h="1.5" @clickItem="swipclik" :swiperList="swlist" :autoplay="isvideo" :indicatorDots="indicatorDots"></bwSwiper>
-				<view class="rotblack" @click.stop="rotblck">
-					<view class="iconfont" style="color: #FFFFFF;">
-						&#xe61e;
-					</view>
-				</view>
-				<!-- <image :src="datalist.imgUrl" mode=""></image> -->
-				<view class="tirle">
-					{{datalist.resName}}
-				</view>
 			</view>
 			<view class="hotlists">
-				<view class="intro" v-if="datalist.intro != undefined">
-					<view v-html="isticons"></view>
-					<view class="intcols" @click="intros" v-if="ist == true && datalist.intro.length > 66">收起</view>
-					<view class="intcolt" @click="intrtos" v-if="ist == false && datalist.intro.length > 66">全文</view>
+				<view class="hotrllistmain">
+					<view class="hotrllistname">{{datalist.resName}}</view>
+					<view class="resGrades">
+						<view v-for="(item,index) in xx" :key="index">
+							<view class="iconfont" style="font-size: 30upx;">
+								&#xe63e;
+							</view>
+						</view>
+					</view>
+					<view class="hotrllistdetails">
+						<view class="hot_lefts">
+							{{datalist.shortIntro}}
+						</view>
+						<view class="hot_rigts" @click="tz">详情 ></view>
+					</view>
+					<view class="position" @click="maplist(datalist.resGPS,datalist.resName)">
+						<image src="@/static/img/home/home_position.png"></image>
+						<view>{{datalist.address}}</view>
+					</view>
 				</view>
 				<view class="onbottms">
 					<view class="onleft">
@@ -34,9 +39,11 @@
 							<view class="onprolist" @click="openlist(item.istlong,index)" 
 							 :style="{borderBottom:item.istlong == 1 ? '0':'2upx solid #eeeeee'}">
 								<view class="onproleft" :style="{backgroundImage:item.imgUrl ? 'url('+item.imgUrl +')':'url(@/static/img/hotel-small-img2.jpg)'}">
+									<!--  src="@/static/img/hotel-small-img2.jpg"/> -->
 								</view>
 								<view class="optext">
 									<view class="optile">{{item.resProName}}</view>
+									<view style="margin-top:20upx;font-size:22upx;color:666666;">{{item.resProBaseInfoList[0].roomFeature}}</view>
 								</view>
 								<view class="money">
 									<view class="monsle">
@@ -44,10 +51,10 @@
 									</view>
 									{{item.minPrice}}
 									<view class="mosrig">
-										起
+										起 
 									</view>
-									<view class="iconfont" v-if="item.istlong == 1" style="color: #007aff;font-size: 30upx;margin-left: 10upx;">&#xe8a7;</view>
-									<view class="iconfont" v-if="item.istlong == 2" style="color: #007aff;font-size: 30upx;margin-left: 10upx;">&#xe628;</view>
+									<view class="moneyimg" v-if="item.istlong == 1"><image src="@/static/img/home/dk.png"></image></view>
+									<view class="moneyimg" v-if="item.istlong == 2"><image src="@/static/img/home/sq.png"></image></view>
 								</view>
 							</view>
 							<view class="ontons" :class="item.istlong == 1 ? 'show' : 'hide'">
@@ -88,7 +95,7 @@
 											</view>
 										</view>
 									</view>
-									<view class="">
+									<view  >
 									</view>
 								</view>
 							</view>
@@ -140,194 +147,14 @@
 					&#xe61f;
 				</view>
 			</view>-->
-
-			<view class="staleve" v-if="staleve" @click="staleve = false">
-				<view class="stalist" @click.stop>
-					<view class="statop" v-if="higlist.length > 0">
-						<view class="reds">
-							<view class="ts_text">
-								高价超规
-							</view>
-						</view>
-						<view class="setlist" v-for="(item,index) in higlist" :key="index">
-							<view class="setbod" v-if="item.name == 4">
-								<view class="styul">
-									<view class="styli_top">
-										不可预定
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 5 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规需重新审核
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 2 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规不必选择原因
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 3 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规必须选择原因
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-								<view class="styul">
-									<view class="stulis">
-										<view class="styli_left">
-											超规原因:
-										</view>
-										<view class="styli_right">
-											<view class="wors">
-												<picker :range="rulesReasons" :range-key="'chineseDesc'" @change="chineseChange($event)">
-													{{ rulesReasons[chines.index].chineseDesc }}
-												</picker>
-											</view>
-											<!-- <select class="wors" v-model="pricdesc">
-											    <option :value="items.chineseDesc" v-for="(items,indexs) in rulesReasons" :key="indexs">{{items.chineseDesc}}</option>
-											</select> -->
-										</view>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-					<view class="statop" v-if="starlist.length > 0" style="border-top: 2upx solid #FFFFFF;">
-						<view class="reds">
-							<view class="ts_text">
-								酒店星级超规
-							</view>
-						</view>
-						<view class="setlist" v-for="(item,index) in starlist" :key="index">
-							<view class="setbod" v-if="item.name == 4">
-								<view class="styul">
-									<view class="styli_top">
-										不可预定
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 5 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规需重新审核
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 2 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规不必选择原因
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-							</view>
-							<view class="setbod" v-if="item.name == 3 && !notbooking">
-								<view class="styul">
-									<view class="styli_top">
-										超规必选择原因
-									</view>
-									<view class="stulis">
-										<view class="styli_left">
-											超规人员:
-										</view>
-										<view class="styli_right">
-											{{item.list}}
-										</view>
-									</view>
-								</view>
-								<view class="styul">
-									<view class="stulis">
-										<view class="styli_left">
-											超规原因:
-										</view>
-										<view class="styli_right">
-											<view class="wors">
-												<picker :range="rulesReasons" :range-key="'chineseDesc'" @change="chineseChanges($event)">
-													{{ rulesReasons[chines.indexs].chineseDesc }}
-												</picker>
-											</view>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-					<view class="btnsti" v-if="!notbooking">
-						<view class="roblck" @click="staleve = false">
-							取消
-						</view>
-						<view class="btnok" @click="cits_btn">
-							继续预定
-						</view>
-					</view>
-				</view>
-			</view>
+			<violation @emviolation="emviolation" :platformlist="platformlist" :notbooking="notbooking" :limitNativeRule="limitNativeRule" :rulesReasons="rulesReasons"></violation>
 		</view>
 
 	</view>
 </template>
 
 <script>
+	import violation from '@/components/view/book/violation/violation.vue'
 	import bwSwiper from '@/components/bw-swiper/bw-swiper.vue';
 	import order from '@/api/order.js'
 	import calendar from '@/components/view/book/date-picker/date-picker.vue'
@@ -336,10 +163,12 @@
 	export default {
 		components: {
 			calendar,
-			bwSwiper
+			bwSwiper,
+			violation
 		},
 		data() {
-			return {
+			return{
+				platformlist: [], //处理过的违规信息
 				isvideo: true,
 				indicatorDots: false,
 				swlist: [], //图片集合
@@ -382,17 +211,17 @@
 				datlist: {},
 				rulesReasons: [], //超规类型
 				rulesReasono: [], //超规类型2
-				highLimit: {}, //高价政策
-				starLevelLimit: {}, //酒店星级政策
-				higlist: [], //高价政策报错
-				starlist: [], //酒店政策报错
+				limitNativeRule:{},//违规对象
 				notbooking: false, //是否价格政策不可预定
 				isarsrl: false, //因公是否需要审核
 				isretun: false,
 				isticons: '', //简介
 				ist: false,
 				isblckt: false,
-				channelData: null
+				channelData: null,
+				aintros:'',//简介
+				img:'@/static/img/hotel-small-img2.jpg',
+				xx:0
 			}
 		},
 		mounted() {
@@ -407,16 +236,26 @@
 		onLoad(item) {
 			this.datlist = JSON.parse(item.data);
 			let dataw = this.datlist;
+			this.xx = parseInt(item.xx);
 			this.hotelCode = dataw.hotelCode; //城市
 			this.checkinDate = dataw.se_doubletimel; //开始时间
 			this.checkoutDate = dataw.se_doubletimer; //结束时间
 			this.startDate = dataw.se_doubletimel;
 			this.endDate = dataw.se_doubletimer;
 			this.searchHotelType = dataw.searchHotelType; //同城和艺龙
-			this.citys = dataw.city;
-			this.cityst = dataw.citys;
+			this.citys = dataw.city.name;
+			this.cityst = dataw.citys.name;
 		},
 		methods: {
+			emviolation(wa){//继续预订
+				this.limitNativeRule = wa.davalue;//处理过的违规信息
+				this.othotrlis();//触发跳转下一页
+			},
+			tz(){
+				uni.navigateTo({
+					url:'./hoterlintroduce?datalist=' + JSON.stringify(this.datalist),
+				})
+			},
 			swipclik(item) { //点击图片
 
 			},
@@ -424,7 +263,6 @@
 				this.startX = e.changedTouches[0].clientX;
 			},
 			end(e) {
-				// console.log(e)
 				const subX = e.changedTouches[0].clientX - this.startX;
 				if (subX > 100) {
 					console.log('右滑');
@@ -451,12 +289,12 @@
 				}
 			},
 			intros() { //收起
-				this.isticons = "简介:" + this.escape2Html(this.datalist.intro).replace(/\<br\>\<br\>/g, '\<br\/\>').substring(0, 54) +
+				this.isticons = "简介:" + this.escape2Html(this.aintros).replace(/\<br\>\<br\>/g, '\<br\/\>').substring(0, 54) +
 					'...';
 				this.ist = false;
 			},
 			intrtos() { //全文
-				this.isticons = "简介:" + this.escape2Html(this.datalist.intro).replace(/\<br\>\<br\>/g, '\<br\/\>');
+				this.isticons = "简介:" + this.escape2Html(this.aintros).replace(/\<br\>\<br\>/g, '\<br\/\>');
 				this.ist = true;
 			},
 			cancel(it) {
@@ -540,8 +378,7 @@
 						channelData: this.channelData
 					}, //当前房屋信息
 					hots_pk: this.hots_pk,
-					highLimit: this.highLimit, //高价超规
-					starLevelLimit: this.starLevelLimit, //酒店星级超规
+					limitNativeRule:this.limitNativeRule,//违规信息
 					datlist: this.datlist, //出差人员
 					datatiem: this.timeslist, //当前的时间
 					datalist: {
@@ -575,100 +412,61 @@
 						for (let i = 0; i < palist.length; i++) {
 							arr.push(palist[i].passengerNo)
 						}
-
-						try {
-							let rest = await order.judgeApprv({
-								passengerNos: arr
-							}); //判断当前出行人是否都免审
-							if (rest.code == 200) {
-								if (rest.data == true) { //判断是否需要审核 true为不需要审核
-									this.isarsrl = true;
-								}
-							} else {
-								this.showToasts(rest.message);
-								return
-							}
-						} catch (e) {
-							console.log(e)
-
-						}
+						this.isarsrl = await this.apiutils.judgeApprv(arr);//用户是否免审  true为免审
 						for (let i in palist) {
 							pass.push({
 								passengerNo: palist[i].passengerNo
 							})
 						}
 						let datw = {
-							travelCity: this.datlist.city,
+							travelCity: this.datlist.city.name,
 							resGradeId: this.datalist.resGradeId,
 							firPrice: item.firPrice,
 							passengerList: pass
 						}
 						try {
 							let res = await tork.checkHotelRules(datw);
-
+							
 							if (res.code == 200) {
 								//1=只记录不提示，2=提示超规不必选择原因，3=提示超规必选原因，4=不可预定
-
-								if (res.data.result.highLimit != undefined) { //高价政策
-									this.highLimit = res.data.result.highLimit;
-								}
-								if (res.data.result.starLevelLimit != undefined) { //酒店星级政策
-									this.starLevelLimit = res.data.result.starLevelLimit;
-								}
-								if (this.highLimit.length == 0 && this.starLevelLimit.length == 0) { //没有违反政策直接跳到预定页面
-									uni.navigateTo({
-										url: './hotelreservation'
-									})
+								if (JSON.stringify(res.data.result) == '{}') { //没有违规
+									this.othotrlis(); //跳转订单页面
 								} else {
-									this.higlist = [];
-									this.starlist = [];
-									for (let i in this.highLimit) {
-										if (i == 4) {
-											this.notbooking = true;
-										}
-										if (i == 3) {
-											this.idstarle = true
-										}
-										if (i != 1 && i != 5) {
-											this.higlist.push({
-												name: i,
-												list: this.highLimit[i]
-											})
-										}
-										if (i == 5 && this.datlist.isblcks == 1) { //只有事前才有违规再次审批
-											this.isblckt = true;
-											this.higlist.push({
-												name: i,
-												list: this.highLimit[i]
-											})
+									let dal = res.data.result; //违规信息
+									this.limitNativeRule = dal;
+									this.platformlist = [];
+									let sust = []
+									this.notbooking = false;
+									this.isblckt = false;
+									for (let k in dal) { //插入所有的违规信息
+										sust.push({
+											index: 0,
+											name: this.platnams(k),
+											names: k,
+											list: this.platname(dal[k]),
+											ishow:false
+										})
+									}
+									
+									let sitshows = false;
+									for (let p in sust) {
+										for (let k in sust[p].list) {
+											if(sust[p].list[k].va != 1){
+												sitshows = true;
+												sust[p].ishow = true;
+												if (sust[p].list[k].va == 4) {
+													this.notbooking = true;
+												}
+												if (sust[p].list[k].va == 5) {
+													this.isblckt = true; //是否再次审批
+												}
+											}
 										}
 									}
-									for (let i in this.starLevelLimit) {
-										if (i == 4) {
-											this.notbooking = true;
-										}
-										if (i == 3) {
-											this.idstarles = true
-										}
-										if (i != 1 && i != 5) {
-											this.starlist.push({
-												name: i,
-												list: this.starLevelLimit[i]
-											})
-										}
-										if (i == 5 && this.datlist.isblcks == 1) {
-											this.isblckt = true;
-											this.starlist.push({
-												name: i,
-												list: this.starLevelLimit[i]
-											})
-										}
-									}
-									console.log(111, this.higlist);
-									if (this.starlist.length > 0 || this.higlist.length > 0) {
-										this.staleve = true;
+									if(sitshows == true){
+										this.platformlist = sust;
 									} else {
-										this.othotrlis(); //跳转订单页面
+										this.othotrlis();
 									}
 								}
 							} else {
@@ -684,6 +482,53 @@
 					}
 				}
 			},
+			platnams(name) {
+				if (name == 'highLimit') {
+					return '高价限制超规'
+				} else if (name == 'starLevelLimit') {
+					return '酒店星级限制'
+				}
+			},
+			platname(list) {
+				let su = [];
+				for (let k in list) {
+					if (k == 1) {
+						su.push({
+							va: k,
+							name: '只记录不提示',
+							list: list[k]
+						})
+					} else if (k == 2) {
+						su.push({
+							va: k,
+							name: '超规不必选择原因',
+							list: list[k]
+						})
+			
+					} else if (k == 3) {
+						su.push({
+							va: k,
+							name: '超规必须选择原因',
+							list: list[k],
+							reasons: ''
+						})
+			
+					} else if (k == 4) {
+						su.push({
+							va: k,
+							name: '不可预定',
+							list: list[k]
+						})
+					} else if (k == 5) {
+						su.push({
+							va: k,
+							name: '超规需重新审核',
+							list: list[k]
+						})
+					}
+				}
+				return su;
+			},
 			async seleit() { //获取酒店详情
 				let that = this;
 				try {
@@ -693,13 +538,30 @@
 					})
 					if (rest.code == 200) {
 						if (rest.data != null) {
-							this.ptoslist = rest.data;
-							let si = [];
-							for(let k =0;k<5;k++){
-								si.push({img:this.ptoslist[k].imageUrl,
-								address: ''});
+							if(rest.data[0].imageUrl != null){
+								this.ptoslist = rest.data;
+								
+								let objs = {};
+								let models = this.ptoslist.reduce((cur, next) => {  //根据图片名称去重
+									objs[next.imageUrl] ? "" : objs[next.imageUrl] = true && cur.push(next);
+									return cur;
+								}, []) //设置cur默认类型为数组，并且初始值为空的数组
+								
+								let si = [];
+								if(models.length > 4){
+									for(let k =0;k<5;k++){
+										si.push({img:models[k].imageUrl,
+										address: ''});
+									}
+								} else {
+									for(let k =0;k<models.length;k++){
+										si.push({img:models[k].imageUrl,
+										address: ''});
+									}
+								}
+								
+								this.swlist = si;
 							}
-							this.swlist = si;
 						}
 					} else {
 						this.showToasts(rest.mssage);
@@ -714,19 +576,20 @@
 						that.datalist = res.data.hotel;
 						if (that.datalist != null) {
 							that.iconlost = that.datalist.resFacilities;
-						}
-						that.rulesReasons = res.data.rulesReasons;
-						that.rulesReasono = res.data.rulesReasons;
-						this.rulesReasons.unshift({
-							chineseDesc: '　'
-						})
-						let tirles = that.escape2Html(that.datalist.intro);
-						if (tirles != null) {
-							that.isticons = tirles.replace(/\<br\>\<br\>/g, '\<br\/\>');
-							if (that.datalist.intro.length > 68) {
-								this.intros();
+							that.rulesReasons = res.data.rulesReasons;
+							this.rulesReasons.unshift({
+								chineseDesc: '　'
+							})
+							this.aintros = res.data.hotel.shortIntro;
+							let tirles = that.escape2Html(this.aintros);
+							if (tirles != null) {
+								that.isticons = tirles.replace(/\<br\>\<br\>/g, '\<br\/\>');
+								if (this.aintros.length > 68) {
+									this.intros();
+								}
 							}
 						}
+						
 					} else {
 						this.showToasts(res.message);
 					}
@@ -860,18 +723,22 @@
 				// #endif
 			},
 			maplist(item, name) { //查看地图
-				let tsl = this.bd_decrypt(item[0], item[1]);
+				// let tsl = this.bd_decrypt(item[0], item[1]);
+				let tsl  = item[0];
 				// #ifdef  H5 || MP-WEIXIN
 				uni.openLocation({
 					latitude: tsl.lat,
-					longitude: tsl.lng,
+					longitude: tsl.lon,
 					name: name,
-					success: function(res) {}
+					success: function(res) {
+					}
 				})
 				//#endif
 				//#ifdef APP-PLUS
+				console.log(111111111)
 				let latitude = tsl.lat;
-				let longitude = tsl.lng;
+				let longitude = tsl.lon;
+				console.log(latitude,longitude)
 				let url = "";
 				if (plus.os.name == "Android") {
 					let hasBaiduMap = plus.runtime.isApplicationExist({
@@ -888,7 +755,6 @@
 					let urlAmap =
 						`androidamap://viewMap?sourceApplication=appname&poiname=${name}&lat=${latitude}&lon=${longitude}&dev=0`
 					// urlAmap = encodeURI(urlBaiduMap)
-					console.log(urlAmap)
 					if (hasAmap && hasBaiduMap) {
 						plus.nativeUI.actionSheet({
 							title: "选择地图应用",
@@ -930,7 +796,6 @@
 							title: "高德地图"
 						}]
 					}, function(e) {
-						console.log("e.index: " + e.index);
 						switch (e.index) {
 							case 1:
 								url =
@@ -1089,6 +954,7 @@
 			position: relative;
 			width: 100%;
 			height: 506upx;
+			margin-top: 0upx;
 			.rotblack {
 				position: absolute;
 				z-index: 10;
@@ -1154,8 +1020,7 @@
 		.hotlists {
 			position: absolute;
 			top: 400upx;
-			margin: 20upx;
-			width: calc(100% - 40upx);
+			width: 100%;
 
 			.intro {
 				padding: 20upx;
@@ -1177,11 +1042,57 @@
 					color: $uni-color-primary;
 				}
 			}
+			.hotrllistmain{
+				background: #FFFFFF;
+				width: calc(100% - 100upx);
+				margin: 0 20upx;
+				padding: 20upx 30upx;
+				border-radius: 10upx;
+				.resGrades{
+					display: flex;
+					color: #FA6803;
+				}
+				.hotrllistname{
+					font-size: 30upx;
+					color: #333333;
+				}
+				.hotrllistdetails{
+					font-size: 26upx;
+					height: 40upx;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					.hot_lefts{
+						width: 80%;
+						overflow: hidden;
+						text-overflow:ellipsis;
+						white-space: nowrap;
+					}
+					.hot_rigts{
+						color:#007AFF;
+					}
+					
+				}
+				.position{
+					display: flex;
+					height: 40upx;
+					align-items: center;
+					image{
+						width: 25upx;
+						height: 30upx;
+					}
+					view{
+						font-size: 22upx;
+						color: #333333;
+						margin-left: 10upx;
+					}
+				}
+			}
 			.onbottms{
 				width: 100%;
 				margin-top: 20upx;
-				border-top-left-radius: 12upx;
-				border-top-right-radius: 12upx;
+				// border-top-left-radius: 12upx;
+				// border-top-right-radius: 12upx;
 				background: #FFFFFF;
 				.onleft {
 					width: calc(100% - 40upx);
@@ -1222,52 +1133,70 @@
 				
 							.optext {
 								width: 50%;
-								height: 100%;
-								display: flex;
-								align-items: center;
-								font-size: 35upx;
-								text-indent: 10upx;
-				
+								height:100upx;
+								// display: flex;
+								// align-items: center;
+								margin-left: 20upx;
+								font-size: 30upx;
 								.optile {
+									overflow: hidden; /*超出部分隐藏*/
+									white-space: nowrap; /*让文本强制在一行不换行*/
+									text-overflow: ellipsis; /*显示省略号来代表被修剪的文本*/
 									color: #333333;
-									text-indent: 20upx;
 								}
 							}
 				
 							.money {
 								display: flex;
 								width: calc(100% - 50% - 180upx);
+								height: 60upx;
 								justify-content: flex-end;
 								align-items: center;
-								color: #FA6803;
-				
+								color: #FFA63E;
+								font-size: 46upx;
+								margin-top: 130upx;
 								.monsle {
-									font-size: 25upx;
+									font-size: 24upx;
+									margin-top: 10upx;
 								}
-				
 								.mosrig {
-									font-size: 25upx;
-									color: #9D9D9D;
+									font-size: 20upx;
+									color: #FFA63E;
+									margin-left: 10upx;
+									margin-top: 10upx;
+								}
+								.moneyimg{
+									image{
+										width: 23upx;
+										height: 15upx;
+										margin-left: 10upx;
+									}
 								}
 							}
 						}
 				
 						.ontons {
+							background: #f5f5f5;
 							.resPro {
 								width: 100%;
 								padding: 20upx 0;
 								display: flex;
+								line-height:142upx;
+								border-bottom:1px solid #f2f2f2;
 								.resPro_left {
 									width: 60%;
 									font-size: 30upx;
 									line-height: 40upx;
-				
+									margin-left: 30upx;
+									margin-top: 30upx;
 									.tiems {
-										font-size: 35upx;
+										font-size: 30upx;
+										color: #333333;
 									}
-				
 									.texs {
-										color: #C8C7CC;
+										font-size: 26upx;
+										color: #666666;
+										margin-top: 20upx;
 									}
 								}
 				
@@ -1276,13 +1205,13 @@
 									display: flex;
 									align-items: center;
 									justify-content: flex-end;
-				
+									margin-right: 10upx;
 									.res_poric {
-										color: #FA6803;
-										font-size: 30upx;
-				
+										color: #FFA63E;
+										font-size:24upx;
+										margin-right: 10upx;
 										.res_poricts {
-											font-size: 40upx;
+											font-size: 46upx;
 										}
 									}
 				
@@ -1304,28 +1233,29 @@
 				
 										.rse_erf_bot {
 											padding: 0 15upx;
-											height: 40upx;
+											height: 50upx;
 											text-align: center;
 											line-height: 40upx;
 											background: #FFFFFF;
-											color: #FA6803;
+											color: #FFA63E;
 										}
 									}
 				
 									.rse_erf {
 										margin-left: 10upx;
 										font-size: 27upx;
-										height: 90upx;
+										height: 110upx;
 										border-radius: 10upx;
-										border: 2upx solid #FA6803;
+										border: 2upx solid #FFA63E;
 										overflow: hidden;
 				
 										.rse_erf_top {
-											height: 50upx;
+											height: 60upx;
 											text-align: center;
-											line-height: 50upx;
-											background: #FA6803;
+											line-height: 60upx;
+											background: #FFA63E;
 											color: #FFFFFF;
+											font-size: 34upx;
 										}
 				
 										.rse_erf_top_one {
@@ -1338,11 +1268,12 @@
 				
 										.rse_erf_bot {
 											padding: 0 15upx;
-											height: 40upx;
+											height: 50upx;
 											text-align: center;
-											line-height: 40upx;
+											line-height: 50upx;
 											background: #FFFFFF;
-											color: #FA6803;
+											color: #FFA63E;
+											// margin-top: 30upx;
 										}
 									}
 								}
@@ -1352,20 +1283,21 @@
 								width: 100%;
 								padding: 20upx 0;
 								display: flex;
-								border-bottom: 2upx solid #C0C0C0;
-				
+								border-bottom:1px solid #f2f2f2;
 								.resPro_left {
 									width: 60%;
 									font-size: 30upx;
 									line-height: 40upx;
-				
+									margin-left: 30upx;
+									margin-top: 30upx;
 									.tiems {
-										line-height: 50upx;
-										font-size: 35upx;
+										font-size: 30upx;
+										color: #333333;
 									}
-				
 									.texs {
-										color: #C8C7CC;
+										font-size: 26upx;
+										color: #666666;
+										margin-top: 20upx;
 									}
 								}
 				
@@ -1386,26 +1318,27 @@
 				
 									.rse_erf {
 										font-size: 27upx;
-										height: 90upx;
+										height: 110upx;
 										border-radius: 10upx;
 										border: 2upx solid #C8C7CC;
 										overflow: hidden;
 				
 										.rse_erf_top {
-											height: 50upx;
+											height: 60upx;
 											text-align: center;
-											line-height: 50upx;
+											line-height: 60upx;
 											background: #C8C7CC;
 											color: #FFFFFF;
+											font-size: 34upx;
 										}
 				
 										.rse_erf_bot {
 											padding: 0 15upx;
-											height: 40upx;
+											height: 50upx;
 											text-align: center;
-											line-height: 40upx;
+											line-height: 50upx;
 											background: #FFFFFF;
-											color: #C8C7CC;
+											color: #FFA63E;
 										}
 									}
 								}
@@ -1415,7 +1348,7 @@
 						.show {
 							width: calc(100% - 40upx);
 							padding: 0 20upx;
-							background: #edf0f5;
+							background: #f5f5ff;
 						}
 				
 						.hide {

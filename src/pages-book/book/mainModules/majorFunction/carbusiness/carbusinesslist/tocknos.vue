@@ -1,7 +1,5 @@
 <template>
-	<view class="">
-		<loading>
-		</loading>
+	<view>
 		<view class="ticketckls">
 			<headnavigation titles="选择航班"></headnavigation>
 			<view class="l_list">
@@ -12,7 +10,7 @@
 				</view>
 				<view class="i_nas" @click="showPop">
 					<span class="iconfont">&#xe649;</span>
-					<view class="">
+					<view  >
 						{{fistatime}}
 					</view>
 					<view class="places" v-if="fistatime == ''">
@@ -175,20 +173,18 @@
 				var month = e.month > 9 ? e.month : '0' + e.month;;
 				var day = e.day > 9 ? e.day : '0' + e.day;
 				this.fistatime = e.year + '-' + month + '-' + day;
-				console.log(this.fistatime)
 			    // 输出 { year: 2020,month: 3,day: 23}
 			},
 		}
 	}
 </script>
-
+<style>
+	page{
+		background-color: #FFFFFF;
+	}
+</style>
 <style scoped lang="scss">
 	.ticketckls{
-		width: 100%;
-		/*  #ifdef MP-WEIXIN */
-		padding-top: 80upx;
-		/*  #endif  */
-		background-color: #FFFFFF;
 		.l_list{
 			width: calc(100% - 40upx);
 			padding: 60upx 20upx 0 20upx;

@@ -4,48 +4,9 @@
 		</loading>
 		<view class="container999" style="background:#edf0f5;" v-if="stis">
 			<headnavigation titles="政策信息"></headnavigation>
-			<view class="currency">
-				<!-- 通用政策 -->
-				<view class="General_policy">
-					通用政策
-				</view>
-				<view class="tabBar">
-					<view class="tabbar_item" v-if="policyInconsistency != null">
-						<view class="book_title">外部客户差旅政策:</view>
-						<view class="book_name">{{policyInconsistency}}</view>
-					</view>
-					<view class="tabbar_item" v-if="noTravelPolicy != null">
-						<view class="book_title">无差旅政策预定:</view>
-						<view class="book_name">{{noTravelPolicy}}</view>
-					</view>
-					<view class="tabbar_item" v-if="externalCustomer != null">
-						<view class="book_title">出行人差旅政策不一致:</view>
-						<view class="book_name">{{externalCustomer}}</view>
-					</view>
-					<view class="tabbar_item" v-if="nativeTicketViolation != null">
-						<view class="book_title">国内机票超规仓位:</view>
-						<view class="book_name">{{nativeTicketViolation}}</view>
-					</view>
-					<view class="tabbar_item" v-if="internationalTicketViolation != null">
-						<view class="book_title">国际机票超规仓位:</view>
-						<view class="book_name">{{internationalTicketViolation}}</view>
-					</view>
-					<view class="tabbar_item" v-if="hotelViolation != null">
-						<view class="book_title">酒店超规房型:</view>
-						<view class="book_name">{{hotelViolation}}</view>
-					</view>
-					<view class="tabbar_item" v-if="trainViolation != null">
-						<view class="book_title">火车票超规坐席:</view>
-						<view class="book_name">{{trainViolation}}</view>
-					</view>
-					<view class="tabbar_item" v-if="hotelGuarantee != null">
-						<view class="book_title">酒店担保:</view>
-						<view class="book_name">{{hotelGuarantee}}</view>
-					</view>
-				</view>
-			</view>
+			
 			<!-- 机票政策 -->
-			<view class="air_ticket" v-if="nativeAirTicketRule != null">
+			<view class="air_ticket" v-if="nativeAirTicketRule != null && (showType == 'row' || showType == 'Planeticket')">
 				<view class="ticket_policy">
 					机票政策
 				</view>
@@ -87,7 +48,7 @@
 			</view>
 			
 			<!-- 国内火车政策 -->
-			<view class="air_ticket" v-if="nativeTrainRule != null">
+			<view class="air_ticket" v-if="nativeTrainRule != null && (showType == 'row' || showType == 'Train')">
 				<view class="ticket_policy">
 					火车政策
 				</view>
@@ -101,7 +62,7 @@
 			</view>
 			
 			<!-- 国内酒店政策 -->
-			<view class="air_ticket" v-if="hotelRule != null">
+			<view class="air_ticket" v-if="hotelRule != null && (showType == 'row' || showType == 'Hotel')">
 				<view class="ticket_policy">
 					酒店政策
 				</view>
@@ -121,7 +82,46 @@
 					</view>
 				</view>
 			</view>
-			
+			<view class="currency">
+				<!-- 通用政策 -->
+				<view class="General_policy">
+					通用政策
+				</view>
+				<view class="tabBar">
+					<view class="tabbar_item" v-if="policyInconsistency != null">
+						<view class="book_title">外部客户差旅政策:</view>
+						<view class="book_name">{{policyInconsistency}}</view>
+					</view>
+					<view class="tabbar_item" v-if="noTravelPolicy != null">
+						<view class="book_title">无差旅政策预定:</view>
+						<view class="book_name">{{noTravelPolicy}}</view>
+					</view>
+					<view class="tabbar_item" v-if="externalCustomer != null">
+						<view class="book_title">出行人差旅政策不一致:</view>
+						<view class="book_name">{{externalCustomer}}</view>
+					</view>
+					<view class="tabbar_item" v-if="nativeTicketViolation != null">
+						<view class="book_title">国内机票超规仓位:</view>
+						<view class="book_name">{{nativeTicketViolation}}</view>
+					</view>
+					<view class="tabbar_item" v-if="internationalTicketViolation != null">
+						<view class="book_title">国际机票超规仓位:</view>
+						<view class="book_name">{{internationalTicketViolation}}</view>
+					</view>
+					<view class="tabbar_item" v-if="hotelViolation != null">
+						<view class="book_title">酒店超规房型:</view>
+						<view class="book_name">{{hotelViolation}}</view>
+					</view>
+					<view class="tabbar_item" v-if="trainViolation != null">
+						<view class="book_title">火车票超规坐席:</view>
+						<view class="book_name">{{trainViolation}}</view>
+					</view>
+					<view class="tabbar_item" v-if="hotelGuarantee != null">
+						<view class="book_title">酒店担保:</view>
+						<view class="book_name">{{hotelGuarantee}}</view>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -177,7 +177,11 @@
 				nativeTrainRule:{},
 				hotelRule:{},
 				stis:false,
+				showType:'row'
 			}
+		},
+		onLoad(item) {
+			this.showType = item.type;
 		},
 		mounted() {
 			this.cond();
@@ -303,6 +307,7 @@
 
 <style lang="scss" scoped>
 	.mian {
+		color: #333333;
 		.container999 {
 			.General_policy {
 				width: 100%;
@@ -345,7 +350,7 @@
 			}
 
 			.tabBar {
-
+			font-size: 26upx;
 				.tabbar_item {
 					display: flex;
 					height: 100upx;

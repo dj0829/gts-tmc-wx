@@ -1,7 +1,7 @@
 const airports = {
     "addressAirportAll":[
             {
-                "airportCName":"梧州长洲岛机场",
+                "airportCName":"西江机场",
                 "airportCode":"WUZ",
                 "cityCName":"梧州",
                 "cityEName":"Wuzhou",
@@ -17,7 +17,7 @@ const airports = {
                 "citySpell":"anshun"
             },
             {
-                "airportCName":"贵阳机场",
+                "airportCName":"龙洞堡国际机场",
                 "airportCode":"KWE",
                 "cityCName":"贵阳",
                 "cityEName":"Guiyang",
@@ -25,7 +25,7 @@ const airports = {
                 "citySpell":"guiyang"
             },
             {
-                "airportCName":"铜仁机场",
+                "airportCName":"凤凰机场",
                 "airportCode":"TEN",
                 "cityCName":"铜仁",
                 "cityEName":"Tongren",
@@ -33,7 +33,7 @@ const airports = {
                 "citySpell":"tongren"
             },
             {
-                "airportCName":"遵义新舟机场",
+                "airportCName":"新舟机场",
                 "airportCode":"ZYI",
                 "cityCName":"遵义新舟",
                 "cityEName":"ZunyiXinzhou",
@@ -41,7 +41,7 @@ const airports = {
                 "citySpell":"zunyixinzhou"
             },
             {
-                "airportCName":"海口美兰机场",
+                "airportCName":"美兰机场",
                 "airportCode":"HAK",
                 "cityCName":"海口",
                 "cityEName":"Haikou",
@@ -57,14 +57,6 @@ const airports = {
                 "citySpell":"handan"
             },
             {
-                "airportCName":"黄骅治蝗机场",
-                "airportCode":"HHA",
-                "cityCName":"黄骅",
-                "cityEName":"Huangye",
-                "cityFirstSpell":"hh",
-                "citySpell":"huanghua"
-            },
-            {
                 "airportCName":"石家庄正定机场",
                 "airportCode":"SJW",
                 "cityCName":"石家庄",
@@ -73,7 +65,7 @@ const airports = {
                 "citySpell":"shijiazhuang"
             },
             {
-                "airportCName":"洛阳机场",
+                "airportCName":"北郊机场",
                 "airportCode":"LYA",
                 "cityCName":"洛阳",
                 "cityEName":"LuoYang",
@@ -81,7 +73,7 @@ const airports = {
                 "citySpell":"luoyang"
             },
             {
-                "airportCName":"哈尔滨太平国际机场",
+                "airportCName":"太平国际机场",
                 "airportCode":"HRB",
                 "cityCName":"哈尔滨",
                 "cityEName":"Harbin",
@@ -89,7 +81,7 @@ const airports = {
                 "citySpell":"haerbin"
             },
             {
-                "airportCName":"佳木斯机场",
+                "airportCName":"东郊机场",
                 "airportCode":"JMU",
                 "cityCName":"佳木斯",
                 "cityEName":"Jiamusi",
@@ -97,7 +89,7 @@ const airports = {
                 "citySpell":"jiamusi"
             },
             {
-                "airportCName":"牡丹江海浪机场",
+                "airportCName":"海浪机场",
                 "airportCode":"MDG",
                 "cityCName":"牡丹江",
                 "cityEName":"Mudanjiang",
@@ -105,7 +97,7 @@ const airports = {
                 "citySpell":"mudanjiang"
             },
             {
-                "airportCName":"恩施机场",
+                "airportCName":"许家坪机场",
                 "airportCode":"ENH",
                 "cityCName":"恩施",
                 "cityEName":"Enshi",
@@ -115,13 +107,13 @@ const airports = {
             {
                 "airportCName":"那拉提机场",
                 "airportCode":"NLT",
-                "cityCName":"那拉提",
+                "cityCName":"新源",
                 "cityEName":"NALATI",
                 "cityFirstSpell":"nlt",
                 "citySpell":"nalati"
             },
             {
-                "airportCName":"鄂尔多斯伊金霍洛机场",
+                "airportCName":"伊金霍洛机场",
                 "airportCode":"DSN",
                 "cityCName":"鄂尔多斯",
                 "cityEName":"Eerduosi",
@@ -129,7 +121,7 @@ const airports = {
                 "citySpell":"eerduosi"
             },
             {
-                "airportCName":"永州零陵机场",
+                "airportCName":"零陵机场",
                 "airportCode":"LLF",
                 "cityCName":"永州",
                 "cityEName":"Yongzhou",
@@ -137,7 +129,7 @@ const airports = {
                 "citySpell":"yongzhou"
             },
             {
-                "airportCName":"库车机场",
+                "airportCName":"龟兹机场",
                 "airportCode":"KCA",
                 "cityCName":"库车",
                 "cityEName":"Kuqa",
@@ -145,9 +137,9 @@ const airports = {
                 "citySpell":"kuche"
             },
             {
-                "airportCName":"连城机场",
+                "airportCName":"冠豸山机场",
                 "airportCode":"LCX",
-                "cityCName":"连城",
+                "cityCName":"龙岩",
                 "cityEName":"Liancheng",
                 "cityFirstSpell":"lc",
                 "citySpell":"liancheng"
@@ -161,7 +153,7 @@ const airports = {
                 "citySpell":"mangshi"
             },
             {
-                "airportCName":"万州五桥机场",
+                "airportCName":"五桥机场",
                 "airportCode":"WXN",
                 "cityCName":"万州",
                 "cityEName":"Wanxian",
@@ -169,7 +161,7 @@ const airports = {
                 "citySpell":"wanzhou"
             },
             {
-                "airportCName":"长海机场",
+                "airportCName":"大长山岛机场",
                 "airportCode":"CNI",
                 "cityCName":"长海",
                 "cityEName":"Changhai",
@@ -177,23 +169,63 @@ const airports = {
                 "citySpell":"changhai"
             },
             {
-                "airportCName":"怀化芷江机场",
+                "airportCName":"芷江机场",
                 "airportCode":"HJJ",
-                "cityCName":"芷江",
+                "cityCName":"怀化",
                 "cityEName":"Zhijiang",
                 "cityFirstSpell":"zj",
                 "citySpell":"zhijiang"
             },
-            {
-                "airportCName":"北京大兴国际机场",
-                "airportCode":"PKX",
-                "cityCName":"北京大兴",
-                "cityEName":"Beijing",
-                "cityFirstSpell":"bj",
-                "citySpell":"beijing"
+			{
+				"airportCName":"北京",
+				"airportCode":"BJS",
+				"cityCName":"北京",
+				"cityEName":"Beijing",
+				"cityFirstSpell":"bj",
+				"citySpell":"beijing"
+			},
+			 {
+				"airportCName":"大兴国际机场",
+				"airportCode":"PKX",
+				"cityCName":"北京大兴",
+				"cityEName":"Beijing",
+				"cityFirstSpell":"bj",
+				"citySpell":"beijing"
+			},
+			{
+				"airportCName":"首都国际机场",
+				"airportCode":"PEK",
+				"cityCName":"北京首都",
+				"cityEName":"beijing",
+				"cityFirstSpell":"bj",
+				"citySpell":"beijing"
+			},
+			{
+				"airportCName":"浦东机场",
+				"airportCode":"PVG",
+				"cityCName":"上海浦东",
+				"cityEName":"Shanghai",
+				"cityFirstSpell":"sh",
+				"citySpell":"shanghai"
+			},
+			{
+                "airportCName":"虹桥机场",
+                "airportCode":"SHA",
+                "cityCName":"上海虹桥",
+                "cityEName":"Shanghai",
+                "cityFirstSpell":"sh",
+                "citySpell":"shanghai"
             },
+			{
+				"airportCName":"上海",
+				"airportCode":"SHS",
+				"cityCName":"上海",
+				"cityEName":"Shanghai",
+				"cityFirstSpell":"sh",
+				"citySpell":"shanghai"
+			},
             {
-                "airportCName":"安庆天柱山机场",
+                "airportCName":"天柱山机场",
                 "airportCode":"AQG",
                 "cityCName":"安庆",
                 "cityEName":"Anqing",
@@ -201,15 +233,7 @@ const airports = {
                 "citySpell":"anqing"
             },
             {
-                "airportCName":"蚌埠机场",
-                "airportCode":"BFU",
-                "cityCName":"蚌埠",
-                "cityEName":"Bengbu",
-                "cityFirstSpell":"bb",
-                "citySpell":"bangbu"
-            },
-            {
-                "airportCName":"荆州沙市机场",
+                "airportCName":"沙市机场",
                 "airportCode":"SHS",
                 "cityCName":"荆州",
                 "cityEName":"Jingzhou",
@@ -217,7 +241,7 @@ const airports = {
                 "citySpell":"jingzhou"
             },
             {
-                "airportCName":"武汉天河机场",
+                "airportCName":"天河国际机场",
                 "airportCode":"WUH",
                 "cityCName":"武汉",
                 "cityEName":"Wuhan",
@@ -233,7 +257,7 @@ const airports = {
                 "citySpell":"yichang"
             },
             {
-                "airportCName":"常德桃花源机场",
+                "airportCName":"桃花源机场",
                 "airportCode":"CGD",
                 "cityCName":"常德",
                 "cityEName":"Changde",
@@ -241,7 +265,7 @@ const airports = {
                 "citySpell":"changde"
             },
             {
-                "airportCName":"长沙黄花机场",
+                "airportCName":"黄花国际机场",
                 "airportCode":"CSX",
                 "cityCName":"长沙",
                 "cityEName":"Changsha",
@@ -249,7 +273,7 @@ const airports = {
                 "citySpell":"Changsha"
             },
             {
-                "airportCName":"林芝机场",
+                "airportCName":"米林机场",
                 "airportCode":"LZY",
                 "cityCName":"林芝",
                 "cityEName":"Linzhi",
@@ -257,7 +281,7 @@ const airports = {
                 "citySpell":"linzhi"
             },
             {
-                "airportCName":"银川河东机场",
+                "airportCName":"河东机场",
                 "airportCode":"INC",
                 "cityCName":"银川",
                 "cityEName":"Yinchuan",
@@ -273,7 +297,7 @@ const airports = {
                 "citySpell":"geermu"
             },
             {
-                "airportCName":"西宁曹家堡机场",
+                "airportCName":"曹家堡机场",
                 "airportCode":"XNN",
                 "cityCName":"西宁",
                 "cityEName":"Xining",
@@ -297,7 +321,7 @@ const airports = {
                 "citySpell":"aletai"
             },
             {
-                "airportCName":"郑州新郑机场",
+                "airportCName":"新郑国际机场",
                 "airportCode":"CGO",
                 "cityCName":"郑州",
                 "cityEName":"Zhengzhou",
@@ -305,7 +329,7 @@ const airports = {
                 "citySpell":"zhengzhou"
             },
             {
-                "airportCName":"赣州黄金机场",
+                "airportCName":"黄金机场",
                 "airportCode":"KOW",
                 "cityCName":"赣州",
                 "cityEName":"Ganzhou",
@@ -329,15 +353,7 @@ const airports = {
                 "citySpell":"dunhuang"
             },
             {
-                "airportCName":"吉安机场",
-                "airportCode":"KNC",
-                "cityCName":"吉安",
-                "cityEName":"Ji'an",
-                "cityFirstSpell":"ja",
-                "citySpell":"jian"
-            },
-            {
-                "airportCName":"长白山",
+                "airportCName":"长白山机场",
                 "airportCode":"NBS",
                 "cityCName":"长白山",
                 "cityEName":"Baishan",
@@ -345,7 +361,7 @@ const airports = {
                 "citySpell":"changbaishan"
             },
             {
-                "airportCName":"长春龙嘉机场",
+                "airportCName":"龙嘉国际机场",
                 "airportCode":"CGQ",
                 "cityCName":"长春",
                 "cityEName":"Changchun",
@@ -353,15 +369,7 @@ const airports = {
                 "citySpell":"changchun"
             },
             {
-                "airportCName":"吉林二台子机场",
-                "airportCode":"JIL",
-                "cityCName":"吉林",
-                "cityEName":"Jilin",
-                "cityFirstSpell":"jl",
-                "citySpell":"jilin"
-            },
-            {
-                "airportCName":"通化机场",
+                "airportCName":"三源浦机场",
                 "airportCode":"TNH",
                 "cityCName":"通化",
                 "cityEName":"Tonghua",
@@ -369,7 +377,7 @@ const airports = {
                 "citySpell":"tonghua"
             },
             {
-                "airportCName":"延吉朝阳川机场",
+                "airportCName":"朝阳川机场",
                 "airportCode":"YNJ",
                 "cityCName":"延吉",
                 "cityEName":"Yanji",
@@ -377,7 +385,7 @@ const airports = {
                 "citySpell":"yanji"
             },
             {
-                "airportCName":"常州奔牛机场",
+                "airportCName":"奔牛机场",
                 "airportCode":"CZX",
                 "cityCName":"常州",
                 "cityEName":"Changzhou",
@@ -385,7 +393,7 @@ const airports = {
                 "citySpell":"changzhou"
             },
             {
-                "airportCName":"淮安涟水机场",
+                "airportCName":"涟水机场",
                 "airportCode":"HIA",
                 "cityCName":"淮安",
                 "cityEName":"Huaian",
@@ -393,7 +401,7 @@ const airports = {
                 "citySpell":"huaian"
             },
             {
-                "airportCName":"连云港机场",
+                "airportCName":"白塔埠机场",
                 "airportCode":"LYG",
                 "cityCName":"连云港",
                 "cityEName":"Liangyungang",
@@ -401,7 +409,7 @@ const airports = {
                 "citySpell":"lianyungang"
             },
             {
-                "airportCName":"南京禄口机场",
+                "airportCName":"禄口国际机场",
                 "airportCode":"NKG",
                 "cityCName":"南京",
                 "cityEName":"Nanjing",
@@ -409,7 +417,7 @@ const airports = {
                 "citySpell":"nanjing"
             },
             {
-                "airportCName":"南通兴东机场",
+                "airportCName":"兴东国际机场",
                 "airportCode":"NTG",
                 "cityCName":"南通",
                 "cityEName":"Nantong",
@@ -417,15 +425,7 @@ const airports = {
                 "citySpell":"nantong"
             },
             {
-                "airportCName":"苏州机场",
-                "airportCode":"SZV",
-                "cityCName":"苏州",
-                "cityEName":"Suzhou",
-                "cityFirstSpell":"sz",
-                "citySpell":"suzhou"
-            },
-            {
-                "airportCName":"无锡硕放机场",
+                "airportCName":"苏南硕放国际机场",
                 "airportCode":"WUX",
                 "cityCName":"无锡",
                 "cityEName":"Wuxi",
@@ -433,7 +433,7 @@ const airports = {
                 "citySpell":"wuxi"
             },
             {
-                "airportCName":"徐州观音机场",
+                "airportCName":"观音机场",
                 "airportCode":"XUZ",
                 "cityCName":"徐州",
                 "cityEName":"Xuzhou",
@@ -441,7 +441,7 @@ const airports = {
                 "citySpell":"xuzhou"
             },
             {
-                "airportCName":"江苏盐城南洋机场",
+                "airportCName":"南洋机场",
                 "airportCode":"YNZ",
                 "cityCName":"盐城",
                 "cityEName":"Yancheng",
@@ -473,7 +473,7 @@ const airports = {
                 "citySpell":"jiujiang"
             },
             {
-                "airportCName":"南昌昌北机场",
+                "airportCName":"昌北国际机场",
                 "airportCode":"KHN",
                 "cityCName":"南昌",
                 "cityEName":"Nanchang",
@@ -481,7 +481,7 @@ const airports = {
                 "citySpell":"nanchang"
             },
             {
-                "airportCName":"鞍山机场",
+                "airportCName":"腾鳌机场",
                 "airportCode":"AOG",
                 "cityCName":"鞍山",
                 "cityEName":"Anshan",
@@ -497,7 +497,7 @@ const airports = {
                 "citySpell":"dandong"
             },
             {
-                "airportCName":"大连周水子国际机场",
+                "airportCName":"周水子国际机场",
                 "airportCode":"DLC",
                 "cityCName":"大连",
                 "cityEName":"Dalian",
@@ -505,7 +505,7 @@ const airports = {
                 "citySpell":"dalian"
             },
             {
-                "airportCName":"内蒙古海拉尔东山机场",
+                "airportCName":"呼伦贝尔东山国际机场",
                 "airportCode":"HLD",
                 "cityCName":"海拉尔",
                 "cityEName":"Huludao",
@@ -513,7 +513,7 @@ const airports = {
                 "citySpell":"hailaer"
             },
             {
-                "airportCName":"锦州小岭子机场",
+                "airportCName":"锦州湾机场",
                 "airportCode":"JNZ",
                 "cityCName":"锦州",
                 "cityEName":"Jinzhou",
@@ -521,7 +521,7 @@ const airports = {
                 "citySpell":"jinzhou"
             },
             {
-                "airportCName":"沈阳桃仙机场",
+                "airportCName":"桃仙国际机场",
                 "airportCode":"SHE",
                 "cityCName":"沈阳",
                 "cityEName":"Shenyang",
@@ -529,15 +529,7 @@ const airports = {
                 "citySpell":"shenyang"
             },
             {
-                "airportCName":"兴城机场",
-                "airportCode":"XEN",
-                "cityCName":"兴城",
-                "cityEName":"Xingcheng",
-                "cityFirstSpell":"xc",
-                "citySpell":"xingcheng"
-            },
-            {
-                "airportCName":"东营机场",
+                "airportCName":"胜利机场",
                 "airportCode":"DOY",
                 "cityCName":"东营",
                 "cityEName":"Dongying",
@@ -545,7 +537,7 @@ const airports = {
                 "citySpell":"dongying"
             },
             {
-                "airportCName":"济南机场",
+                "airportCName":"遥墙国际机场",
                 "airportCode":"TNA",
                 "cityCName":"济南",
                 "cityEName":"Jinan",
@@ -553,7 +545,7 @@ const airports = {
                 "citySpell":"jinan"
             },
             {
-                "airportCName":"济宁机场",
+                "airportCName":"曲阜机场",
                 "airportCode":"JNG",
                 "cityCName":"济宁",
                 "cityEName":"Jining",
@@ -561,7 +553,7 @@ const airports = {
                 "citySpell":"jining"
             },
             {
-                "airportCName":"临沂机场",
+                "airportCName":"启阳机场",
                 "airportCode":"LYI",
                 "cityCName":"临沂",
                 "cityEName":"Linyi",
@@ -569,28 +561,12 @@ const airports = {
                 "citySpell":"linyi"
             },
             {
-                "airportCName":"北京首都国际机场",
-                "airportCode":"PEK",
-                "cityCName":"北京首都",
-                "cityEName":"beijing",
-                "cityFirstSpell":"bj",
-                "citySpell":"beijing"
-            },
-            {
-                "airportCName":"青岛流亭机场",
+                "airportCName":"流亭国际机场",
                 "airportCode":"TAO",
                 "cityCName":"青岛",
                 "cityEName":"Qingdao",
                 "cityFirstSpell":"qd",
                 "citySpell":"qingdao"
-            },
-            {
-                "airportCName":"酒泉机场",
-                "airportCode":"CHW",
-                "cityCName":"酒泉",
-                "cityEName":"Jiuquan",
-                "cityFirstSpell":"jq",
-                "citySpell":"jiuquan"
             },
             {
                 "airportCName":"嘉峪关机场",
@@ -601,7 +577,7 @@ const airports = {
                 "citySpell":"jiayuguan"
             },
             {
-                "airportCName":"兰州中川机场",
+                "airportCName":"中川机场",
                 "airportCode":"LHW",
                 "cityCName":"兰州",
                 "cityEName":"Lanzhou",
@@ -617,15 +593,15 @@ const airports = {
                 "citySpell":"qingyang"
             },
             {
-                "airportCName":"蓬莱机场",
+                "airportCName":"蓬莱国际机场",
                 "airportCode":"PNJ",
-                "cityCName":"蓬莱",
+                "cityCName":"烟台",
                 "cityEName":"Penglai",
                 "cityFirstSpell":"pl",
                 "citySpell":"penglai"
             },
             {
-                "airportCName":"威海文登大水泊机场",
+                "airportCName":"大水泊机场",
                 "airportCode":"WEH",
                 "cityCName":"威海",
                 "cityEName":"Wendeng",
@@ -657,7 +633,7 @@ const airports = {
                 "citySpell":"changzhi"
             },
             {
-                "airportCName":"大同机场",
+                "airportCName":"云冈机场",
                 "airportCode":"DAT",
                 "cityCName":"大同",
                 "cityEName":"Datong",
@@ -665,7 +641,7 @@ const airports = {
                 "citySpell":"datong"
             },
             {
-                "airportCName":"太原武宿机场",
+                "airportCName":"武宿国际机场",
                 "airportCode":"TYN",
                 "cityCName":"太原",
                 "cityEName":"Taiyuan",
@@ -675,13 +651,13 @@ const airports = {
             {
                 "airportCName":"五台山机场",
                 "airportCode":"WUT",
-                "cityCName":"五台山",
+                "cityCName":"忻州",
                 "cityEName":"Wutaishan",
                 "cityFirstSpell":"wts",
                 "citySpell":"wutaishan"
             },
             {
-                "airportCName":"运城关公机场",
+                "airportCName":"张孝机场",
                 "airportCode":"YCU",
                 "cityCName":"运城",
                 "cityEName":"Yuncheng",
@@ -689,7 +665,7 @@ const airports = {
                 "citySpell":"yuncheng"
             },
             {
-                "airportCName":"安康机场",
+                "airportCName":"富强机场",
                 "airportCode":"AKA",
                 "cityCName":"安康",
                 "cityEName":"Ankang",
@@ -697,12 +673,12 @@ const airports = {
                 "citySpell":"ankang"
             },
             {
-                "airportCName":"西安咸阳国际机场",
+                "airportCName":"咸阳国际机场",
                 "airportCode":"XIY",
-                "cityCName":"西安/咸阳",
-                "cityEName":"Xi'an",
-                "cityFirstSpell":"xa/xy",
-                "citySpell":"xi'an"
+                "cityCName":"西安",
+                "cityEName":"Xian",
+                "cityFirstSpell":"xa",
+                "citySpell":"xian"
             },
             {
                 "airportCName":"延安二十里铺机场",
@@ -929,7 +905,7 @@ const airports = {
                 "citySpell":"jieyang"
             },
             {
-                "airportCName":"深圳宝安国际机场",
+                "airportCName":"宝安国际机场",
                 "airportCode":"SZX",
                 "cityCName":"深圳",
                 "cityEName":"Shenzhen",
@@ -2194,38 +2170,23 @@ const airports = {
             }
         ],
         "addressAirportHot":[			          
-            {
-                "airportCName":"北京大兴国际机场",
-                "airportCode":"PKX",
-                "cityCName":"北京大兴",
-                "cityEName":"Beijing",
-                "cityFirstSpell":"bj",
-                "citySpell":"beijing"
-            },
 			{
-			    "airportCName":"北京首都国际机场",
-			    "airportCode":"PEK",
-			    "cityCName":"北京首都",
-			    "cityEName":"beijing",
-			    "cityFirstSpell":"bj",
-			    "citySpell":"beijing"
+				"airportCName":"北京",
+				"airportCode":"BJS",
+				"cityCName":"北京",
+				"cityEName":"Beijing",
+				"cityFirstSpell":"bj",
+				"citySpell":"beijing"
 			},
 			{
-			    "airportCName":"上海浦东机场",
-			    "airportCode":"PVG",
-			    "cityCName":"上海浦东",
-			    "cityEName":"Shanghai",
-			    "cityFirstSpell":"sh",
-			    "citySpell":"shanghai"
+				"airportCName":"上海",
+				"airportCode":"SHS",
+				"cityCName":"上海",
+				"cityEName":"Shanghai",
+				"cityFirstSpell":"sh",
+				"citySpell":"shanghai"
 			},
-			{
-			    "airportCName":"上海虹桥机场",
-			    "airportCode":"SHA",
-			    "cityCName":"上海虹桥",
-			    "cityEName":"Shanghai",
-			    "cityFirstSpell":"sh",
-			    "citySpell":"shanghai"
-			},
+
 			{
 			    "airportCName":"广州白云机场",
 			    "airportCode":"CAN",

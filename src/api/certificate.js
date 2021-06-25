@@ -9,8 +9,14 @@ export default{
 	newcommonadd:(params)=>{//添加地址
 		return fly.post('/tms/api/user/addOrUpdateMailAddress',params); 
 	},
-	searchAirlineAJAX:(params)=>{//机票查询
+	searchAirlineAJAX:(params)=>{//机票查询（旧）
 		return fly.post('/tms/api/dps/airline/searchAirlineAJAX',params); 
+	},
+	searchAirline:(params)=>{//机票查询 （新）
+		return fly.post('tms/api/dps/airline/searchAirline',params); 
+	},
+	fetchCabins:(params)=>{//查询航班舱位列表
+		return fly.get('/tms/api/dps/airline/fetchCabins',params); 
 	},
 	queryAirlineList:(params)=>{//国内航司查询
 		return fly.post('/tms/api/dps/airline/queryAirlineList',params); 

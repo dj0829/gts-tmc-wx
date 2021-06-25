@@ -2,7 +2,7 @@
 	<view class="personnel">
 		<headnavigation titles="出差人员"></headnavigation>
 		<view class="pa-top">
-			<input v-model="ser_int" type="text" value="" @input="search($event)" class="input-css" placeholder="搜索" />
+			<input v-model="ser_int" type="text" value="" class="input-css" placeholder="搜索" />
 			<view v-if="trim(ser_int)" class="iconfont" @click="sea_null(ser_int)" style="color: #999999;">&#xe608;</view>
 		</view>
 		<view class="sev_bool" v-if="sev_bool">
@@ -41,9 +41,9 @@
 							<view v-if="!item.ischecds" class="tsd">
 								<view class="iconfont" style="color: #007aff;" v-if="!item.lastRank && item.showChild">&#xe8a0;</view>
 								<view class="iconfont" v-if="!item.lastRank && !item.showChild">&#xe636;</view>
-								<view class="" style="width: 40upx;" v-if="item.lastRank"></view>
+								<view   style="width: 40upx;" v-if="item.lastRank"></view>
 								{{ item.name }}
-								<view class="" v-if="item.rank == 0 && item.userCount > 0">({{ item.userCount }})</view>
+								<view   v-if="item.rank == 0 && item.userCount > 0">({{ item.userCount }})</view>
 							</view>
 							<view v-if="item.ischecds" class="tsd">
 								<view class="iconfont" :style="{ color: item.checkd ? '#007aff' : '#f1f1f1' }">{{ item.checkd ? oktl : isoktl }}</view>
@@ -82,6 +82,11 @@
 		mounted() {
 			this.colllist()
 		},
+		watch:{
+			ser_int(dat){
+				this.search(dat);
+			}
+		},
 		methods:{
 			btn_click() {
 				//选择当前的人
@@ -103,12 +108,7 @@
 					return
 				}
 				uni.$emit('oersibbel',{data:that.userid_list});
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				that.toBlock();
 			},
 			async colllist() {
 				//查询所有部门
@@ -134,7 +134,7 @@
 								}]
 								for (let i = 0; i < dat.length; i++) {
 									ds.push({
-										id: dat[i].id,
+										userId: dat[i].userId,
 										iscd: true, //是否有证件号
 										costcenterId: dat[i].costcenterId,
 										costcenterName: dat[i].costcenterName,
@@ -183,7 +183,7 @@
 								}
 							}
 							_this.treeList.splice(i + k + 1, 0, {
-								id: list[k].id, //员工id
+								userId: list[k].userId, //员工id
 								iscd: si,
 								passengerNo: list[k].passengerNo, //员工编号
 								deptName: list[k].deptName, //部门名称
@@ -272,7 +272,7 @@
 								istrue: this.treeList[index].istrue,
 								passengerNo: this.treeList[index].passengerNo,
 								userName: this.treeList[index].name,
-								userId: this.treeList[index].id,
+								userId: this.treeList[index].userId,
 								deptName: this.treeList[index].deptName,
 								deptId: this.treeList[index].deptId,
 								phone: this.treeList[index].phone,
@@ -364,14 +364,14 @@
 			async search(ev) {
 				//监听搜索的值
 				let _this = this;
-				let va = ev.mp.detail.value.trim(); //获取搜索框的值
+				let va = ev.trim(); //获取搜索框的值
 				if (va.length > 0) {
-					_this.searchlists = [];
 					_this.sev_bool = true
 					try {
 						let res = await Mydi.searchpartments({
 							name: va
 						});
+						_this.searchlists = [];
 						if (res.code == 200) {
 							let su = res.data;
 							for (let k in su) {
@@ -379,7 +379,7 @@
 									istrue: 0,
 									passengerNo: su[k].passengerNo,
 									userName: su[k].name,
-									userId: su[k].id,
+									userId: su[k].userId,
 									deptName: su[k].deptName,
 									deptId: su[k].deptId,
 									phone: su[k].phone,

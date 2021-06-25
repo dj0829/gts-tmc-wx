@@ -23,34 +23,36 @@
 		</view>
 		<view class="tranlist" v-if="trainlist!=undefined && trainlist.length > 0">
 			<view class="taslist" v-for="(item,index) in trainlist" :key="index" @click="reanlis(item)">
-				<view class="taslist_t">
-					<view class="taslist_t_l">
-						<view class="iconfont" style="font-size: 35upx;margin-right: 10upx;">
-							&#xe8a5;
+				<view class="above">
+					<view class="above_left">
+						<view class="go_off">
+							{{item.fromTime}}
 						</view>
-						{{times(item.runTimeSpan)}}
+						<view class="arrival_time">
+							{{item.fromStation}}
+						</view>
 					</view>
-					<view class="taslist_t_o">
-						{{item.trainNo}}
+					<view class="above_centre">
+						<view>
+							{{times(item.runTimeSpan)}}
+						</view>
+						<view>
+							<image src="@/static/img/home/home_go.png"></image>
+						</view>
+						<view style="font-size: 20upx;color:#999999">
+							{{item.trainNo}}
+						</view>
 					</view>
-					<view class="taslist_t_r" style="font-size: 35upx;">
-						￥{{prics(item.seats)}}
+					<view class="above_right" style="text-align: left;">
+						<view class="go_off">
+							{{item.toTime}}
+						</view>
+						<view class="arrival_time">
+							{{item.toStation}}
+						</view>
 					</view>
-				</view>
-				<view class="taslist_o">
-					<view class="taslist_o_l">
-						{{item.fromTime}}
-					</view>
-					<view class="taslist_o_r">
-						{{item.fromStation}}
-					</view>
-				</view>
-				<view class="taslist_ts_r">
-					<view class="taslist_trl">
-						{{item.toTime}}
-					</view>
-					<view class="">
-						{{item.toStation}}
+					<view class="money">
+						<span style="font-size:22upx;">￥</span><span>{{prics(item.seats)}}</span>
 					</view>
 				</view>
 				<view class="taseats">
@@ -64,13 +66,15 @@
 			</view>
 		</view>
 		<view class="trainImgs" v-else>
-			<image class="gjImg" v-if="imgFlag" src="@/static/img/m_ticketList.png" mode=""></image>
+			<view class="trafons" v-if="trainlist.length == 0 && trainlists.length > 0 ">
+				<image class="noData" src="@/static/img/noData.png"></image>
+			</view>
+			<image class="gjImg" v-else-if="imgFlag" src="@/static/img/m_ticketList.png" mode=""></image>
 			<image class="noData" v-else src="@/static/img/noData.png" mode="widthFix"></image>
-			<div class="rblcok" v-if="!imgFlag" @click="rblcok">重新搜索</div>
 		</view>
 		<view class="selnt">
 			<view class="selnts" :class="saiid == item.id ? 'selntrue':''" v-for="(item,index) in sailist" :key="index" @click="saclick(item)">
-				<view class="" style="margin: 0 5upx;">
+				<view   style="margin: 0 5upx;">
 					{{item.name}}
 				</view>
 				<view class="iconfont" style="font-size: 35upx;" v-if="saiid == item.id && item.id != 4 && item.is == true">&#xe673;</view>
@@ -84,12 +88,18 @@
 			<view class="userlist_top">
 				筛选
 			</view>
+			<view class="modeinut">
+				<view class="iconfont">
+					&#xe6a2;
+				</view>
+				<input type="text" v-model="modellist" placeholder="请输入车次号" />
+			</view>
 			<view class="ci_list">
 				<view class="skcl_l">
-					<view class="">
+					<view  >
 						车次类型
 					</view>
-					<label class="" for="sklist" @click="tray">
+					<label  for="sklist" @click="tray">
 						 不限
 					</label >
 				</view>
@@ -102,17 +112,17 @@
 					<label class="skclist_r" :for="item.id">
 						 {{item.name}}
 					</label >
-					<view class="">
+					<view  >
 						<checkbox :value="item.id" :checked="item.ist" :id="item.id" />
 					</view>
 				</view>
 			</view>
 			<view class="ci_list">
 				<view class="skcl_l">
-					<view class="">
+					<view  >
 						出发/到达站
 					</view>
-					<label class="" for="skliist" @click="traysok">
+					<label  for="skliist" @click="traysok">
 						 不限
 					</label >
 				</view>
@@ -123,7 +133,7 @@
 				</view>
 				<view class="stszh">
 					<view class="stslist" v-for="(ites,index) in trts" :key="index" @click="trays(index)">
-						<label class="" :for="ites.id">
+						<label   :for="ites.id">
 							 {{ites.name}}
 						</label>
 						<checkbox value="" :checked="ites.is" :id="ites.id" />
@@ -131,16 +141,16 @@
 				</view>
 				<view class="stszh">
 					<view class="stslist" v-for="(ite,index) in trto" :key="index" @click="traysto(index)">
-						<label class="" :for="ite.id" >
+						<label   :for="ite.id" >
 							 {{ite.name}}
 						</label>
 						<checkbox value="" :checked="ite.is" :id="ite.id" />
 					</view>
 				</view>
 			</view>
-			<view class="otnblck" @click="trantus">
-				确　定
-			</view>
+		</view>
+		<view class="otnblck" @click="trantus" v-if="shos">
+			确　定
 		</view>
 		<onPageScrolls :scrolltops="scrolltops"></onPageScrolls>
 	</view>
@@ -155,10 +165,12 @@
 		},
 		data(){
 			return{
+				modellist:'',//车型号
 				scrolltops:false,//是否显示
 				isretun: false,
-				skliist: true,
-				skliis:true,
+				skliist: true,//默认站口不限
+				skliis:true,//默认车型不限
+				skliistNo:true,//默认型号不限
 				shos: false,
 				blac_show: false,
 				imgFlag:true,
@@ -226,9 +238,9 @@
 			}
 		},
 		onLoad(item) {
-			let dat = JSON.parse(item.data);
-			console.log(dat)
-			this.transleist = JSON.parse(item.data)|| {};
+			let dat = uni.getStorageSync('trainselectData');
+			this.transleist = uni.getStorageSync('trainselectData') || {};
+			console.log(this.transleist)
 			this.dats = dat.timedate;
 			this.startDate = dat.timedate;
 			this.iscd = dat.sit;
@@ -248,21 +260,23 @@
 			typecon(item){//监听筛选
 				let a = this.trainlists;//当天全部数据
 				let c = []
-				let fotct = [];
-				let torct = [];
-				let cts = [];
+				let fotct = [];//出发站
+				let torct = [];//到达站
+				let cts = [];//车类型
+				let trNos = '';//型号
 				let b = this.typecon;//条件
 				for (var i = 0; i < this.typecon.length; i++) {
 					if(this.typecon[i].name == 'cts'){
 						cts = this.typecon[i].value;//车类型
 					} else if(this.typecon[i].name == 'toct'){
-						torct = this.typecon[i].value;//车类型
+						torct = this.typecon[i].value;//到达站
 					} else if(this.typecon[i].name == 'fotct'){
-						fotct = this.typecon[i].value;//车类型
+						fotct = this.typecon[i].value;//出发站
+					} else if(this.typecon[i].name == 'traNos'){
+						trNos = this.typecon[i].value;//车型号
 					}
 				}
-				
-				if(cts.length == 0 && fotct.length == 0 && torct.length == 0){
+				if(cts.length == 0 && fotct.length == 0 && torct.length == 0 && trNos == ''){
 					this.trainlist = this.trainlists;
 					return
 				}
@@ -285,6 +299,11 @@
 					}
 					if(torct.length > 0){
 						if(torct.indexOf(a[i].toStation) == -1){
+							si = false;
+						}
+					}
+					if(trNos.length > 0){
+						if(a[i].trainNo.indexOf(trNos.toUpperCase()) == -1){
 							si = false;
 						}
 					}
@@ -312,8 +331,9 @@
 			reanlis(item){//点击进入详情
 				this.transleist['item'] = item
 				this.transleist['queryKey'] = this.queryKey;
+				uni.setStorageSync('teanlistData',this.transleist)
 				uni.navigateTo({
-					url:'./tranlist/teanlist?data=' + JSON.stringify(this.transleist)
+					url:'./tranlist/teanlist'
 				})
 			},	
 			trays(index,no){//选择出发站
@@ -352,7 +372,7 @@
 					this.skliist = false;
 				}
 			},
-			traic(index){ //点击当前筛选车类型
+			traic(index){ //点击当前筛选车型号
 				if(this.traintype[index].ist){
 					this.traintype[index].ist = false
 				} else {
@@ -369,6 +389,13 @@
 					this.skliis = true;
 				} else {
 					this.skliis = false;
+				}
+			},
+			traicNos(index){ //点击当前筛选车类型
+				if(is){
+					this.skliistNo = true;
+				} else {
+					this.skliistNo = false;
 				}
 			},
 			tray(){ //点击车类型不限
@@ -418,7 +445,12 @@
 					name:'toct',
 					value: tors
 				})
-				console.log(this.typecon)
+				if(this.modellist != ''){
+					this.typecon.push({
+						name:'traNos',
+						value: this.modellist
+					})
+				}
 				this.shos = false;
 				this.blac_show = false;
 			},
@@ -521,11 +553,11 @@
 						let reg = new RegExp(":")
 						for (let i = 0; i < this.trainlist.length; i++) { //判断是否有座位
 							let st = [];
-							if(this.trainlist[i].tickets.hardseat != null){ //硬座
-								st.push(this.trainlist[i].tickets.hardseat)
-							}
 							if(this.trainlist[i].tickets.noseat != null){ //无座
 								st.push(this.trainlist[i].tickets.noseat)
+							}
+							if(this.trainlist[i].tickets.hardseat != null){ //硬座
+								st.push(this.trainlist[i].tickets.hardseat)
 							}
 							if(this.trainlist[i].tickets.hardsleepermid != null){ //硬卧中铺
 								st.push(this.trainlist[i].tickets.hardsleepermid)
@@ -535,12 +567,14 @@
 							}
 							if(this.trainlist[i].tickets.softseat != null){ //软座
 								st.push(this.trainlist[i].tickets.softseat)
-							} else if(this.trainlist[i].tickets.firstseat != null){ //一等坐
-								st.push(this.trainlist[i].tickets.firstseat)
 							}
 							if(this.trainlist[i].tickets.secondseat != null){ //二等坐
 								st.push(this.trainlist[i].tickets.secondseat)
 							}
+							if(this.trainlist[i].tickets.firstseat != null){ //一等坐
+								st.push(this.trainlist[i].tickets.firstseat)
+							}
+							
 							if(this.trainlist[i].tickets.hardsleeperup != null){ //硬卧上铺
 								st.push(this.trainlist[i].tickets.hardsleeperup)
 							}
@@ -604,12 +638,7 @@
 				}
 			},
 			rblcok(){
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			}
 		}
 	}
@@ -644,16 +673,31 @@
 			transition: all 0.3s ease;
 			-webkit-transform: translateY(100%);
 			transform: translateY(100%);
-			min-height: 200upx;
+			max-height: 1000upx;
+			overflow: scroll;
 			width: 100%;
 			z-index: 889;
-			background: #ffffff;
+			padding-bottom: 120upx;
+			background: #f1f1f1;
 			.userlist_top {
 				height: 90upx;
 				width: 100%;
 				line-height: 90upx;
 				background: #f1f1f1;
 				text-align: center;
+			}
+			.modeinut{
+				width: calc(100% -40upx);
+				margin: 20upx;
+				height: 60upx;
+				background-color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 28upx;
+				input{
+					width: 200upx;
+				}
 			}
 			.ci_list {
 				width: calc(100% - 40upx);
@@ -663,6 +707,7 @@
 				flex-wrap: wrap;
 				align-content: space-between;
 				border-bottom: 2upx solid #F1F1F1;
+				background-color: #FFFFFF;
 				.skcl_l{
 					width: calc(50% - 40upx);
 					height: 70upx;
@@ -686,16 +731,20 @@
 					}
 				}
 			}
-			.otnblck{
-				margin: 40upx 20upx;
-				width: calc(100% - 40upx);
-				height: 90upx;
-				line-height: 90upx;
-				text-align: center;
-				color: #FFFFFF;
-				border-radius: 15upx;
-				background: #004890;
-			}
+			
+		}
+		.otnblck{
+			position: fixed;
+			z-index: 900;
+			bottom: 20upx;
+			left: 40upx;
+			width: calc(100% - 80upx);
+			height: 90upx;
+			line-height: 90upx;
+			text-align: center;
+			color: #FFFFFF;
+			border-radius: 15upx;
+			background: #004890;
 		}
 		.show {
 			-webkit-transform: translateY(0);
@@ -731,9 +780,87 @@
 			.taslist{
 				width: calc(100% - 40upx);
 				margin-top: 20upx;
-				padding: 40upx 20upx 20upx 20upx;
+				padding: 44upx 20upx 20upx 20upx;
 				border-radius: 10upx;
 				background-color: #FFFFFF;
+				position: relative;
+				.above {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					margin:0 200upx 40upx 20upx;
+					.above_left {
+						width: calc(50% - 100upx);
+						text-align: right;
+						// margin-right: 20upx;
+						.city {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							color: #abbdd3;
+						}
+
+						.go_off {
+							font-size: 40upx;
+							font-weight: bold;
+							text-align: left;
+							// margin-left: 80upx;
+						}
+
+						.arrival_time {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							color: #666666;
+							font-size: 20upx;
+							text-align: left;
+							// margin-left: 80upx;
+						}
+					}
+					.above_right {
+						width: calc(50% - 100upx);
+						text-align: right;
+						// margin-right: 20upx;
+						.go_off {
+							font-size: 40upx;
+							font-weight: bold;
+							text-align: right;
+							// margin-left: 80upx;
+						}
+						.arrival_time {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							color: #666666;
+							font-size: 20upx;
+							text-align: right;
+							// margin-left: 80upx;
+						}
+					}
+					.above_centre {
+						width: 200upx;
+						text-align: center;
+						margin-top: 20upx;
+						margin: 0 10upx;
+						color:#666666;
+						font-size: 22upx;
+						view{
+							margin-top:5upx;
+							image{
+								width: 150upx;
+								height: 13upx;
+							}
+						}
+					}
+					.money{
+						position: absolute;
+						top: 55upx;
+						right: 38upx;
+						font-size: 40upx;
+						color: #FFA63E;
+						font-weight: bold;
+					}
+				}
 				.taslist_t{
 					display: flex;
 					align-items: center;
@@ -779,6 +906,7 @@
 					display: flex;
 					font-size: 28upx;
 					color: #777777;
+					margin-left: 20upx;
 					.taseali{
 						padding-right: 40upx;
 					}
@@ -790,14 +918,21 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			.trafons{
+				width: 100%;
+				text-align: center;
+				line-height: 80upx;
+				font-size: 25upx;
+				color: red;
+			}
 			.gjImg{
 				width: 100%;
 				height: 100vh;
 			}
 			.noData{
-				width: 300upx;
-				margin-top: 20%;
-				margin-left: -100upx;
+				width: 346upx;
+				height: 386upx;
+				margin-top: 200upx;
 			}
 			.rblcok{
 				width:160upx;

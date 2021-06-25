@@ -5,7 +5,7 @@
 		<headnavigation titles="出差信息"></headnavigation>
 		<view class="ravelv">
 			<view class="ts">
-				<view class="rav_left">出差人员</view>
+				<view class="rav_left"><span>*</span>出差人员</view>
 				<view class="ravright" @click="mulist">
 					<view class="bos">
 						<view class="userlists" v-for="(item, index) in Butraveler" :key="index">{{ item.userName }}</view>
@@ -16,7 +16,7 @@
 		</view>
 		<view class="ravelv">
 			<view class="ts">
-				<view class="rav_left">申请人员</view>
+				<view class="rav_left"><span>*</span>申请人员</view>
 				<view class="ravright" @click="applicantck">
 					<view class="bos">
 						<view class="redlogs">
@@ -30,20 +30,24 @@
 		</view>
 		<view class="ravelv">
 			<view class="ts">
-				<view class="rav_left">出差日期</view>
+				<view class="rav_left"><span>*</span>出差日期</view>
 				<view class="ravright">
-					<view class="bos">
-						<calendar @change="lischang" startDate="2020-3-12" endDate="2020-3-14" :daysCount="daysCount"></calendar>
+					<view class="bos" v-if="showtimes">
+						<calendar @change="lischang" :startDate="startDates" :endDate="endDates" :daysCount="daysCount"></calendar>
 					</view>
 					<!-- <view class="iconfont">&#xe8a3;</view> -->
 				</view>
 			</view>
 		</view>
-		<view class="ravelv">
+		<view class="ravelv" v-if="idadd == false || (idadd == true && idpos == 2)">
 			<view class="ts">
-				<view class="rav_left">出差事由</view>
+				<view class="rav_left"><span>*</span>出差事由</view>
 				<view class="ravright">
-					<view class="bos"><input type="text" value="" v-model="Reasonsfor" /></view>
+					<view class="bos">
+						<!-- <input type="text" v-model="Reasonsfor" placeholder="请输入出行事由" value="" /> -->
+						<subjects @change="subclcks" :oldResonIds="old_resonIds"></subjects>
+					</view>
+					<view class="iconfont">&#xe8a3;</view>
 				</view>
 			</view>
 		</view>
@@ -51,25 +55,27 @@
 			<view class="ts">
 				<view class="rav_left">详细说明</view>
 				<view class="ravright">
-					<view class="bos"><input type="text" value="" v-model="Dedescription" /></view>
+					<view class="bos">
+						<input type="text" value="" v-model="Dedescription" />
+					</view>
 				</view>
 			</view>
 		</view>
 		<view class="ravelvs">
 			<view class="tks">
-				<view class="rav_left">出差行程</view>
+				<view class="rav_left"><span>*</span>出差行程</view>
 				<view class="ravright" @click="lc_op">
 					<view class="bost"></view>
 					<view class="iconfont" style="color: #007aff;font-size: 60upx;">&#xe84f;</view>
 				</view>
 			</view>
-			<view class="tlists" v-if="Businlist.length > 0" v-for="(item,index) in Businlist" :key="index">
+			<view class="tlists" v-for="(item,index) in Businlist" :key="index">
 				<view class="tl_left" @click="de_bus(index)">
-					<view class="iconfont" style="color: #C8C7CC;">&#xe666;</view>
+					<image src="/static/img/mydi/delete_curos.png" mode=""></image>
 				</view>
 				<view class="tl_right">
 					<view class="tl_tops">
-						<view class="">
+						<view  >
 							{{newicname(item.icname)}}
 						</view>
 						<view style="margin-left: 10upx;">
@@ -80,21 +86,22 @@
 						{{newdata(item)}}
 					</view>
 				</view>
+				<image src="/static/img/mydi/updata_curos.png" mode=""class="ti_updat" @click="upbusdata(item,index)"></image>
 			</view>
 		</view>
 		<view class="ravelv">
 			<view class="ts">
-				<view class="rav_left">归属部门</view>
+				<view class="rav_left"><span>*</span>归属部门</view>
 				<view class="ravright">
 					<view class="bos">
-						{{attdepartment}}
+						{{attdepartment.name}}
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="ravelv">
 			<view class="ts">
-				<view class="rav_left">预估费用</view>
+				<view class="rav_left"><span>*</span>预估费用</view>
 				<view class="ravright">
 					<view class="bos"><input type="number" maxlength="6" @input="estimatedcosts" placeholder="0" value="" v-model="estimatedcost" /></view>
 				</view>
@@ -103,7 +110,7 @@
 		<view class="costslist" v-for="(item,index) in costlist" :key="index">
 			<view class="costslis">
 				<view class="costleft">
-					<!-- <span class="iconfont" @click="delecos(index)">&#xe644;</span> -->
+					<image src="/static/img/mydi/delete_curos.png" mode="" @click="deleteCostlist(index)"></image>
 					成本中心
 				</view>
 				<view class="costrightpl" @click="approval(index)" v-if="item.costcenterName == ''">
@@ -117,12 +124,6 @@
 				<view class="costleft">
 					适用人员
 				</view>
-				<!-- <view class="costrightpl" @click="plonslit(index,item)" v-if="item.username.length == 0">
-					请选择适用人员(必填)
-				</view>
-				<view class="costright" @click="plonslit(index,item)" v-else>
-					{{namest(item.username)}}
-				</view> -->
 				<view class="costright">
 					{{namest(item.username)}}
 				</view>
@@ -147,12 +148,12 @@
 				</view>
 			</view>
 		</view>
-		<!-- <view class="costadd" @click="costadd">
-			<span class="iconfont">&#xe89f;</span>
-		</view> -->
+		<view class="costadd" @click="costadd" v-if="costlist.length != Butraveler.length">
+			<span class="iconfont">&#xe89f;</span>添加分摊人员
+		</view>
 		<view class="ravelv" v-if="CostCi">
 			<view class="ts">
-				<view class="rav_left">成本审批人</view>
+				<view class="rav_left"><span>*</span>成本审批人</view>
 				<view class="ravright" @click="appswlists('CostCenterlist')">
 					<view class="bos">
 						<view class="swname" v-for="(item,index) in TravelCostCenlist" :key="index">
@@ -165,7 +166,7 @@
 		</view>
 		<view class="ravelv" v-if="CostCis">
 			<view class="ts">
-				<view class="rav_left">部门审批人</view>
+				<view class="rav_left"><span>*</span>部门审批人</view>
 				<view class="ravright" @click="appswlists('Deparapprover')">
 					<view class="bos">
 						<view class="swname" v-for="(item,index) in TravelDepartlist" :key="index">
@@ -180,9 +181,9 @@
 		</view>
 		<view class="share-item" :class="{'share-show': shos}">
 			<!-- 行程 -->
-			<view class="ctis" v-if="showtype == 'triplist'">			
+			<view class="ctis" v-show="showtype == 'triplist'">			
 				<view class="cstop">
-					<view class="cits" @click="isck(item)" :class="item.id == nos ? 'no' : ''" v-for="(item, index) in cits" :key="index">{{ item.name }}</view>
+					<view class="cits" @click="isck(item)" :class="item.ul == currentPage ? 'no' : ''" v-for="(item, index) in cits" v-if="isaddbuss || item.ul == uptype" :key="index">{{ item.name }}</view>
 				</view>
 				<view class="div_li">
 					<view class="sist">
@@ -193,9 +194,12 @@
 						 :startDate="statime" :endDate="endtiem" :daysCount="daysCount"></calendars>
 					</view>
 				</view>
-				<view class="check_btns">
-					<view class="chck_left" @click="addtravl()">保存</view>
-					<view class="chck_right" @click="addold()">继续添加</view>
+				<view class="check_btns" v-if="!isaddbuss">
+					<view class="chck_right" @click="addtravl(2)">确定修改</view>
+				</view>
+				<view class="check_btns" v-if="isaddbuss">
+					<view class="chck_left" @click="addold(1)">继续添加</view>
+					<view class="chck_right" @click="addtravl(1)">保存</view>
 				</view>
 			</view>
 			<!-- 申请适用人员 -->
@@ -264,7 +268,7 @@
 						<view class="sltrig_bot">
 							<view class="striglist" @click="clslitk(item)" v-for="(item,index) in sli_namelist" :key="index">
 								<view class="stlis_left">
-									<view class="">
+									<view  >
 										{{item.name}}
 									</view>
 								</view>
@@ -320,7 +324,7 @@
 			</view>
 		</view>
 		<view v-if="Travel != null">
-			<view class="ravelv" v-for="item in Travel" v-if="item == 1">
+			<view class="ravelv" v-for="(item,index) in Travel" :key="index + '_1'" v-if="item == 1">
 				<view class="ts">
 					<view class="rav_left">基金中心</view>
 					<view class="ravright">
@@ -328,7 +332,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="ravelv" v-for="item in Travel" v-if="item == 2">
+			<view class="ravelv" v-for="(item,index) in Travel" :key="index + '_2'" v-if="item == 2">
 				<view class="ts">
 					<view class="rav_left">OA出差单号</view>
 					<view class="ravright">
@@ -336,7 +340,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="ravelv" v-for="item in Travel" v-if="item == 3">
+			<view class="ravelv" v-for="(item,index) in Travel" :key="index + '_3'" v-if="item == 3">
 				<view class="ts">
 					<view class="rav_left_wbs">项目代码(WBS元素)</view>
 					<view class="ravright">
@@ -353,20 +357,30 @@
 </template>
 
 <script>
+	import subjects from '@/components/view/book/subject-matter/subjectMatter.vue'
 	import calendars from '@/components/view/towork/data_du.vue';
 	import sscity from '@/components/view/towork/sscity/ssscity.vue';
 	import calendar from '@/components/view/towork/data_pk.vue';
 	import tork from '@/api/torowk.js'
 	import Mydi from '@/api/mydi.js';
-	import order from "../../../../../api/order";
+	import order from "@/api/order";
 	export default {
 		components: {
 			calendar,
 			calendars,
-			sscity
+			sscity,
+			subjects
 		},
 		data() {
 			return {
+				idpos:1,
+				old_resonIds:0,
+				isGetStaffList:false,//没有审批流
+				isko:false,
+				isupdata:{},//详情
+				showtimes:false,
+				startDates:'2021-3-1',//出差日期开始
+				endDates:'2021-3-2',//出差日期结束
 				showtype:'',//类型
 				wbs: '',
 				oaTravelNo: '', //oa出差单号
@@ -393,9 +407,6 @@
 					id: 1
 				}],
 				slitlist: [],
-				cbnames: [], //审批人
-				cbname: '', //成本中心名称
-				cbid: '', //成本中心id
 				botname: '', //当前选择的成本中心名称
 				slit_id_checd: 0, //当前点击成本中心的id
 				treeLists: [], //归属部门列表
@@ -424,7 +435,7 @@
 				daysCount: 365,
 				userlist: [], //当前点击部门下的用户
 				listps: [], //搜索显示的值
-				attdepartment: '', //归属部门
+				attdepartment: {name:'',id:''}, //归属部门
 				userid_list: [], //出差的人员
 				CostCenterlist: [], //成本中心审批人
 				costlist: [], //当前选择的成本中心审批人集合
@@ -438,6 +449,8 @@
 					name: '',
 					id: ''
 				}, //成本中心名称
+				
+				hotellmes: [],
 				Businlist: [], //行程
 				sta_Flightbus: {}, //出差飞机出发时间
 				end_Flightbus: {}, //出差飞机返回时间
@@ -445,7 +458,6 @@
 				end_Traveltrain: {}, //出差火车返回时间
 				sta_Hotelkettime: {}, //出差酒店出发时间
 				end_Hotelkettime: {}, //出差酒店返回时间
-				hotellmes: [],
 				Busirticket: [{
 					name: '',
 					id: ''
@@ -461,13 +473,21 @@
 					id: ''
 				}], //火车出差城市
 				sta_Hotelket: {}, //出差酒店城市
-				end_Hotelket: '', //出差酒店地址
+				end_Hotelket: {}, //出差酒店地址
 				Traveltime: [], //出差时间
 				Reasonsfor: '', //出差事由
+				Reasonsforid:0,//出差事由id
 				Dedescription: '', //详细说明
 				businesstrip: '', //出差事由
 				descriptions: '', //详细说明
-				Travel: []
+				Travel: [],
+				isDateTure:false,//是否超过当前日期
+				ifdata:false,//是否再次申请第一进来
+				idadd:false,//是否重新提交
+				isaddbuss:true,//新增或者修改当前行程
+				uptype:'',//行程类型
+				busirticketIndex:0,//当前点击的行程下标
+				isarsrl:false,//是否全员免审
 			};
 		},
 		beforeCreate() { //设置body的样式：因为body的高度影响了页面的显示
@@ -476,52 +496,7 @@
 		onShow() { //返回监听赋值
 			uni.$on("oersibbel",res=>{
 				let that = this;
-				that.Butraveler = res.data;
-				that.userconlist = [];
-				that.costlist = [];
-				let bnsi = parseInt(100 / that.Butraveler.length);
-				for (let k in that.Butraveler) {
-					that.userconlist.push({
-						name: that.Butraveler[k].userName,
-						passengerNo: that.Butraveler[k].passengerNo,
-						ist: 0 //0是未选中状态
-					})
-					that.costlist.push({
-						costcenterName: that.Butraveler[k].costcenterName,
-						costcenterId: that.Butraveler[k].costcenterId,
-						bn: bnsi,
-						price: 0,
-						username: [{
-							name: that.Butraveler[k].userName,
-							passengerNo: that.Butraveler[k].passengerNo
-						}],
-					})
-				}
-				if (bnsi * that.Butraveler.length != 100) {
-					let sit = 100 - (that.Butraveler.length * bnsi); //余数
-					for (var i = 0; i < sit; i++) {
-						that.costlist[i].bn = bnsi + 1;
-					}
-							
-				}
-				that.NameCenter.name = "";
-				that.NameCenter.id = "";
-				that.TravelCostCenlist = [];
-				that.TravelDepartlist = [];
-				that.isuserlist = false;
-				let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId'));
-				that.attdepartment = datas.deptName;
-				that.appli = {
-					istrue: 1,
-					passengerNo: datas.passengerVo.id, //暂时没有该参数
-					userName: datas.user.name,
-					userId: datas.user.id,
-					deptName: datas.user.deptName,
-					deptId: datas.user.deptId,
-					phone: datas.user.phone,
-					costcenterId: datas.passengerVo.costcenterId,
-					costcenterName: datas.passengerVo.costcenterName
-				}
+				that.userlistadd(res.data,1);
 				uni.$off("Busirticket_add")
 			})
 			uni.$on("Busirticket_add", res => {
@@ -543,12 +518,18 @@
 						id: rtos[1].id
 					}];
 				} else if (res.name == "Hotel") {
-					this.sta_Hotelket = rtos;
-					this.end_Hotelket = '';
-				} else if (res.name == "Hotelr") {
-					this.end_Hotelket = rtos;
+					this.sta_Hotelket = rtos.city;
+					this.end_Hotelket = {};
 				}
 				uni.$off("Busirticket_add")
+			})
+			uni.$on('wx_Hotel_Ais',(res)=>{ //酒店关键字
+				this.end_Hotelket = {
+					id:res.id,//关键词下标
+					type:res.type,//关键词类型
+					name:res.data//关键词名称
+				}
+				uni.$off('wx_Hotel_Ais')
 			})
 			uni.$on("initavetime", res => {
 				if (res.name == "sta_Flightbus_adds") { //出差飞机出发时间
@@ -570,53 +551,397 @@
 				uni.$off("initavetime")
 			})
 		},
-		mounted() {
-			this.TravelSwitch();
-			const data = uni.getStorageSync('user_list' + uni.getStorageSync('appWxId')); //获取归属部门
-			if (data.deptName) {
-				this.attdepartment = data.deptName;
-			}
-			let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId')); //检验是否是登录状态
-			if (datas) {
-				if (this.Butraveler.length == 0) {
-					this.Butraveler = [{
-						istrue: 1,
-						passengerNo: datas.passengerVo.id, //暂时没有该参数
-						userName: datas.user.name,
-						userId: datas.user.id,
-						deptName: datas.user.deptName,
-						deptId: datas.user.deptId,
-						phone: datas.user.phone,
-						costcenterId: datas.passengerVo.costcenterId,
-						costcenterName: datas.passengerVo.costcenterName
-					}]
-					this.applicantlist = [{
-						istrue: 1,
-						passengerNo: datas.passengerVo.id, //暂时没有该参数
-						userName: datas.user.name,
-						userId: datas.user.id,
-						deptName: datas.user.deptName,
-						deptId: datas.user.deptId,
-						phone: datas.user.phone,
-						costcenterId: datas.passengerVo.costcenterId,
-						costcenterName: datas.passengerVo.costcenterName
-					}]
-					this.appli = this.applicantlist[0];
-					this.ad_cion(this.appli);
-					this.costlist = [{
-						username: [{
-							name: datas.user.name,
-							passengerNo: datas.passengerVo.id
-						}],
-						costcenterName: datas.passengerVo.costcenterName,
-						costcenterId: datas.passengerVo.costcenterId,
-						bn: 100,
-						price: 0, //分摊金额
-					}]
-				}
+		onLoad(item) {
+			if(item.no != 0){
+				this.idadd = true;//是否重新提交
+				this.selects(item.no)
+			} else {
+				this.showtimes = true;
 			}
 		},
+		mounted() {
+			if(this.idadd == false){
+				const data = uni.getStorageSync('user_list' + uni.getStorageSync('appWxId')); //获取归属部门
+				if (data.user) {
+					this.attdepartment.name = data.user.deptName;
+					this.attdepartment.id = data.user.deptId;
+				}
+				let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId')); //检验是否是登录状态
+				if (datas) {
+					if (this.Butraveler.length == 0) {
+						this.Butraveler = [{
+							istrue: 1,
+							passengerNo: datas.passengerVo.id, //暂时没有该参数
+							userName: datas.user.name,
+							userId: datas.user.id,
+							deptName: datas.user.deptName,
+							deptId: datas.user.deptId,
+							phone: datas.user.phone,
+							costcenterId: datas.passengerVo.costcenterId,
+							costcenterName: datas.passengerVo.costcenterName
+						}]
+						this.applicantlist = [{
+							istrue: 1,
+							passengerNo: datas.passengerVo.id, //暂时没有该参数
+							userName: datas.user.name,
+							userId: datas.user.id,
+							deptName: datas.user.deptName,
+							deptId: datas.user.deptId,
+							phone: datas.user.phone,
+							costcenterId: datas.passengerVo.costcenterId,
+							costcenterName: datas.passengerVo.costcenterName
+						}]
+						this.appli = this.applicantlist[0];
+						this.ad_cion(this.appli);
+						this.costlist = [{
+							username: [{
+								name: datas.user.name,
+								passengerNo: datas.passengerVo.id
+							}],
+							costcenterName: datas.passengerVo.costcenterName,
+							costcenterId: datas.passengerVo.costcenterId,
+							bn: 100,
+							price: 0, //分摊金额
+						}]
+					}
+				}
+			}
+			this.TravelSwitch();
+		},
 		methods: {
+			subclcks(data){//选择当前出差事由
+				console.log(data)
+				this.Reasonsfor = data.name;
+				this.Reasonsforid = data.id;
+			},
+			async judgeApprvs(){
+				let arr = [];
+				for (let k in this.Butraveler) {
+					arr.push(this.Butraveler[k].passengerNo);
+				}
+				try {
+					let rest = await order.judgeApprv({
+						passengerNos: arr
+					}); //判断当前出行人是否都免审
+					if (rest.code == 200) {
+						if (rest.data == true) { //判断是否需要审核 true为不需要审核 免审
+							this.isarsrl = true;
+						}
+					} else {
+						this.showToasts(rest.message);
+						return
+					}
+				} catch (e) {
+					console.log(e)
+				
+				}
+			},
+			deleteCostlist(index){//删除费用分摊
+				if(this.costlist.length == 1){
+					this.showToasts('最少需要一个人员分摊')
+					return
+				}
+				let su = this.costlist
+				su.splice(index, 1);
+				this.costlist = su;
+				this.upbnsi();
+			},
+			lischang(time) {//选择出差日期
+				let tim = time.choiceDate;
+				this.sta_Flightbus = {}; //出差飞机出发时间
+				this.end_Flightbus = {}; //出差飞机返回时间
+				this.sta_Traveltrain = {}; //出差火车出发时间
+				this.end_Traveltrain = {}; //出差火车返回时间
+				this.sta_Hotelkettime = {}; //出差酒店出发时间
+				this.end_Hotelkettime = {}; //出差酒店返回时间
+			
+				this.statime = tim[0].re;
+				this.endtiem = tim[1].re;
+				this.Traveltime = [tim[0], tim[1]];
+				this.endtiemy = tim[1].re;
+				let stime = new Date(tim[1].dateTime + (24 * 60 * 60 * 1000));
+				let mons = (stime.getMonth() + 1 < 10 ? '0' + (stime.getMonth() + 1) : stime.getMonth() + 1);
+				let dons = stime.getDate() < 10 ? '0' + stime.getDate() : stime.getDate();
+				this.endtiems = stime.getFullYear() + '-' + mons + '-' + dons;
+				if(this.ifdata == false){
+					this.busnewdatas();//修改行程日期
+				} else {
+					this.ifdata = false;
+					this.upcatopms();//回填数据
+				}
+			},
+			busnewdatas(){//修改行程日期
+				for(let k in this.Businlist){
+					if(this.Businlist[k].sta != ''){
+						this.Businlist[k].sta = this.dy_time(this.statime,this.Businlist[k].sta,this.endtiem,1);//不能小于开始时间 并大于结束时间
+					}
+					if(this.Businlist[k].end != ''){
+						this.Businlist[k].end = this.dy_time(this.statime,this.Businlist[k].end,this.endtiem,2);//不能大于结束时间
+					}
+				}
+			},
+			dy_time(o,k,j,num){//修改日期
+				if(num == 1){
+					if(new Date(k) < new Date(o)){
+						return o
+					} else if(new Date(k) > new Date(j)){
+						return o
+					} else {
+						return k
+					}
+				} else {
+					return j
+				}
+			},
+			lc_op() {//点击新增行程
+				this.isaddbuss = true;//新增
+				this.shos = true;
+				this.showtype = 'triplist';
+			},
+			upbusdata(item,index){//点击修改行程
+				this.isaddbuss = false;//修改
+				this.uptype = item.icname;//修改类型
+				this.currentPage = item.icname;
+				if(item.icname == 'Planeticket'){
+					this.Busirticket = [{
+						name: item.staname.name,
+						id: item.staname.id
+					}, {
+						name: item.endname.name,
+						id: item.endname.id
+					}]
+				} else if(item.icname == 'Train'){
+					this.Busitraiket = [{
+						name: item.staname.name,
+						id: item.staname.id
+					}, {
+						name: item.endname.name,
+						id: item.endname.id
+					}]
+				} else if(item.icname == 'Hotel'){
+					this.sta_Hotelket = {
+						name: item.staname.name,
+						id: item.staname.id
+					}
+					// this.end_Hotelket = item.endname;
+				}
+				
+				this.busirticketIndex = index;//当前点击的行程下标
+				this.shos = true;
+				this.showtype = 'triplist';
+			},
+			upbnsi(){//修改比例
+				let bnsi = parseInt(100 / this.costlist.length);
+				for (let k in this.costlist) {
+					this.costlist[k].bn = parseInt(100/this.costlist.length);
+				}
+				if (bnsi * this.costlist.length != 100) {
+					let sit = 100 - (this.costlist.length * bnsi); //余数
+					for (var i = 0; i < sit; i++) {
+						this.costlist[i].bn = bnsi + 1;
+					}	
+				}
+				this.estimatedcosts();
+			},
+			userlistadd(data,tos){//选择当前出差人员
+				let that = this;
+				that.Butraveler = data;
+				that.userconlist = [];
+				that.costlist = [];
+				let bnsi = parseInt(100 / that.Butraveler.length);
+				for (let k in that.Butraveler) {
+					that.userconlist.push({//适用人员
+						name: that.Butraveler[k].userName,
+						passengerNo: that.Butraveler[k].passengerNo,
+						ist: 0 //0是未选中状态
+					})
+					that.costlist.push({
+						costcenterName: that.Butraveler[k].costcenterName,
+						costcenterId: that.Butraveler[k].costcenterId,
+						bn: bnsi,
+						price: 0,
+						username: [{
+							name: that.Butraveler[k].userName,
+							passengerNo: that.Butraveler[k].passengerNo
+						}],
+					})
+				}
+				that.upbnsi();
+				if(tos == 1){//1为修改出行人
+					that.TravelCostCenlist = [];
+					that.TravelDepartlist = [];
+					that.isuserlist = false;
+					let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId'));
+					that.attdepartment.name = datas.user.deptName;
+					that.attdepartment.id = datas.user.deptId;
+					that.appli = {
+						istrue: 1,
+						passengerNo: datas.passengerVo.id, //暂时没有该参数
+						userName: datas.user.name,
+						userId: datas.user.id,
+						deptName: datas.user.deptName,
+						deptId: datas.user.deptId,
+						phone: datas.user.phone,
+						costcenterId: datas.passengerVo.costcenterId,
+						costcenterName: datas.passengerVo.costcenterName
+					}
+					that.NameCenter.name = that.appli.costcenterName;
+					that.NameCenter.id = that.appli.costcenterId;
+					that.appswlist(this.appli);
+				}
+				that.judgeApprvs();
+			},
+			async selects(ids){//点击再次申请 回填
+				let dats = {
+					id: ids
+				}
+				let res = await tork.detailApply(dats);
+				if(res.code == 200){
+					try{
+						let apprvTasks = res.data.apprvTask;//审批信息
+						this.old_resonIds = apprvTasks.reasonId;
+						this.idpos = 2;
+						this.startDates = apprvTasks.startDate.substring(0,10);//开始时间
+						this.endDates = apprvTasks.endDate.substring(0,10);//结束时间
+						this.showtimes = true;
+						this.ifdata = true;
+						this.isupdata = res.data;
+					} catch(e){
+						console.log(e)
+					}
+				} else {
+					this.showToasts(res.message)
+				}
+			},
+			upcatopms(){
+				let apprvTasks = this.isupdata.apprvTask;//审批信息
+				let startdate_t = new Date(apprvTasks.startDate.substring(0,10));//开始日期            
+				let date_t = new Date();//现在的日期
+				if(startdate_t < date_t){
+					this.isDateTure = true;
+				}
+				
+				let tmsGssLinks = this.isupdata.tmsGssLink;//行程信息
+				let userlists = [];
+				let use = tmsGssLinks.applyStaffs;//出行人员
+				for (let k in use) {
+					userlists.push({
+						costcenterId: use[k].costId,
+						costcenterName: use[k].costName,
+						deptId: use[k].deptId,
+						deptName: use[k].deptName,
+						istrue: 0,
+						passengerNo: use[k].passengerNo,
+						phone: use[k].phone,
+						userId:use[k].userId,
+						userName: use[k].userName,
+					})
+				}
+				this.userlistadd(userlists,2);
+				this.Reasonsfor = apprvTasks.reason; //出差事由
+				this.Dedescription = apprvTasks.remark;//详细说明
+				this.attdepartment.name = apprvTasks.deptName;//归属部门
+				this.attdepartment.id = apprvTasks.deptId;
+				this.applicantlist = [{
+					istrue: 1,
+					userName: apprvTasks.userName,
+					userId: apprvTasks.userId,
+					deptName: apprvTasks.deptName,
+					deptId: apprvTasks.deptId,
+					costcenterId: apprvTasks.costId,
+					costcenterName: apprvTasks.costName
+				}]
+				this.appli = this.applicantlist[0];//当前选择的成本中心
+				this.NameCenter.name = this.appli.costcenterName;
+				this.NameCenter.id = this.appli.costcenterId;
+				this.appswlist(this.appli);
+				this.estimatedcost = apprvTasks.totalBudget;//预估费用
+				this.estimatedcosts();//触发费用分摊
+				let lisu = [];//行程
+				let applyHotelst = tmsGssLinks.applyHotels;//酒店行程
+				let applyVehiclest = tmsGssLinks.applyVehicles;//火车机票行程
+				if(applyHotelst.length > 0){//酒店行程
+					for(let k in applyHotelst){
+						lisu.push({
+							icname: 'Hotel', //类型
+							staname:{
+								id: applyHotelst[k].cityCode,
+								name: applyHotelst[k].cityName,
+								ts: false
+							} , //出发城市
+							endname: applyHotelst[k].remark, //到达地址
+							sta: this.isDateTure ? this.statime : applyHotelst[k].inDate.substring(0,10), //出发时间
+							end: this.isDateTure ? this.endtiem : applyHotelst[k].outDate.substring(0,10)//返回时间
+						})
+					}
+				}
+				if(applyVehiclest.length > 0){
+					for(let k = 0;k<applyVehiclest.length;k++){
+						if(applyVehiclest[k].vehicle == 1){//机票
+							if(applyVehiclest[k].goBack == 3){//单程
+								lisu.push({
+									icname: 'Planeticket', //类型
+									staname:{
+										id: applyVehiclest[k].deptCityCode,
+										name: applyVehiclest[k].deptCityName,
+									} , //出发城市
+									endname:{
+										id: applyVehiclest[k].arrivCityCode,
+										name: applyVehiclest[k].arrivCityName,
+									},
+									sta: this.isDateTure ? this.statime : applyVehiclest[k].deptDate.substring(0,10), //出发时间
+									end: ''//返回时间
+								})
+							} else if(applyVehiclest[k].goBack == 1) {//往返 1为去 2为回
+								lisu.push({
+									icname: 'Planeticket', //类型
+									staname:{
+										id: applyVehiclest[k].deptCityCode,
+										name: applyVehiclest[k].deptCityName,
+									} , //出发城市
+									endname:{
+										id: applyVehiclest[k].arrivCityCode,
+										name: applyVehiclest[k].arrivCityName,
+									},
+									sta: this.isDateTure ? this.statime : applyVehiclest[k].deptDate.substring(0,10), //出发时间
+									end: this.isDateTure ? this.statime : applyVehiclest[k + 1].deptDate.substring(0,10)//返回时间
+								})
+							}
+						} else {//火车
+							if(applyVehiclest[k].goBack == 1){//去
+								lisu.push({
+									icname: 'Train', //类型
+									staname:{
+										id: applyVehiclest[k].deptCityCode,
+										name: applyVehiclest[k].deptCityName,
+									} , //出发城市
+									endname:{
+										id: applyVehiclest[k].arrivCityCode,
+										name: applyVehiclest[k].arrivCityName,
+									},
+									sta: this.isDateTure ? this.statime : applyVehiclest[k].deptDate.substring(0,10), //出发时间
+									end: ''//返回时间
+								})
+							} else {//回
+								lisu.push({
+									icname: 'Train', //类型
+									staname:{
+										id: applyVehiclest[k].deptCityCode,
+										name: applyVehiclest[k].deptCityName,
+									} , //出发城市
+									endname:{
+										id: applyVehiclest[k].deptCityCode,
+										name: applyVehiclest[k].deptCityName,
+									},
+									sta: '', //出发时间
+									end: this.isDateTure ? this.endtiem : applyVehiclest[k].deptDate.substring(0,10)//返回时间//返回时间
+								})
+							}
+						}
+					}
+				}
+				this.Businlist = lisu;
+			},
 			async TravelSwitch() {
 				let res = await order.getTravelSwitch();
 				if (res.code == 200) {
@@ -630,8 +955,8 @@
 				}
 				return su.join(',')
 			},
-			estimatedcosts(e) { //输入完预估费用
-				let das = parseInt(e.detail.value);
+			estimatedcosts() { //输入完预估费用
+				let das = parseInt(this.estimatedcost);
 				if (das > 0) {
 					for (let k in this.costlist) {
 						if (this.costlist[k].bn > 0 && this.costlist[k].bn < 101) {
@@ -684,13 +1009,29 @@
 					})
 					return
 				}
-				this.costlist.push({
-					costcenterName: '',
-					costcenterId: 0,
-					bn: 0,
-					price: 0,
-					username: [],
-				})
+				let le = this.costlist.length;
+				for(let k in this.Butraveler){
+					let si = false;
+					for(let j in this.costlist){
+						if(this.Butraveler[k].passengerNo == this.costlist[j].username[0].passengerNo){
+							si = true;
+						}
+					}
+					if(si == false){//判断是否存在
+						this.costlist.push({
+							costcenterName: this.Butraveler[k].costcenterName,
+							costcenterId: this.Butraveler[k].costcenterId,
+							bn: 0,
+							price: 0,
+							username: [{
+								name: this.Butraveler[k].userName,
+								passengerNo: this.Butraveler[k].passengerNo
+							}],
+						})
+						break;
+					}
+				}
+				this.upbnsi();
 			},
 			plonslit(index, item) {
 				var sut = this.costlist; //所有分摊
@@ -735,16 +1076,29 @@
 				} else {
 					this.canname = "applicantlists";
 					this.showtype = 'passnalist';
-					this.applicantlist = [];
+					let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId')); //检验是否是登录状态
+					if (datas) {
+						this.applicantlist = [{
+							istrue: 1,
+							passengerNo: datas.passengerVo.id, //暂时没有该参数
+							userName: datas.user.name,
+							userId: datas.user.id,
+							deptName: datas.user.deptName,
+							deptId: datas.user.deptId,
+							phone: datas.user.phone,
+							costcenterId: datas.passengerVo.costcenterId,
+							costcenterName: datas.passengerVo.costcenterName
+						}]
+					}
 					for (let k in this.Butraveler) {
 						if (this.Butraveler[k].costcenterName != '' && this.Butraveler[k].costcenterName != null && this.Butraveler[k].costcenterName !=
 							undefined) {
-							this.applicantlist.push(this.Butraveler[k])
+							if(this.Butraveler[k].userId != datas.user.id){
+								this.applicantlist.push(this.Butraveler[k])
+							}
 						}
 					}
 					let ops = false;
-
-					let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId'));
 					for (let k in this.applicantlist) {
 						if (this.applicantlist[k].passengerNo == datas.passengerVo.id) {
 							ops = true;
@@ -770,17 +1124,15 @@
 			},
 			ad_cion(item) {
 				this.appli = item;
-				this.attdepartment = item.deptName;
-				this.cbname = item.costcenterName;
-				this.cbid = item.costcenterId;
+				this.attdepartment.name = item.deptName;
+				this.attdepartment.id = item.deptId;
 				this.TravelCostCenlist = [];
 				this.TravelDepartlist = [];
-				this.NameCenter.name = this.cbname;
-				this.NameCenter.id = this.cbid;
-				this.appswlist();
-
+				this.NameCenter.name = item.costcenterName;
+				this.NameCenter.id = item.costcenterId;
 				this.shos = false;
 				this.shost = false;
+				this.appswlist(this.appli);
 			},
 			detimes(tu) {
 				if (tu.name == "Planeticket") {
@@ -845,11 +1197,13 @@
 					that.showToasts("请选择成本审批人")
 				} else if (TravelDepartlist.length == 0 && this.CostCis == true) {
 					that.showToasts("请选择部门审批人")
+				}else if(that.CostCis == false && that.CostCi == false && that.isGetStaffList == true && that.isarsrl == false){//除了免审 其他必须有审批流程
+					that.showToasts("未配置审批流程，请联系管理员设置！");
 				} else {
 					let nums = 0;
 					for (let g in constilist) {
-						if (constilist[g].costcenterId == "") {
-							that.showToasts("请输入成本中心！");
+						if (constilist[g].costcenterId == "" || constilist[g].costcenterId == null) {
+							that.showToasts("请选择成本分摊！");
 							return
 						} else if (constilist[g].username.length == 0) {
 							that.showToasts("请选择适用人员！");
@@ -902,8 +1256,8 @@
 								innerOuter: 1,
 								cityCode: Businlist[i].staname.id,
 								cityName: Businlist[i].staname.name,
-								inDate: Businlist[i].sta.date.re + ' 00:00:00',
-								outDate: Businlist[i].end.date.re + ' 00:00:00',
+								inDate: Businlist[i].sta + ' 00:00:00',
+								outDate: Businlist[i].end + ' 00:00:00',
 								remark: Businlist[i].endname
 							})
 						} else if (Businlist[i].icname == 'Planeticket' || Businlist[i].icname == 'Train') {
@@ -911,10 +1265,10 @@
 							let times = ''
 							let tike = 1; //去还是回
 							if (Businlist[i].end == '') {
-								times = Businlist[i].sta.date.re + ' 00:00:00';
+								times = Businlist[i].sta + ' 00:00:00';
 								tike = 1;
 							} else {
-								times = Businlist[i].end.date.re + ' 00:00:00';
+								times = Businlist[i].end + ' 00:00:00';
 								tike = 2;
 							}
 							if (Businlist[i].icname == 'Planeticket') {
@@ -943,7 +1297,7 @@
 									innerOuter: 1,
 									goBackGroup: i,
 									vehicle: is,
-									deptDate: Businlist[i].sta.date.re + ' 00:00:00',
+									deptDate: Businlist[i].sta + ' 00:00:00',
 									goBack: 1,
 									deptCityCode: Businlist[i].staname.id,
 									deptCityName: Businlist[i].staname.name,
@@ -954,7 +1308,7 @@
 									innerOuter: 1,
 									goBackGroup: i,
 									vehicle: is,
-									deptDate: Businlist[i].end.date.re + ' 00:00:00',
+									deptDate: Businlist[i].end + ' 00:00:00',
 									goBack: 2,
 									deptCityCode: Businlist[i].endname.id,
 									deptCityName: Businlist[i].endname.name,
@@ -994,6 +1348,8 @@
 							oaTravelNo: oaTravelNo,
 							projectCode: projectCode,
 							applyStaffCostInfo: conlcvlust,
+							deptName:this.attdepartment.name,//部门名称
+							deptId:this.attdepartment.id,//部门id
 							totalBudget: estimatedcost, //预估费用
 							beforeMiddle: 1,
 							costId: NameCenter.id, //成本中心id
@@ -1002,6 +1358,7 @@
 							endDate: Traveltime[1].re + ' 00:00:00',
 							taskType: 1,
 							reason: Reasonsfor, //事由
+							reasonId:this.Reasonsforid,
 							status: 0,
 							remark: Dedescription, //详细说明
 							apprvTaskStaffs: apprvTaskStaffts, //审核人
@@ -1017,7 +1374,7 @@
 							that.showToasts(res.message)
 							setTimeout(() => {
 								uni.$emit('add_user', res);
-								uni.navigateBack({})
+								that.toBlock();
 							}, 500)
 						} else {
 
@@ -1235,9 +1592,10 @@
 						// 		index:0
 						// 	})
 						// }
+					} else if(res.code == '-100'){//是否无审批流
+						that.isGetStaffList = true;
 					} else {
-
-						that.showToasts(res.message)
+						that.showToasts(res.message);
 					}
 				} catch (e) {
 					console.log(e)
@@ -1255,7 +1613,6 @@
 			},
 			okisd() { //选择当前成本中心
 				/*	for (let k in this.costlist) {
-					  console.log(JSON.stringify(this.slit_id_checd))
 						if(this.costlist[k].costcenterId == this.slit_id_checd){
 							uni.showToast({
 								title:'当前成本中心已存在！',
@@ -1293,14 +1650,15 @@
 			},
 			newdata(tm) { //回显时间
 				if (tm.end == "" && tm.sta != '') {
-					return tm.sta.date.month + '月' + tm.sta.date.day + '日' + '　出发'
+					return tm.sta.substring(5,7) + '月' + tm.sta.substring(8,10) + '日' + '　出发'
 				} else if (tm.end != "" && tm.sta == '') {
-					return tm.end.date.month + '月' + tm.end.date.day + '日' + '　返回'
+					return tm.end.substring(5,7) + '月' + tm.end.substring(8,10) + '日' + '　返回'
 				} else if (tm.end != "" && tm.sta != '' && tm.icname == 'Hotel') {
-					return tm.sta.date.month + '月' + tm.sta.date.day + '日' + '　入住　' + tm.end.date.month + '月' + tm.end.date.day + '日' +
+					return tm.sta.substring(5,7) + '月' + tm.sta.substring(8,10) + '日' + '　入住　' + tm.end.substring(5,7) + '月' + tm.end.substring(8,10) + '日' +
 						' 离店'
 				} else if (tm.end != "" && tm.sta != "" && tm.icname == 'Planeticket') {
-					return tm.sta.date.month + '月' + tm.sta.date.day + '日' + '　往返'
+					return tm.sta.substring(5,7) + '月' + tm.sta.substring(8,10) + '日' + '　往　' + tm.end.substring(5,7) + '月' + tm.end.substring(8,10) + '日' +
+						' 返'
 				}
 			},
 			newstaname(tm) { //回显城市名称
@@ -1319,19 +1677,24 @@
 					return '[火车]'
 				}
 			},
-			addlist() { //保存出差行程
+			addlist(num) { //保存出差行程
+				//num 1:新增 2:修改
+				this.isko = false;
 				let that = this;
 				let curr = that.currentPage; //类型
 				let lis = that.Businlist;
+				let ad = {};
 				if (curr == 'Planeticket') {
 					let bust = that.Busirticket; //城市
 					let stafil = that.sta_Flightbus; //出发时间
 					let endfil = that.end_Flightbus; //返回时间
-					console.log(stafil, endfil)
 					if (bust[0].name == "") {
 						that.showToasts('请选择出发城市');
 						return
-					} else if (!stafil.date) {
+					} else if (bust[1].name == "") {
+						that.showToasts('请选择到达城市');
+						return
+					} else if (JSON.stringify(stafil) == '{}') {
 						that.showToasts('请选择出发时间');
 						return
 					} else {
@@ -1339,11 +1702,11 @@
 							icname: 'Planeticket', //类型
 							staname: bust[0], //出发城市
 							endname: bust[1], //到达城市
-							sta: stafil, //出发时间
+							sta: stafil.date.re, //出发时间
 							end: '' //返回时间
 						};
 						if (endfil.date) {
-							if (stafil.date.dateTime > endfil.date.dateTime) {
+							if (stafil.date.re > endfil.date.re) {
 								uni.showToast({
 									title: '去程不能大于返程的时间',
 									icon: 'none',
@@ -1351,9 +1714,14 @@
 								})
 								return
 							}
-							ad.end = endfil; //返回时间
+							ad.end = endfil.date.re; //返回时间
 						}
-						lis.push(ad);
+						
+						if(num == 1){
+							lis.push(ad);
+						} else {
+							lis[this.busirticketIndex] = ad;
+						}
 						this.isko = true
 					}
 				} else if (curr == 'Train') {
@@ -1363,60 +1731,101 @@
 					if (bust[0].name == '') {
 						that.showToasts('请选择出发城市');
 						return
-					} else if (!stafil.date) {
+					} else if (bust[1].name == "") {
+						that.showToasts('请选择到达城市');
+						return
+					} else if (JSON.stringify(stafil) == '{}') {
 						that.showToasts('请选择出发时间');
 						return
 					} else {
-						lis.push({
-							icname: 'Train', //类型
-							staname: bust[0], //出发城市
-							endname: bust[1], //到达城市
-							sta: stafil, //出发时间
-							end: '' //返回时间
-						});
-						if (endfil.date) {
+						if(num == 1){
 							lis.push({
 								icname: 'Train', //类型
-								staname: bust[1], //出发城市
-								endname: bust[0], //到达城市
-								sta: '', //出发时间
-								end: endfil //返回时间
+								staname: bust[0], //出发城市
+								endname: bust[1], //到达城市
+								sta: stafil.date.re, //出发时间
+								end: '' //返回时间
 							});
+							if (endfil.date) {
+								lis.push({
+									icname: 'Train', //类型
+									staname: bust[1], //出发城市
+									endname: bust[0], //到达城市
+									sta: '', //出发时间
+									end: endfil.date.re //返回时间
+								});
+							}
+						} else {
+							lis[this.busirticketIndex] = {
+								icname: 'Train', //类型
+								staname: bust[0], //出发城市
+								endname: bust[1], //到达城市
+								sta: stafil.date.re, //出发时间
+								end: '' //返回时间
+							};
+							if (endfil.date) {
+								lis.splice(this.busirticketIndex + 1, 0, {
+									icname: 'Train', //类型
+									staname: bust[1], //出发城市
+									endname: bust[0], //到达城市
+									sta: '', //出发时间
+									end: endfil.date.re //返回时间
+								});
+							}
 						}
+						
 						this.isko = true
 					}
 				} else if (curr == 'Hotel') {
 					let bust = that.sta_Hotelket; //城市
-					let busts = that.end_Hotelket; //地址
+					let busts = ''; //地址
 					let stafil = that.sta_Hotelkettime; //出发时间
 					let endfil = that.end_Hotelkettime; //返回时间
 					if (Object.keys(bust).length == 0) {
 						that.showToasts("请选择城市");
 						return
-					} else if (!stafil.date) {
-						that.showToasts('请选择出发时间');
+					} else if (JSON.stringify(stafil) == '{}') {
+						that.showToasts('请选择入住时间');
 						return
 					} else {
-						lis.push({
-							icname: 'Hotel', //类型
-							staname: bust, //出发城市
-							endname: busts, //到达地址
-							sta: stafil, //出发时间
-							end: endfil //返回时间
-						});
+						if(num == 1){
+							lis.push({
+								icname: 'Hotel', //类型
+								staname: bust, //出发城市
+								endname: busts, //到达地址
+								sta: stafil.date.re, //出发时间
+								end: endfil.date.re //返回时间
+							});
+						} else {
+							lis[this.busirticketIndex] = {
+								icname: 'Hotel', //类型
+								staname: bust, //出发城市
+								endname: busts, //到达地址
+								sta: stafil.date.re, //出发时间
+								end: endfil.date.re //返回时间
+							}
+						}
 						this.isko = true
 					}
 				}
+				if(num == 2){
+					this.sta_Flightbus = {}; //出差飞机出发时间
+					this.end_Flightbus = {}; //出差飞机返回时间
+					this.sta_Traveltrain = {}; //出差火车出发时间
+					this.end_Traveltrain = {}; //出差火车返回时间
+					this.sta_Hotelkettime = {}; //出差酒店出发时间
+					this.end_Hotelkettime = {}; //出差酒店返回时间
+				}
 				that.Businlist = lis;
 			},
-			addold() { //保存当前继续添加
+			addold(num) { //保存当前继续添加
 				let that = this;
 				let curr = that.currentPage; //类型
-				that.addlist()
+				that.addlist(num)
 			},
-			addtravl() { //保存当前清空其他
+			addtravl(num) { //保存当前清空其他
 				let that = this;
-				that.addlist();
+				that.addlist(num);
 				if (this.isko == true) {
 					that.shos = false;
 				}
@@ -1432,48 +1841,6 @@
 					this.endtiem = this.endtiemy;
 				}
 				this.currentPage = item.ul;
-				this.nos = item.id;
-			},
-			lc_op() {
-				this.shos = true;
-				this.showtype = 'triplist';
-			},
-			lischang(time) {
-				let tim = time.choiceDate;
-
-				this.sta_Flightbus = {}; //出差飞机出发时间
-				this.end_Flightbus = {}; //出差飞机返回时间
-				this.sta_Traveltrain = {}; //出差火车出发时间
-				this.end_Traveltrain = {}; //出差火车返回时间
-				this.sta_Hotelkettime = {}; //出差酒店出发时间
-				this.end_Hotelkettime = {}; //出差酒店返回时间
-				this.hotellmes = [];
-				this.Busirticket = [{
-					name: '',
-					id: ''
-				}, {
-					name: '',
-					id: ''
-				}]; //出差飞机城市
-				this.Busitraiket = [{
-					name: '',
-					id: ''
-				}, {
-					name: '',
-					id: ''
-				}]; //火车出差城市
-				this.sta_Hotelket = {}, //出差酒店城市
-					this.end_Hotelket = '', //出差酒店地址
-
-					this.statime = tim[0].re;
-				this.endtiem = tim[1].re;
-				this.Traveltime = [tim[0], tim[1]];
-				this.endtiemy = tim[1].re;
-				let stime = new Date(tim[1].dateTime + (24 * 60 * 60 * 1000));
-				let mons = (stime.getMonth() + 1 < 10 ? '0' + (stime.getMonth() + 1) : stime.getMonth() + 1);
-				let dons = stime.getDate() < 10 ? '0' + stime.getDate() : stime.getDate();
-				this.endtiems = stime.getFullYear() + '-' + mons + '-' + dons;
-				this.Businlist = [];
 			},
 			isshow() {
 				this.shos = false;
@@ -1499,9 +1866,9 @@
 					let res = await tork.getCostCenterList();
 
 					if (res.code == 200) {
-
 						_this.treeLists = [];
-						_this.renderTreeLists(res.data[0].children);
+						_this.treeLists = [];
+						_this.renderTreeLists(res.data);
 						this.showtype = 'coseidlist';
 						this.shos = true;
 						this.sli_old(); //点击成本中心
@@ -1536,15 +1903,13 @@
 					}
 				});
 			}
-		},
-		onLoad() {
 		}
 	};
 </script>
 
 <style lang="scss" scoped>
 	.Initiatetravelapplications {
-		padding-bottom: 20upx;
+		padding-bottom: 120upx;
 		font-size: 35upx;
 		.share-box {
 			width: 100%;
@@ -1605,13 +1970,12 @@
 
 				.div_li {
 					width: calc(100% - 40upx);
-					height: 210upx;
 					background: #f1f1f1;
 					padding: 20upx;
 
 					.sist {
 						width: 100%;
-						height: 210upx;
+						height: 240upx;
 						background: #ffffff;
 					}
 				}
@@ -1828,6 +2192,7 @@
 				}
 				
 				.botmis {
+					
 					width: 100%;
 					height: 60upx;
 					font-size: 30upx;
@@ -1892,6 +2257,11 @@
 					width: 27%;
 					text-align: center;
 					color: #c0c0c0;
+					line-height: 90upx;
+					span{
+						color: red;
+						margin-right: 5upx;
+					}
 				}
 
 				.rav_left_wbs {
@@ -1959,7 +2329,6 @@
 				line-height: 90upx;
 				width: calc(100% - 80upx);
 				margin: 0 40upx;
-				border-bottom: 1upx solid #F1F1F1;
 
 				.coslipc {
 					display: flex;
@@ -2011,11 +2380,10 @@
 					display: flex;
 					align-items: center;
 					color: #c0c0c0;
-
-					span {
-						color: red;
-						font-size: 45upx;
+					image{
 						margin-right: 10upx;
+						width: 40upx;
+						height: 40upx;
 					}
 				}
 
@@ -2055,9 +2423,10 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-
+			color: #52C41A;
+			font-size: 30upx;
 			span {
-				color: #52C41A;
+				margin-right: 10upx;
 				font-size: 45upx;
 			}
 		}
@@ -2079,6 +2448,10 @@
 					width: 25%;
 					text-align: center;
 					color: #c0c0c0;
+					span{
+						color: red;
+						margin-right: 5upx;
+					}
 				}
 
 				.ravright {
@@ -2102,13 +2475,17 @@
 				height: 90upx;
 				border-top: 2upx solid #E5E5E5;
 				display: flex;
-
+				position: relative;
 				.tl_left {
 					width: 10%;
 					height: 90upx;
 					display: flex;
 					align-items: center;
 					justify-content: center;
+					image{
+						width: 40upx;
+						height: 40upx;
+					}
 				}
 
 				.tl_right {
@@ -2133,11 +2510,21 @@
 						color: #E5E5E5;
 					}
 				}
+				.ti_updat{
+					position: absolute;
+					top: 40upx;
+					right: 10upx;
+					width: 40upx;
+					height: 40upx;
+				}
 			}
 		}
 
 		.check_btn {
 			width: 100%;
+			position: fixed;
+			left: 0;
+			bottom: 0;
 			height: 110upx;
 			display: flex;
 			text-align: center;

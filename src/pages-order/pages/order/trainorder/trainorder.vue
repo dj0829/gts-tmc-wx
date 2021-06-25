@@ -22,38 +22,38 @@
 					<view class="iconfont" style="color: #007aff;">
 						&#xe62f;
 					</view>
-					火车票
+					<view style="margin-left:10upx">火车票</view>
 				</view>
 				<view class="lstt_r">
 					{{rest(item.traSaleOrderExt.orderStatus)}}
 				</view>
 			</view>
-			<view style="line-height: 50upx;display: flex;justify-content: space-between;">
-				<view>
-					{{item.traSaleOrderExt.trainName}}
+			<view style="line-height: 50upx;display: flex;justify-content: space-between;font-size:32upx;font-weight:bold;margin-top:10upx;">
+				<view style="color:#333333;">
+					{{train(item.traSaleOrderExt.trainName)}}
 				</view>
-				<view style="color: #FF9000;" v-if="seid != 9">
-					￥{{item.tolPrice}}
+				<view style="color: #FFA63E;" v-if="seid != 9">
+					￥{{item.traSaleOrderExt.premium}}
 					<!-- <span v-if="item.tr.saleOrders.length == 0">￥{{item.tr.saleOrders[0].receivable}}</span>
 					<span v-else>￥{{numPrice(item.tr.saleOrders)}}</span> -->
 				</view>
-				<view style="color: #FF9000;" v-if="seid == 9">
+				<view style="color: #FFA63E;" v-if="seid == 9">
 					￥{{item.refundPrice}}
 				</view>
 			</view>
-			<view style="font-size: 28upx;line-height: 60upx;">
+			<view style="font-size: 24upx;line-height: 60upx;">
 				出发时间： {{item.traSaleOrderExt.departureTime}}
 			</view>
-			<view style="color: #C8C7CC;font-size: 28upx;width: 100%;overflow: scroll;" v-if="seid != 9">
+			<view style="font-size: 24upx;width: 100%;overflow: scroll;" v-if="seid != 9">
 				乘车人: {{item.traSaleOrderExt.name}}
 			</view>
-			<view style="color: #C8C7CC;font-size: 28upx;width: 100%;overflow: scroll;" v-if="seid == 9">
+			<view style="font-size: 24upx;width: 100%;overflow: scroll;" v-if="seid == 9">
 				乘车人: {{item.traSaleChangeDetailList[0].passenagerName}}
 			</view>
-			<view style="color: #C8C7CC;font-size: 28upx;text-align: right;" v-if="seid != 9">
+			<view style="color: #999999;font-size: 20upx;margin:10upx 0;" v-if="seid != 9">
 				下单时间：{{item.tr.createTime}}
 			</view>
-			<view style="color: #C8C7CC;font-size: 28upx;text-align: right;" v-if="seid == 9">
+			<view style="color: #999999;font-size: 20upx;margin:10upx 0;" v-if="seid == 9 && item.refundTime">
 				退票时间：{{item.refundTime}}
 			</view>
 		</view>
@@ -66,7 +66,7 @@
 							<view class="iconfont" style="color: #007aff;">
 								&#xe62f;
 							</view>
-							火车票
+							<view style="margin-left:10upx">火车票</view>
 						</view>
 						<view class="lstt_r">
 							{{rests(item.changeStatus)}}
@@ -81,7 +81,7 @@
 							￥{{item.saleChange.planAmount}}
 						</view>
 					</view>
-					<view style="font-size: 28upx;line-height: 60upx;">
+					<view style="font-size: 28upx;line-height: 60upx;" v-if="item.traSaleChangeDetailList.length > 1">
 						出发时间：{{item.traSaleChangeDetailList[0].departTime}}
 					</view>
 					<view style="color: #C8C7CC;font-size: 28upx;width: 100%;overflow: scroll;">
@@ -174,6 +174,11 @@
 			this.selist(1)
 		},
 		methods: {
+			train(item){
+				var index=item.lastIndexOf("\（");
+				item=item.substring(index+1,item.length);
+				return item.substr(0, item.length - 1)
+			},
 			numPrice(nos) { //回显订单价格
 				let nums = 0;
 				for (let k in nos) {
@@ -533,26 +538,26 @@
 			display: flex;
 			white-space: nowrap;
 			font-size: 30upx;
-
+			border-bottom: 1px solid #dfdfdf;
 			.selsit {
 				display: inline-block;
 				line-height: 90upx;
 				text-align: center;
-				color: #999999;
+				color: #666666;
 				padding: 0 25upx;
 				height: 86upx;
 				border-bottom: 6upx solid #FFFFFF;
 			}
 
 			.seclk {
-				border-bottom: 6upx solid $uni-color-primary;
+				border-bottom: 6upx solid #007aff;
+				color: #007aff;
 			}
 		}
 
 		.searchs {
-			margin-top: 20upx;
 			width: 100%;
-			height: 80upx;
+			height: 100upx;
 			background-color: #FFFFFF;
 			display: flex;
 			align-items: center;
@@ -563,13 +568,13 @@
 				margin-left: 20upx;
 				text-indent: 15upx;
 				height: 60upx;
-				border-radius: 10upx;
-				background: #E5E5E5;
+				border-radius: 5upx;
+				border: 1px solid #dfdfdf;
 			}
 
 			.btnstlist {
 				width: calc(30% - 80upx);
-				border-radius: 10upx;
+				border-radius: 7upx;
 				margin-left: 20upx;
 				height: 60upx;
 				line-height: 60upx;
@@ -595,13 +600,12 @@
 			.listtops {
 				width: 100%;
 				display: flex;
-				color: #C0C0C0;
-
+				color: #666666;
+				font-size: 20upx;
 				.lstt_l {
 					display: flex;
 					align-items: center;
 					flex: 1;
-
 					image {
 						width: 35upx;
 						height: 35upx;
@@ -609,8 +613,11 @@
 				}
 
 				.lstt_r {
-					flex: 1;
-					text-align: right;
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #007AFF;
+					background: #dbf0ff;
+					border-radius: 10upx;
 				}
 			}
 		}

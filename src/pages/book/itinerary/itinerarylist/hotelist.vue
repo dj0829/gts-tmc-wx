@@ -2,57 +2,70 @@
 	<view class="trandetails">
 		<headnavigation titles="酒店住房详情"></headnavigation>
 		<view class="navstop">
-			<view class="">
+			<view style="font-size:42upx;font-weight:bold;margin-left:60upx;padding:15upx 0;">{{userstatus(cont.orderStatus)}}</view>
+			<view style="margin-left:60upx;">
 				订单号：{{cont.saleOrderNo}}
 			</view>
 			<view class="lisst">
 				<view class="citst">
 					<view class="cits_t">
-						<view class="">
-							酒店名称：{{cont.hotelName}}
+						<view style="font-size:38upx;color:#333333;font-weight:bold;">
+							{{cont.hotelName}}
 						</view>
-						<view class="">
+						<view style="color:#999999;">
+							{{cont.hotelAddress}}
+						</view>
+						<view>
 							酒店电话：{{cont.hotelPhone}}
 						</view>
-						<view class="">
+						<view>
 							酒店床型：{{cont.bedTypeName}}
+							
 						</view>
-						<view class="">
-							房间数量：{{cont.bookCount}}间
+						<view>
+							房间类型：{{cont.proName}} {{cont.bookCount}}间
 						</view>
-						<view class="">
-							房间类型：{{cont.proName}}
-						</view>
-						<view class="">
-							所在地址：{{cont.hotelAddress}}
-						</view>
-					</view>
-					<view class="cits_b">
-						<view class="cits_bt">
-							<view class="cits_bts" style=" color: #007aff;">支付状态：{{pustatus(cont.saleOrder.payStatus)}}</view>
-							<view class="cits_bts" style=" color: #007aff;">订单状态：{{userstatus(cont.orderStatus)}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts">入住日期：{{subtime(cont.arrivalDate)}}</view>
-							<view class="cits_bts">离开日期：{{subtime(cont.departureDate)}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts">入住人：{{cont.guestName}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts">联系人：{{cont.contactName}}</view>
-							<view class="cits_bts">联系电话：{{cont.contactNumber}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_btsy">总价：￥{{cont.totalPrice}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts" style="color: red;">取消规则：{{cont.dbCancelRule}}</view>
+						<view style="font-size:26upx;font-weight:bold;">
+							<span>总额：</span>
+							<span style="color:#FFA63E;">￥{{cont.totalPrice}}</span>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
+		<view class="lisst">
+				<view class="citst">
+					<view class="cits_b">
+						<!-- <view class="cits_bt">
+							<view class="cits_bts" style=" color: #007aff;">支付状态：{{pustatus(cont.saleOrder.payStatus)}}</view>
+							<view class="cits_bts" style=" color: #007aff;">订单状态：{{userstatus(cont.orderStatus)}}</view>
+						</view> -->
+						 <view class="cits_bt">
+							<view class="cits_bts" style=" color: #999999;font-size:24upx;">入住时间</view>
+							<view class="cits_bts" style=" color: #999999;font-size:24upx;">离店时间</view>
+						 </view>
+						<view class="cits_bt" style="font-size:32upx;color:#333333;font-weight:bold;">
+							<view>{{subtime(cont.arrivalDate,1)}}</view>
+							<view style="margin: 0 40upx;color:#999999;font-size:24upx;">—</view>
+							<view class="cits_bts">{{subtime(cont.departureDate,1)}}</view>
+						</view>
+						<view class="cits_bt" style="font-size:22upx;color:#333333;">
+							<view class="cits_bts">入&nbsp;&nbsp;住&nbsp;&nbsp;人：{{cont.guestName}}</view>
+						</view>
+						<view class="cits_bt" style="font-size:22upx;color:#333333;">
+							<view style="margin-right:20upx;">联系信息 ：{{cont.contactName}}</view>
+							<view class="cits_bts">{{cont.contactNumber}}</view>
+						</view>
+						<!-- <view class="cits_bt">
+							<view class="cits_btsy">总价：￥{{cont.totalPrice}}</view>
+						</view> -->
+						<view class="citsbottom">
+							<view style="font-weight:bold;">取消规则</view>
+							<view style="color:#B04D4D;margin:10upx 0;">是否取消：是 最晚取消时间：{{times(cont.dbCancelRule)}}</view>
+						</view>
+					</view>
+				</view>
+			</view>
 	</view>
 </template>
 
@@ -62,7 +75,8 @@
 			return{
 				cont:{},
 				lefts:0,
-				rights:0
+				rights:0,
+				weeks:['一','二','三','四','五','六','日'],
 			}
 		},
 		onLoad(item) {
@@ -76,8 +90,26 @@
 					url:'../itinerary?left=' + this.lefts + '&right=' + this.rights
 				})
 			},
-			subtime(tiem){//返回日期前10位
-				return tiem.substring(0,10)
+			subtime(tiem,num){//返回日期前10位
+				// return tiem.substring(0,10)
+				if(num == 0){
+					let week = new Date(tiem.replace(/-/g, '/')).getDay();
+					if(week == 0){
+						week = 7
+					}
+					let ts = tiem.substring(5,10).split('-');
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week-1]
+				} else if(num == 1){
+					let week = new Date(tiem.replace(/-/g, '/')).getDay();
+					if(week == 0){
+						week = 7
+					}
+					let ts = tiem.substring(5,10).split('-');
+					return ts[0] + '月' + ts[1] +'日'+ ' 周' + this.weeks[week-1]
+				}
+			},
+			times(time){
+				return time.substring(4,23) 
 			},
 			pustatus(ty){//支付状态
 				if(ty == 1){
@@ -154,36 +186,34 @@
 		padding-bottom: 300upx;
 		background: #F5F5F5;
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
-			.lisst{
-				position: absolute;
-				left: 0;
-				top: 110upx;
+			background: linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);
+		}
+		.lisst{
 				width: calc(100% - 40upx);
-				padding:  0 20upx;
+				padding: 20upx 20upx 20upx 20upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
-						color: #333333;
+						background: #FFFFFF;
+						border-radius: 15upx;
+						color: #566666;
 						line-height: 50upx;
+						font-size: 26upx;
+						view{
+							margin-left: 20upx;
+							margin-top: 15upx;
+						}
 					}
 					.cits_b{
 						width: calc(100% - 40upx);
 						color: #333333;
-						padding: 0 20upx;
+						padding: 20upx 20upx;
 						background: #FFFFFF;
-						border-bottom-left-radius: 15upx;
-						border-bottom-right-radius: 15upx;
+						border-radius: 15upx;
 						.cits_bt{
 							display: flex;
 							line-height: 60upx;
@@ -196,6 +226,11 @@
 								flex: 1;
 								color: #F48F00;
 							}
+						}
+						.citsbottom{
+							background:#fef9f8;
+							padding: 20upx;
+							font-size: 22upx;
 						}
 					}
 				}
@@ -284,6 +319,5 @@
 					}
 				}
 			}
-		}
 	}
 </style>

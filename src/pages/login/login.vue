@@ -78,6 +78,13 @@
 			<view @click="registered" style="font-size: 35upx;">合作注册</view>
 		</view>
 		<!-- #endif -->
+		<!-- #ifdef APP-PLUS -->
+		<view class="app_btoms">
+			<view class="app_fonts">
+				登录即代表您同意我们的<span>《服务协议与隐私政策》</span>
+			</view>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -143,11 +150,8 @@
 		mounted() {
 			if (this.isLogin) {//未登录时加载
 				// #ifdef  APP-PLUS
-				// uni.setStorageSync("wxAppids", 'wx380eba143206092e'); //App端 默认写死
-				// this.lgImg = "http://file.molintmc.cn/mlimg/molinlogo.png";
-				// this.bgImg = "http://file.molintmc.cn/mlimg/molinbg.png";
-				// uni.setStorageSync("yzfSign" + uni.getStorageSync('appWxId'),
-				// 	'37ef9b97d07c57cf2b45cabc14b2e266f2b87d0e7f0db827bb5ee08ff595f2720a4c2c76a8a55c9bf742d59d02c4a1983e5ba3');
+				uni.setStorageSync("wxAppids", 'wxf80ec23e74c52dc1'); //App端 默认写死
+				this.getenvs('wxf80ec23e74c52dc1');
 				//#endif
 				// #ifdef  MP-WEIXIN
 				let appid = wx.getAccountInfoSync().miniProgram.appId;
@@ -257,6 +261,7 @@
 						uni.setStorageSync("yzfSign" + uni.getStorageSync('appWxId'), rest.data.yzfSign);
 						this.bcColors = '#' + rest.data.style.fontColor;
 						this.bteColors = '#' + rest.data.style.darkBgColor;
+						// #ifdef  H5
 						if (isWechat()) { //如果为微信端就进行code
 							let datas = uni.getStorageSync('h5_openid' + uni.getStorageSync('appWxId')); //检验是否保存wx openid
 							if (datas) {
@@ -265,6 +270,7 @@
 								this.getCode(apids);
 							}
 						}
+						// #endif
 					} else {
 						this.showToasts(rest.message);
 					}
@@ -358,7 +364,7 @@
 							type:1,
 							phone: ipon,
 							verificationCode: ver,
-							openId: _this.openid,
+							// openId: _this.openid,
 						}
 						// #endif
 						// #ifdef MP-WEIXIN
@@ -366,8 +372,8 @@
 							type:2,
 							phone: ipon,
 							verificationCode: ver,
-							openId: _this.openid,
-							sessionKey: this.sessionKey
+							// openId: _this.openid,
+							// sessionKey: this.sessionKey
 						}
 						// #endif
 						try {
@@ -486,7 +492,28 @@
 		margin-top: 20upx;
 		color: #1a9bff;
 	}
-
+	
+	.app_btoms{
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 363upx;
+		background: url(../../static/img/login/login_bmbgs.png);
+		background-size: 100%;
+		display: flex;
+		align-items: flex-end;
+		.app_fonts{
+			width: 100%;
+			line-height: 100upx;
+			text-align: center;
+			font-size: 22upx;
+			color: #FFFFFF;
+			span{
+				text-decoration: underline;
+			}
+		}
+	}
 	.login-main {
 		width: 100%;
 
@@ -553,8 +580,9 @@
 
 					.disabled {
 						color: #FFFFFF;
-						border: 1upx solid $uni-color-primary;
+						// border: 1upx solid $uni-color-primary;
 						cursor: not-allowed; // 鼠标变化
+						background-color: $uni-color-primary;
 					}
 				}
 			}

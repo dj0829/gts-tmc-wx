@@ -3,41 +3,37 @@
 		
 		<view class="padding-lr" :class=" [{'animation-slide-right':animation },{ 'Hotel_lr':current == 'Hotel'}]" @tap="startClick('left')">
 			<view class="cu_li_left" v-if="current == 'Planeticket'">
-				<view v-if="vx_city_left[0].name != ''">{{ vx_city_left[0].name }}</view>
+				<view v-if="Busirticket[0].name != ''">{{ Busirticket[0].name }}</view>
 				<view class="cu_lis" v-else>出发城市</view>
 			</view>
 			<view class="cu_li_left" v-if="current == 'Train'">
-				<view v-if="tr_city_left[0].name != ''">{{ tr_city_left[0].name }}</view>
+				<view v-if="Busitraiket[0].name != ''">{{ Busitraiket[0].name }}</view>
 				<view class="cu_lis" v-else>出发城市</view>
 			</view>
 				<view class="cu_li_left Hotel_left" v-if="current == 'Hotel'">
-				<view v-if="wx_Hotel.name">{{ wx_Hotel.name }}</view>
+				<view v-if="tsta_Hotelket.name">{{ tsta_Hotelket.name }}</view>
 				<view class="cu_lis" v-else>入住城市</view>
 			</view>
 		</view>
 		<view class="bt_li" @tap="toggle()" v-if="current != 'Hotel'"><view class="iconfont icon1">&#xe60e;</view></view>
 		<view class="padding-lr padding-lr_r" :class="animation ? 'animation-slide-left' : ''" @click="startClick('right')">
 			<view class="cu_li_right" v-if="current == 'Planeticket'">
-				<view class="cu_li" v-if="vx_city_left[1].name != ''">{{ vx_city_left[1].name }}</view>
+				<view class="cu_li" v-if="Busirticket[1].name != ''">{{ Busirticket[1].name }}</view>
 				<view class="cu_lis " v-else>到达城市</view>
 			</view>
 			<view class="cu_li_right" v-if="current == 'Train'">
-				<view class="" v-if="tr_city_left[1].name != ''">{{ tr_city_left[1].name }}</view>
+				<view   v-if="Busitraiket[1].name != ''">{{ Busitraiket[1].name }}</view>
 				<view class="cu_lis " v-else>到达城市</view>
 			</view>
-			<!-- <view class="cu_li_right" v-if="current == 'Hotel'">
-				<view class="cu_lis" v-if="longitudelatitude.length == 0">
-					当前位置
-				</view>
-				<view class="cu_lis" v-else>
-					{{longitudelatitude[0]}},{{longitudelatitude[1]}}
-				</view>
-			</view> -->
+			<view class="cu_li_right" v-if="current == 'Hotel'">
+				<view class="iconfont" @click.stop="posiAd">&#xe642;</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+import torok from '@/api/torowk.js'
 import {mapState} from 'vuex';
 export default {
 	props: {
@@ -49,28 +45,150 @@ export default {
 			type: String,
 			default: ''
 		},
-		currents: {
-			type: String,
-			default: ''
+		sBusirticket:{
+			type: Array,
+			default: ()=>{ return [] }//出差飞机城市
 		},
-		fails: {
-			type: String,
-			default: ''
-		}
+		sBusitraiket:{
+			type: Array,
+			default: ()=>{ return [] } //出差火车城市
+		},
+		tsta_Hotelket:{
+			type: Object,
+			default: ()=>{ return {} } //出差酒店城市
+		},
 	},
 	data() {
 		return {
-			
-			
+			Busirticket: [{
+				name: '深圳',
+				id: 'SZX'
+			}, {
+				name: '北京',
+				id: 'BJS'
+			}],
+			Busitraiket: [{
+				name: '深圳',
+				id: 'shenzhen'
+			}, {
+				name: '北京',
+				id: 'beijing'
+			}],
+			sta_Hotelket: {id:"shenzhen",name:"深圳"},//出差酒店城市
 			animation: false
+		}
+	},
+	watch:{
+		sBusirticket(data){
+			this.Busirticket = data;
+		},
+		sBusitraiket(data){
+			if(data.length > 0){
+				this.Busitraiket = data;
+			}
+		},
+		tsta_Hotelket(data){
+			this.sta_Hotelket = data;
 		}
 	},
 	onLoad() {
 	},
-	computed:{
-		 ...mapState(['vx_city_left','tr_city_left','wx_Hotel','wx_hotels','longitudelatitude'])
-	},
 	methods: {
+		posiAd(){//获取当前位置
+			// #ifdef MP-WEIXIN
+			this.isGetLocation();
+			// #endif
+			// #ifdef H5
+			this.locations();
+			// #endif
+			// #ifdef APP-PLUS
+			this.getLocationInfo();
+			// #endif
+		},
+		isGetLocation(a = "scope.userLocation") { // 3. 检查当前是否已经授权访问scope属性，参考下截图
+			var _this = this;
+			uni.getSetting({
+				success(res) {
+					if (!res.authSetting[a]) { //!res.authSetting[a] //3.1 每次进入程序判断当前是否获得授权，如果没有就去获得授权，如果获得授权，就直接获取当前地理位置
+						_this.getAuthorizeInfo()
+					} else {
+						_this.getLocationInfo()
+					}
+				}
+			});
+		},
+		getAuthorizeInfo(a = "scope.userLocation") { //1. uniapp弹窗弹出获取授权（地理，个人微信信息等授权信息）弹窗
+			var _this = this;
+			uni.authorize({
+				scope: a,
+				success() { //1.1 允许授权
+					_this.getLocationInfo();
+				},
+				fail() { //1.2 拒绝授权
+					uni.showToast({
+						title: '你拒绝了授权!',
+						icon: 'none',
+						duration: 1000
+					})
+					uni.navigateBack({})
+				}
+			})
+		},
+		getLocationInfo() { //2. 获取地理位置
+			var _this = this;
+			uni.getLocation({
+				type: 'gcj02',
+				success: function(res) {
+					_this.adderss(res.longitude, res.latitude)
+				}
+			});
+		},
+		locations() {
+			let _this = this;
+			let ua = window.navigator.userAgent.toLowerCase();
+			if (ua.match(/micromessenger/i) == 'micromessenger') {
+				_this.$wechat.location(function(callback) {
+					console.log('位置获取成功', callback)
+					let call = callback;
+					_this.adderss(call.longitude, call.latitude)
+				})
+			} else {
+				_this.adderss(114.057641, 22.502942)
+				uni.showModal({
+					content: '请在微信浏览器中打开',
+					showCancel: false
+				});
+			}
+		},
+		async adderss(longitude, latitude,sit) { //获取当前坐标下的城市
+			let dats = {
+				location: latitude + ',' + longitude,
+				get_poi:1,
+				poi_options:"policy=3"
+			}
+			try{
+				let res = await torok.geocoder(dats);
+				
+				let dat = res.result; //获取当前的位置和坐标
+				let str = dat.address_component.city;
+				if (str.indexOf("市") != -1 || str.indexOf("州") != -1){
+				    str = str.substring(0, str.length - 1)
+				    console.log('删除城市的最后一个字',str)
+				}
+				uni.$emit('Busirticket_adds',{name:'Hotel',data:{
+					type:'keyword',
+					city:{
+						id:0,
+						name:str
+					},
+					id:longitude +',' + latitude,
+					data:dat.pois[0].title//当前地标
+				}})
+			}catch(err){
+				console.log(err)
+				//TODO handle the exception
+			}
+		},
 		toggle() {//城市左右交换
 			if(this.isretun){
 				return
@@ -81,16 +199,16 @@ export default {
 				    this.animation = false;
 				}, 1000)
 				let temp = null; //交换飞机票城市
-				temp = this.vx_city_left[0];
-				this.$store.commit("vx_city_le_add", [this.vx_city_left[1],temp])
+				temp = this.Busirticket[0];
+				uni.$emit('Busirticket_add',{name:'Planeticket',data:[this.Busirticket[1],temp]});
 			} else if (this.current == 'Train'){
 				this.animation= true;
 				setTimeout(()=>{
 				    this.animation = false;
 				}, 1000)
 				let temp = null; //交换火车票城市
-				temp = this.tr_city_left[0];
-				this.$store.commit("tr_city_left_add", [this.tr_city_left[1],temp])
+				temp = this.Busitraiket[0];
+				uni.$emit('Busirticket_add',{name:'Train',data:[this.Busitraiket[1],temp]});
 			}
 		},
 		startClick(ts) { //开始城市
@@ -99,56 +217,19 @@ export default {
 			}
 			let _this = this
 			let cus = this.current;
-			let cuss = this.currents;
-			let list = []
+			let list = '';
 			if(cus == "Hotel"){
-				if(ts == 'left'){
-					list = this.wx_Hotel.name;
-					if(cuss == 'Hotel'){
-						uni.navigateTo({
-							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list,
-						});
-					} else {
-						uni.navigateTo({
-							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list,
-						});
-					}
-					
-				} else {
-				}
-			} else {
-				if(cus == "Planeticket" && this.vx_city_left[0].name.length > 1){
-					list = JSON.stringify([{name:this.vx_city_left[0].name,id:this.vx_city_left[0].id},{name:this.vx_city_left[1].name,id:this.vx_city_left[1].id}])
-				}
-				if(cus == "Train" && this.tr_city_left[0].name.length > 1){
-					console.log(this.tr_city_left)
-					list = JSON.stringify([{name:this.tr_city_left[0].name,id:this.tr_city_left[0].id},{name:this.tr_city_left[1].name,id:this.tr_city_left[1].id}])
-				}
-				if(this.fails == 'flig'){
-						uni.navigateTo({
-							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list + '&types=flig',
-						});
-				} else {
-					if(cuss == 'Hotel'){
-						uni.navigateTo({
-							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list + '&types=0',
-						});
-					} else{
-						uni.navigateTo({
-							url: '/pages/book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list + '&types=0',
-						});
-					}
-					
-				}
-				// 	uni.navigateTo({
-				// 		url: '../../book/sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list + '&types=flig',
-				// 	});
-				// } else {
-				// 	uni.navigateTo({
-				// 		url: '../../sselect-city/selectcity?sta=left&type=' + cus + '&list=' + list + '&types=0',
-				// 	});
-				// }
+				list = this.tsta_Hotelket.name;
 			}
+			if(cus == "Planeticket" && this.Busirticket[0].name.length > 1){
+				list = JSON.stringify([{name:this.Busirticket[0].name,id:this.Busirticket[0].id},{name:this.Busirticket[1].name,id:this.Busirticket[1].id}])
+			}
+			if(cus == "Train" && this.Busitraiket[0].name.length > 1){
+				list = JSON.stringify([{name:this.Busitraiket[0].name,id:this.Busitraiket[0].id},{name:this.Busitraiket[1].name,id:this.Busitraiket[1].id}])
+			}
+			uni.navigateTo({
+				url: '/pages/book/sselect-city/selectcity?sta='+ ts +'&type=' + cus + '&list=' + list + '&types=0',
+			});
 		},
 	}
 }
@@ -226,6 +307,10 @@ export default {
 				width: 100%;
 				font-size: 35upx;
 				color: #c0c0c0;
+			}
+			.iconfont{
+				font-size: 50upx;
+				color: #007AFF;
 			}
 		}
 	}

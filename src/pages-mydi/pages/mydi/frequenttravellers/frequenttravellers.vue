@@ -19,11 +19,11 @@
 										<view class="bs_left">
 											<view class="le_top">
 												<view class="le_text">{{it.name}}</view>
-												<view class="ls_margn">{{it.phone}}</view>
+												<view class="ls_margn" style="color:#333333;">{{utils.TuoMin(it.phone,1)}}</view>
 											</view>
 											<view class="le_top" v-if="it.certificateList != null && it.certificateList.length>0">
 												<view>{{is_CD(it.certificateList[0].cardType)}}</view>
-												<view class="ls_margn">{{it.certificateList[0].cardNo}}</view>
+												<view class="ls_margn">{{utils.TuoMin(it.certificateList[0].cardNo,it.certificateList[0].cardType)}}</view>
 											</view>
 										</view>
 										<view class="bs_right">
@@ -88,7 +88,7 @@
 			this.btnGroupWidth = 0;
 			this.isMoving = false;
 		},
-		mounted() {
+		onShow() {
 			this.getuserlist()
 		},
 		methods:{
@@ -111,7 +111,6 @@
 			},
 			bindClickBtn(item, index) {
 				this.messageIndex = -1;
-				console.log(item.text +'message第'+ index+ '项');
 				
 			},
 			touchStart(event) {
@@ -215,10 +214,16 @@
 				})
 			},
 			add_btn(){ //新增跳转
-				uni.navigateTo({
-					url:'./addFrequenttravellers/addFrequenttravellers?catlist=' +
-					JSON.stringify(this.carlist)
-				})
+				let dat = uni.getStorageSync("userinfo"+ uni.getStorageSync('appWxId'));
+				if(dat.user.isTraveler == 1){
+					uni.navigateTo({
+						url:'./addFrequenttravellers/addFrequenttravellers?catlist=' +
+						JSON.stringify(this.carlist)
+					})
+				} else {
+					this.showToasts('未开通常旅客权限，请联系管理员添加');
+				}
+				
 			}
 		}
 	}
@@ -235,7 +240,7 @@
 				width: calc(100% - 40upx);
 				padding: 40upx 20upx 10upx 20upx;
 				font-size: 30upx;
-				color: #C8C7CC;
+				color: #666666;
 				.fer_left{
 					flex: 1;
 					text-align: left;
@@ -273,6 +278,7 @@
 								flex: 10;
 								.le_top{
 									display: flex;
+									color:#999999;
 									.le_text{
 										width: 20%;
 										overflow:hidden; //超出的文本隐藏

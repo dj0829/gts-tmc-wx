@@ -82,7 +82,7 @@
 					_this.sev_boolt = true
 					dat = train.addressTrainAll;
 					for (let i in dat) {
-						if(dat[i].name.indexOf(va) != -1 || dat[i].Abbreviation.indexOf(va) != -1 || dat[i].code.indexOf(va) != -1 ){
+						if(dat[i].name.indexOf(va) != -1 || dat[i].abbreviation.indexOf(va) != -1 || dat[i].code.indexOf(va) != -1 ){
 							this.sec_lists.push({
 								id:dat[i].code,
 								name:dat[i].name,
@@ -146,7 +146,7 @@
 <style scoped lang="scss">
 .citylistfl{
 	width: 100%;
-	/*  #ifdef MP-WEIXIN */
+	/*  #ifdef APP-PLUS|| MP-WEIXIN */
 	padding-top: 80upx;
 	/*  #endif  */
 	.input-op {

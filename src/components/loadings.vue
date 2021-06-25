@@ -1,7 +1,7 @@
 <template>
 	<view class="loading-popup">
 		<view v-if="show" class="shade-popup" @click.stop :class="[ani]"></view>
-		<view v-if="show" class="" :class="[ani,ans]" :style="[{height:height,width:width,backgroundColor:backgroundColor}]">
+		<view v-if="show"   :class="[ani,ans]" :style="[{height:height,width:width,backgroundColor:backgroundColor}]">
 			<slot></slot>
 			<div class="face">
 				<div class="circle"></div>

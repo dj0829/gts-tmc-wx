@@ -12,7 +12,7 @@
 					<view class="ok_ioc" v-if="englishname_list[op_ids].val == item.code"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 				</view>
 				<view class="cl_val" v-for="(item, index) in genderlist" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'gender'">
-					<view class="">{{ item.name }}</view>
+					<view  >{{ item.name }}</view>
 					<view class="ok_ioc" v-if="gender_list.val == item.id"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 				</view>
 			</view>
@@ -24,7 +24,10 @@
 					<view class="apl_name">{{ phonenumbe_list.name }}</view>
 				</view>
 				<view class="frop_pls">
-					<view class="opls"><input maxlength="11" type="text" id="for_ints" v-model="phonenumbe_list.value" :placeholder="phonenumbe_list.plahth" /></view>
+					<view class="opls">
+						<input v-if="phonenumbe_list.values != ''" maxlength="11" type="text" id="for_ints" v-model="phonenumbe_list.values" @focus="focusfns(1)"  />
+						<input v-else maxlength="11" type="text" id="for_ints" v-model="phonenumbe_list.value"  :placeholder="phonenumbe_list.plahth" />
+					</view>
 				</view>
 			</view>
 		</view>
@@ -82,7 +85,10 @@
 					</view>
 					<view class="frop_pls">
 						<view class="opls">
-							<view class="opls"><input type="text" id="for_ints" v-model="item.value" :placeholder="item.plahth" /></view>
+							<view class="opls">
+								<input v-if="item.values != ''" type="text" id="for_ints" @focus="focusfns(2,item,index)" v-model="item.values"  />
+								<input v-else type="text" id="for_ints" v-model="item.value" :placeholder="item.plahth" />
+							</view>
 						</view>
 					</view>
 					<view class="frop_right"><view class="rig_delt" v-if="index > 0" @click="de_icd(item, index)">删除</view></view>
@@ -100,7 +106,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="gender_list.value == ''">{{ gender_list.plahth }}</view>
+						<view   v-if="gender_list.value == ''">{{ gender_list.plahth }}</view>
 						<view class="for_value" v-if="gender_list.value !== ''">{{ gender_list.value }}</view>
 					</view>
 				</view>
@@ -115,7 +121,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="dateofbirth_lsit.value == ''">{{ dateofbirth_lsit.plahth }}</view>
+						<view   v-if="dateofbirth_lsit.value == ''">{{ dateofbirth_lsit.plahth }}</view>
 						<view class="for_value" v-if="dateofbirth_lsit.value !== ''">{{ dateofbirth_lsit.value }}</view>
 					</view>
 				</view>
@@ -158,7 +164,8 @@ export default{
 				t_name: "phonenumbe",
 				name: "手机号",
 				plahth: "请输入手机号码",
-				value:""
+				value:"",
+				values:''
 			},//手机号码
 			firstNameZh_list:{
 				t_name: "firstNameZh",
@@ -189,6 +196,7 @@ export default{
 				name: "身份证",
 				plahth: "请确保姓名和证件号码与证件一致",
 				value:"",
+				values:'',
 				val:"NI",
 				id:"",
 				delFlag: ""
@@ -213,7 +221,7 @@ export default{
 			op_ids: "",//当前点击的证件下标
 			isadd: true,//是否是新增
 			delete_list: [],//存储删除的值
-			passengerId: null
+			passengerId: null,
 		}
 	},
 	components:{
@@ -222,6 +230,15 @@ export default{
 	mounted(){
 	},
 	methods:{
+		focusfns(va,item,index){//编辑的时候 清除第一次获取光标时候的值
+			if(va == 1 ){//手机号
+				this.phonenumbe_list.value = '';
+				this.phonenumbe_list.values = '';
+			} else if(va == 2){//证件
+				this.englishname_list[index].value = '';//清空证件值
+				this.englishname_list[index].values = '';//清空证件值
+			}
+		},
 		namezh_left(){
 			if(this.englishsurname_lsit.value == ""){
 				if(this.utils.zzNamezh(this.firstNameZh_list.value) == false){
@@ -278,9 +295,10 @@ export default{
 							return
 						}  
 						cdlist.push({
+							id:englishname[i].id,
 							delFlag :0,
-							"cardType": englishname[i].val,
-							"cardNo": englishname[i].value
+							cardType: englishname[i].val,
+							cardNo: englishname[i].value
 						})
 					}
 				}
@@ -307,6 +325,7 @@ export default{
 						newdata = cdlist
 					}
 					let daw = {
+						passengerNo:this.passengerNo,//用户编号
 						firstNameZh: firstNameZh,//中文姓
 						lastNameZh: lastNameZh,//中文名
 						phone: phonenumbe,//电话
@@ -358,6 +377,7 @@ export default{
 						name: "身份证",
 						plahth: "请确保姓名和证件号码与证件一致",
 						value:"", //值
+						values:"",
 						val:"NI" //对应值
 					})
 				}
@@ -389,15 +409,7 @@ export default{
 			this.dateofbirth_lsit.value = date[0] + "-" + date[1] + "-" + date[2]
 		},
 		roblak(){//返回
-		// #ifdef  APP-PLUS
-		uni.navigateBack({
-		})
-		// #endif
-		// #ifdef  H5 || MP-WEIXIN
-			uni.navigateTo({
-				url: '../frequenttravellers',
-			});
-		// #endif
+			this.toBlock();
 		},
 		ad_cion(item,index){//点击证件
 			let name = this.icontest;//获取当前选择的名字
@@ -464,7 +476,8 @@ export default{
 							   t_name: "englishname",
 							   name: _this.id_list[i].name,
 							   plahth: "请确保姓名和证件号码与证件一致",
-							   value: id[k].cardNo,
+							   values:this.utils.TuoMin(id[k].cardNo,id[k].cardType),//脱敏后的数据
+							   value:id[k].cardNo,
 							   val: id[k].cardType
 						   })
 					   }
@@ -483,9 +496,11 @@ export default{
 				title:"编辑旅客"
 			});
 			this.hasadd_modf = "tms:pas:update";
-			this.isadd == false
+			this.isadd = false
 			_this.id_list = cd_list;//获取证件列表
+			_this.passengerNo = userlists.passengerNo;//用户id
 			_this.phonenumbe_list.value = userlists.phone; //电话号码
+			_this.phonenumbe_list.values = this.utils.TuoMin(userlists.phone,1); //电话号码
 			_this.firstNameZh_list.value = userlists.firstNameZh; //中文姓
 			_this.lastNameZh_list.value = userlists.lastNameZh;//中文名
 			_this.englishsurname_lsit.value = userlists.firstName; //英文姓
@@ -497,7 +512,7 @@ export default{
 			_this.englishname_list = _this.depd_d(userlists.certificateList,"certi");//证件照1
 			_this.gender_list = _this.depd_d(userlists.gender,"gender");//性别
 		} else {
-			this.isadd == true
+			this.isadd = true
 			uni.setNavigationBarTitle({
 				title:"新增旅客"
 			});

@@ -7,110 +7,90 @@
 		</view> -->
 		
 		<view class="top">
-			<headnavigation titles="查询机票"></headnavigation>
+			<headnavigation :titles="pltitles"></headnavigation>
 			<datatiem @change="lischang" :isretun="isretun" :ishtoel="ishtoel" :singleDate="singleDate" :startDate="startDate"></datatiem>
 		</view>
 
 		<view class="air_ticket">
 			<view class="wei">
-				<view v-if="userlists.length > 0 && item.isshow == true" @click="particulars(item,index)" v-for="(item,index) in userlists"
+				<view v-if="dataList.length > 0 && item.isshow == true" @click="particulars(item,index)" v-for="(item,index) in dataList"
 				 :key='index' class="ticket">
 					<view class="above">
 						<view class="airticket">
-							<view class="travel_time">
-								<view style="font-size: 40upx;">{{item.name.departTime}}</view> <!-- 出发时间 -->
-								<view style="color:#abb7c2;text-align: center;font-size: 25upx;" v-if="item.name.departTerminal != null">{{item.name.departs}}{{item.name.departTerminal}}</view><!-- 出发城市 -->
-								<view style="color:#abb7c2;text-align: center;font-size: 25upx;" v-else>{{item.name.departs}}</view><!-- 出发城市 -->
-								<!-- <view style="color:#abb7c2;text-align: center;">{{item.departTerminal}}</view> -->
+							<view class="airtts">
+								<view class="airfons">{{item.departTime}}</view> <!-- 出发时间 -->
+								<view  class="airticketimg">
+									<image src="@/static/img/home/home_go.png"></image>
+									<view v-if="item.nonstop == true">经停</view>
+								</view>
+								<view class="airfons arrclass">{{item.arriveTime}} <span v-if="item.isarriveTime" >+1</span> </view> <!-- 返回时间 -->
 							</view>
-							<view class="">
-								<view class="iconfont" style="color:#f1f1f1;width: 200upx;">&#xe622;</view>
-								<view style="color: #007aff;text-align: center;font-size: 25upx;" v-if="item.name.nonstop == true">经停</view>
-							</view>
-							<view class="travel_time">
-								<view style="font-size: 40upx;" class="arrclass">{{item.name.arriveTime}} <span v-if="item.name.isarriveTime">+1</span> </view> <!-- 返回时间 -->
-								<view style="color:#abb7c2;text-align: center;font-size: 25upx;" v-if="item.name.arriveTerminal != null">{{item.name.arrives}}{{item.name.arriveTerminal}}</view>
-								<view style="color:#abb7c2;text-align: center;font-size: 25upx;" v-else>{{item.name.arrives}}</view>
-								<!-- 返回城市 -->
+							<view class="airtts">
+								<view class="travel_time">
+									<view class="travfomts" v-if="item.departTerminal != null">{{item.departs}}{{item.departTerminal}}</view><!-- 出发城市 -->
+									<view class="travfomts" v-else>{{item.departs}}</view><!-- 出发城市 -->
+								</view>
+								<view class="travel_time">
+									<view class="travfomts" style="text-align: right;" v-if="item.arriveTerminal != null">{{item.arrives}}{{item.arriveTerminal}}</view>
+									<view class="travfomts" style="text-align: right;" v-else>{{item.arrives}}</view>
+									<!-- 返回城市 -->
+								</view>
 							</view>
 						</view>
-						<view class="low" v-if="item.name.lowprice!=null">
-							{{item.name.lowprice}}
+						<view class="low" v-if="item.lowprice!=null">
+							{{item.lowprice}}
 						</view>
-						<view class="price" v-if=" none == 'single' ">
+						<view class="price">
 							<view style="font-size: 40upx;">
-								<!--                <view v-for="(i,indexs) in item"  v-if="priceSources(i)"><img src="static/img/official.png" style="height: 17px;width: 17px;margin-right: 7px"></view>-->
-								<view>￥{{item.text.cabins[0].salePrices[0].price}}</view> <!-- 机票价格 -->
-								<view class="discountjia" v-if="item.text.cabins[0].discount != 1">
-									{{item.text.cabins[0].level}}{{item.text.cabins[0].discount}}折
+								<view><span style="font-size:24upx;">￥</span>{{item.minPrice}}</view> <!-- 机票价格 -->
+								<view class="discountjia" v-if="item.minDiscount != 1">
+									{{item.minPriceCabinCode}}{{item.minDiscount}}折
 								</view>
 								<view class="discountjia" v-else>
-									{{item.text.cabins[0].level}}<span style="color: red">全价</span>
+									<span style="color: red">全价</span>
 								</view>
 							</view>
-						</view>
-						<view class="price" v-if=" noneName == 'returns' ">
-							<view style="font-size: 40upx;">
-								<view>￥{{item.text.cabins[0].salePrices[0].price}}</view> <!-- 机票价格 -->
-								<view class="discountjia" v-if="item.text.cabins[0].discount != 1">
-									{{item.text.cabins[0].level}}{{item.text.cabins[0].discount}}折
-								</view>
-								<view class="discountjia" v-else>
-									{{item.text.cabins[0].level}}<span style="color: red">全价</span>
-								</view>
-							</view>
-							<!-- <view v-for="(iter,index) in userrw" :key="index" style="font-size: 40upx;">
-								<view v-if="item.no == iter.no">￥{{iter.cabins[0].minSalePrice}}</view>
-								<view v-if="item.no == iter.no" class="discountjia">
-									{{iter.cabins[0].level}}{{iter.cabins[0].discount}}折
-								</view>
-							</view><! 机票价格 -->
 						</view>
 					</view>
 					<view class="airport">
 						<view class="stsbt">
 							<image :src="item.ims" mode=""></image>
-							<!-- <view style="color:#abb7c2;text-align: center;">{{company(item.name.airline)}}</view> -->
-							<view style="">{{company(item.name.airline)}}</view>
-							<view style="">{{item.name.no}}/</view>
-							<view style="">{{model(item.name.plane)}}{{item.name.plane}}</view>
-							<view style="" v-if="item.name.planeSize != null">{{item.name.planeSize}}</view>
+							<view style="">{{company(item.airline)}}</view>
+							<view style="">{{item.no}}/</view>
+							<view style="">{{model(item.plane)}}{{item.plane}}</view>
+							<view style="" v-if="item.planeSize != null">{{item.planeSize}}</view>
 						</view>
 
 						<view class="stsbt">
 							<view class="stasb" v-if="civilServiceTicket != undefined && civilServiceTicket == 1">
 								<p>公</p>
 							</view>
-							<view class="stass" v-if="item.name.shared == true">
+							<view class="stass" v-if="item.shared == true">
 								<p>共享</p>
 							</view>
-							<!-- <view class="ting" v-if="item.name.shared == true&&ting == true">承运航班:{{item.name.operatingNo}}</view> -->
+						</view>
+						<view>
+						<view style="text-indent: 20upx;color: #666666;font-size: 22upx;line-height: 50upx;margin-right:20upx">
+							<p>{{mealss(item.meals)}}</p>
 						</view>
 					</view>
-					<view>
-						<view style="text-indent: 20upx;color: #abb7c2;font-size: 30upx;line-height: 50upx;">
-							<p>{{mealss(item.name.meals)}}</p>
-						</view>
 					</view>
 					<view class="ting">
-						<view v-if="item.name.shared == true">承运航班:{{item.name.operatingNo}}</view>
+						<view v-if="item.shared == true">承运航班:{{item.operatingNo}}</view>
 					</view>
 				</view>
-				<view class="tiaklistImg" v-if="userlists.length == 0">
+				<view class="tiaklistImg" v-if="dataList.length == 0">
 					<image class="gjImg" v-if="imgFlag" src="@/static/img/m_ticketList.png" mode=""></image>
 					<image class="noData" v-else src="@/static/img/noData.png" mode="widthFix"></image>
 					<div class="rblcok" v-if="!imgFlag" @click="rblcok">重新搜索</div>
 				</view>
-				<!-- <view class="" v-if="userlists.length == 0">
-					<view class="kong">正在查询</view>
-				</view> -->
 				<view :class="{'share-box': companyd_click}" @click="companym_click">
 				</view>
 				<view class="share-item" :class="{'share-show': companyd_click}">
 					<view class="share">
-						<view class="cancel" style="display: flex; justify-content: flex-start;" @click="cancels">取消</view>
-						<view @click="reset" class="cancel" style="display: flex; justify-content: center;">重置</view>
-						<view @click="confirm" class="cancel" style="display: flex; justify-content: flex-end;">确定</view>
+						<view @click="cancels">取消</view>
+						<view @click="reset">重置</view>
+						<view @click="confirm" class="cancel" >确定</view>
 					</view>
 					<view class="choice">
 						<view class="left_choice">
@@ -120,9 +100,9 @@
 						</view>
 						<view class="right_choice">
 							<!-- 起飞时段 -->
-							<view @click="take(item,index)" v-for="(item,index) in usertake" :key="index" class="take">
+							<view @click="take(item,index)" v-for="(item,index) in usertake" :key="index" class="take" :class="item.id == it || item.id == ir || item.id == iw || ie.indexOf(item.id) != -1 || item.id == iq || item.id == ih || iy.indexOf(item.id) != -1 || iu.indexOf(item.id) != -1 ? 'takes':''">
 								{{item.text}}
-								<view class="iconfont" style="color:#007aff;" v-if="item.id == it || item.id == ir || item.id == iw || item.id == ie || item.id == iq || item.id == ih">&#xe620;</view>
+								<view class="iconfont" style="color:#007aff;font-size: 28upx;" v-if="item.id == it || item.id == ir || item.id == iw || ie.indexOf(item.id) != -1 || item.id == iq || item.id == ih || iy.indexOf(item.id) != -1 || iu.indexOf(item.id) != -1">&#xe620;</view>
 							</view>
 						</view>
 					</view>
@@ -160,6 +140,7 @@
 		},
 		data() {
 			return {
+				pltitles:'',
 				scrolltops:false,//是否显示
 				isretun: false,
 				startDate: '',
@@ -169,18 +150,14 @@
 				citys: '', //来的城市
 				time: '', //时间
 				times: '', //时间
-				timas: '',
 				check: '',
 				timelist: '', //时间的集合
 				none: '', //判断
-				noneName: '', //判断2
-				name: 'mao/yi', //旅客.
 				booll: false,
 				imgFlag:true,
 				
 				shu: [],
-				userlist: [],
-				userlists: [],
+				dataList: [],
 				usermap: [],
 				flights: [],
 				userrw: [],
@@ -205,31 +182,39 @@
 				iw: 'Unlimiteds', //舱位
 				ie: 'Unlimitedh', //航空公司
 				iq: 'Unlimitede', //机型
-				ih: true, //共享
-				// iy: 'Unlimitedg', //起降机场
-				// iu: 'Unlimitedh', //到达机场
+				ih: 'Unlimitedg', //共享
+				iy: 'Unlimitedk', //起降机场
+				iu: 'Unlimitedj', //到达机场
 				civilServiceTicket: '',
 				usertake: [],
 				filter: [{
 					id: '0',
 					name: '起飞',
 					value: 'Unlimiteda'
+				// }, {
+				// 	id: '1',
+				// 	name: '舱位',
+				// 	value: 'Unlimiteds'
 				}, {
 					id: '1',
-					name: '舱位',
-					value: 'Unlimiteds'
-				}, {
-					id: '2',
 					name: '航空公司',
 					value: 'Unlimitedh'
 				}, {
-					id: '3',
+					id: '2',
 					name: '机型',
 					value: 'Unlimitede'
 				}, {
-					id: '4',
+					id: '3',
 					name: '共享',
-					value: true
+					value: 'Unlimitedg'
+				}, {
+					id: '4',
+					name: '出发机场',
+					value: 'Unlimitedk'
+				}, {
+					id: '5',
+					name: '到达机场',
+					value: 'Unlimitedj'
 				}], //筛选
 				userindex: {
 					name: 0,
@@ -255,26 +240,26 @@
 							}
 						]
 					},
-					{
-						id: 'Location',
-						text: '舱位',
-						arr: [{
-								id: 'Unlimiteds',
-								text: '不限',
-								img: '\ue620'
-							},
-							{
-								id: 'Y',
-								text: '经济舱',
-								img: '\ue620'
-							},
-							{
-								id: 'F',
-								text: '头等舱/商务舱',
-								img: '\ue620'
-							}
-						]
-					},
+					// {
+					// 	id: 'Location',
+					// 	text: '舱位',
+					// 	arr: [{
+					// 			id: 'Unlimiteds',
+					// 			text: '不限',
+					// 			img: '\ue620'
+					// 		},
+					// 		{
+					// 			id: 'Y',
+					// 			text: '经济舱',
+					// 			img: '\ue620'
+					// 		},
+					// 		{
+					// 			id: 'F',
+					// 			text: '头等舱/商务舱',
+					// 			img: '\ue620'
+					// 		}
+					// 	]
+					// },
 					{
 						id: 'Airline',
 						text: '航空公司',
@@ -301,11 +286,27 @@
 							text: '不限',
 							img: '\ue620'
 						}]
+					},
+					
+					{
+						id: 'departure',
+						text: '出发机场',
+						arr: [{
+							id: 'Unlimitedk',
+							text: '不限',
+							img: '\ue620'
+						}]
+					},
+					
+					{
+						id: 'arrive',
+						text: '到达机场',
+						arr: [{
+							id: 'Unlimitedj',
+							text: '不限',
+							img: '\ue620'
+						}]
 					}
-					// {
-					// 	id: 'Airports',
-					// 	text:'起降机场'
-					// },
 				],
 				tabBar: [{
 						ul: 'Time',
@@ -331,7 +332,9 @@
 				ting: false, //共享
 				flightinfoid: '',
 				priceSource: 0,
-				cont: 0
+				cont: 0,
+				timelists:{},//时间信息
+				isto:1,//往返  1是去 2是回
 			}
 		},
 		onPageScroll(res){//距离页面顶部距离
@@ -341,9 +344,6 @@
 				this.scrolltops = true;
 			}
 		},
-		computed: {
-			...mapState(['goName']) //往返的值0是去，1是返回
-		},
 		mounted() {
 			if (this.isblcks == 1) {
 				this.isretun = true
@@ -352,86 +352,46 @@
 		},
 		onLoad(item) {
 			let data = JSON.parse(uni.getStorageSync("ticketinquiry_data"));
-			this.dats = data;
-			if (data.none == 'single') {
-				this.city = data.city; //去的城市
-				this.citys = data.citys; //来的城市
-				this.time = data.timedate; //时间
-				this.civilServiceTicket = data.civilServiceTicket;
+			this.dats = data;//上个页面的值
+			
+			this.isto = data.isto;
+			this.time = data.timedate; //时间
+			this.civilServiceTicket = data.civilServiceTicket;//是否公务员票
+			this.none = data.none;//1为单程 2为往返
+			this.butalist = data.butalist;//出差人信息
+			this.isblcks = data.isblcks; //1事前2事中
+			this.isbtd = data.isbtd; //1因公2因私
+			this.city = data.city; //去的城市
+			this.citys = data.citys; //来的城市
+			if (data.none == 'single') { //单程
 				this.startDate = data.timedate //时间控件的值
-				this.none = data.none;
-				this.butalist = data.butalist;
-				this.isblcks = data.isblcks; //1事前2事中
-				this.isbtd = data.isbtd; //1因公2因私
-			} else if (data.none == 'returns') {
-				this.city = data.city; //去的城市
-				this.citys = data.citys; //来的城市
-				this.time = data.timedate; //去的时间
+			} else if (data.none == 'returns') { //往返
 				this.times = data.timedates; //来的时间
-				this.civilServiceTicket = data.civilServiceTicket;
-				this.noneName = data.none;
-				this.none = data.none;
-				this.butalist = data.butalist;
-				this.isblcks = data.isblcks; //1事前2事中
-				this.isbtd = data.isbtd; //1因公2因私
-				let date = new Date();
-				let year = date.getFullYear(); //得到当前年份
-				let month = this.editTime(date.getMonth() + 1); //得到当前月份
-				let day = this.editTime(date.getDate()); //得到当前几号
-				let datte = year + '-' + month + '-' + day;
-				let dattes = year + '-' + month + '-' + (day + 1);
-				let timedas = data.timedate.split('-').join('');
-				let itmedaa = data.timedates.split('-').join('');
-				let itmedaas = '';
-				let dateas = '';
-				this.datas = uni.getStorageSync("ticketinquirys_data");
-				if (this.datas != '') {
-					this.datas = JSON.parse(this.datas);
-					console.log(this.datas)
-					// let itmedaas = this.datas.timelist.re.split('-').join('');
-					itmedaas = this.datas.timelist.re.substring(0, 8) + (parseInt(this.datas.timelist.re.substring(8, 10)) + 1).toString();
-					dateas = year.toString() + month.toString() + day.toString();
-				}
-				if (this.goName == 0) {
-					if (dateas != '') {
-						if (timedas < dateas) {
-							this.startDate = datte;
-						} else {
-							this.startDate = data.timedate; //时间控件的值
-						}
-					} else {
-						this.startDate = data.timedate; //时间控件的值
-					}
+				if(this.isto == 2){//回程 颠倒下城市
+					this.city = data.citys;
+					this.citys = data.city;
+					this.startDate = data.timedates //时间控件的值
 				} else {
-					if (dateas != '') {
-						if (itmedaa < dateas) {
-							this.startDate = itmedaas; //时间控件的值data.timedates
-						} else {
-							this.startDate = data.timedates; //时间控件的值data.timedates
-						}
-					} else {
-						this.startDate = data.timedates; //时间控件的值data.timedates
-					}
+					this.startDate = data.timedate //时间控件的值
 				}
+				//需要判断  回程时间不能小于出发时间
 			}
+			
+			this.pltitles = this.city.name + ' - ' + this.citys.name;
 		},
-		
+		onShow() {
+			this.save()
+		},
 		methods: {
-			priceSources(item, index) {
-				console.log(JSON.stringify(item))
-				let _this = this;
-				if (item === 1) {
-					return item;
-				}
-			},
 			//时间
 			lischang(item) {
-				this.timelist = item.choiceDate;
-				this.timas = item.choiceDate.re;
-				this.time = item.choiceDate.re;
-				this.times = item.choiceDate.re.substring(0, 8) + (parseInt(item.choiceDate.re.substring(8, 10))).toString();
-				// console.log(this.times)
-				this.save()
+				if(item.choiceDate.re == this.startDate){
+					this.timelists = item.choiceDate;//时间信息
+				} else {
+					this.startDate = item.choiceDate.re; //当前的日期
+					this.timelists = item.choiceDate;//时间信息
+					this.save()
+				}
 			},
 			editTime(i) {
 				if (i < 10) {
@@ -449,66 +409,24 @@
 				}
 			},
 			rblcok() {
-				if (this.goName == 1 && this.dats.none == 'returns') {
-					// #ifdef H5
-					let canBack = true
-					const pages = getCurrentPages()
-					// 有可返回的页面则直接返回，uni.navigateBack默认返回失败之后会自动刷新页面 ，无法继续返回
-					if (pages.length > 1) {
-						uni.navigateBack(1)
-						return;
-					}
-					// vue router 可以返回uni.navigateBack失败的页面 但是会重新加载
-					let a = this.$router.go(-1)
-					// router.go失败之后则重定向到首页
-					if (a == undefined) {
-						uni.reLaunch({
-							url: "/pages/bookBook"
-						})
-					}
-					this.$store.commit('goName_add', 0)
-					return;
-					// #endif
-					// #ifdef MP-WEIXIN
-					uni.navigateBack()
-					this.$store.commit('goName_add', 0)
-					// #endif
-
-				} else {
-					uni.navigateTo({
-						url: '../select_list/select_list?type=Planeticket'
-					})
-				}
+				this.toBlock();
 			},
 			reset() {
 				this.cong = true;
 				this.take();
 			},
 			cheack() {
-				console.log(this.check)
 			},
 			confirm() {
-				let datw = this.userlists;
-				let dat = this.userindex;
+				let datw = this.dataList;//数据
+				let dat = this.userindex;//当前下标
 				let arris = [];
 				for (var i = 0; i < datw.length; i++) {
 					if (this.filter[0].value != 'Unlimiteda') {
 						let sits = false;
-						if (datw[i].name.nonstop == true && this.filter[0].value == 'true') {
+						if (datw[i].nonstop == true && this.filter[0].value == 'true') {
 							sits = true;
-						} else if (datw[i].name.nonstop == false && this.filter[0].value == false) {
-							sits = true;
-						}
-						if (sits == false) {
-							datw[i].isshow = false;
-							continue
-						}
-					}
-					if (this.filter[1].value != 'Unlimiteds') {
-						let sits = false;
-						if (datw[i].economyclass == true && this.filter[1].value == 'Y') {
-							sits = true;
-						} else if (datw[i].businessclass == true && (this.filter[1].value == 'C' || this.filter[1].value == 'F')) {
+						} else if (datw[i].nonstop == false && this.filter[0].value == false) {
 							sits = true;
 						}
 						if (sits == false) {
@@ -516,68 +434,72 @@
 							continue
 						}
 					}
-					if (this.filter[2].value != 'Unlimitedh') {
-						let sits = false;
-						if (datw[i].name.airline == this.filter[2].value) {
-							sits = true;
-						}
-						if (sits == false) {
-							datw[i].isshow = false;
-							continue
-						}
-					}
-					if (this.filter[3].value != 'Unlimitede') {
-						let sits = false;
-						if (datw[i].name.planeSize == this.filter[3].value) {
-							sits = true;
-						}
-						if (sits == false) {
-							datw[i].isshow = false;
-							continue
-						}
-					}
-					if (this.filter[4].value != 'Unlimitedg') {
-						let sits = false;
-						if (datw[i].name.shared != true && this.filter[4].value == true) {
-							sits = true;
-						}
-						if (sits == false) {
-							datw[i].isshow = false;
-							continue
-						}
-					}
-					// if (dat.name == 0) { //起飞时段(this.filter[1].value == 'Y' && datw[i].economyclass == true || this.filter[1].value == ('F' || 'C') && datw[i].businessclass == true) && this.filter[2].value == datw[i].name.airline || datw[i].name.nonstop == dat.id
-					// 	// if ((this.filter[0].value != '0' && this.filter[0].value == datw[i].name.nonstop) && (this.filter[1].value != '0' && (datw[i].economyclass == true &&
-					// 	// 		this.filter[1].value == 'Y')||(datw[i].economyclass == true && (this.filter[1].value == 'C' || this.filter[1].value == 'F'))) && this.filter[2].value != '0' && this.filter[2].value == datw[i].name.airline) {
-					// 	// 	arris.push(datw[i])
-					// 	// if (this.filter[0].value != '0' && this.filter[0].value == datw[i].name.nonstop) {
-					// 	// 	arris.push(datw[i])
-					// 	// } else if (dat.id == 'Unlimiteda') {
-					// 	// 	arris.push(datw[i])
-					// 	// }
-					// } else if (dat.name == 1) { //起飞经停
-					// 	this.iw = dat.id
-					// 	// if (datw[i].text.cabins[0].level == dat.id) {
-					// 	if(datw[i].economyclass == true && dat.id == 'Y'){
-					// 		arris.push(datw[i])
-					// 	} else if(datw[i].businessclass == true && (dat.id == 'F' || dat.id == 'C')){
-					// 		arris.push(datw[i])
-					// 	} else if (dat.id == 'Unlimiteds') {
-					// 		arris.push(datw[i])
+					// if (this.filter[1].value != 'Unlimiteds') {
+					// 	let sits = false;
+					// 	if (datw[i].economyclass == true && this.filter[1].value == 'Y') {
+					// 		sits = true;
+					// 	} else if (datw[i].businessclass == true && (this.filter[1].value == 'C' || this.filter[1].value == 'F')) {
+					// 		sits = true;
 					// 	}
-					// } else if (dat.name == 2) { //舱位
-					// 	this.ie = dat.id
-					// 	if (datw[i].name.airline == dat.id) {
-					// 		arris.push(datw[i])
-					// 		// console.log(arris)
-					// 	} else if (dat.id == 'Unlimitedh') {
-					// 		arris.push(datw[i])
+					// 	if (sits == false) {
+					// 		datw[i].isshow = false;
+					// 		continue
 					// 	}
 					// }
+					if (this.filter[1].value != 'Unlimitedh') {
+						let sits = false;
+						if (this.filter[1].value.includes(datw[i].airline)) {
+							sits = true;
+						}
+						if (sits == false) {
+							datw[i].isshow = false;
+							continue
+						}
+					}
+					if (this.filter[2].value != 'Unlimitede') {
+						let sits = false;
+						if (datw[i].planeSize == this.filter[2].value) {
+							sits = true;
+						}
+						if (sits == false) {
+							datw[i].isshow = false;
+							continue
+						}
+					}
+					if (this.filter[3].value != 'Unlimitedg') {
+						let sits = false;
+						if (datw[i].shared != true && this.filter[3].value == true) {
+							sits = true;
+						}
+						if (sits == false) {
+							datw[i].isshow = false;
+							continue
+						}
+					}
+					if (this.filter[4].value != 'Unlimitedk') {
+						let sits = false;
+						if (this.filter[4].value.includes(datw[i].depart)) {
+							sits = true;
+						}
+						if (sits == false) {
+							datw[i].isshow = false;
+							continue
+						}
+					}
+					if (this.filter[5].value != 'Unlimitedj') {
+						let sits = false;
+						if (this.filter[5].value.includes(datw[i].arrive)) {
+							sits = true;
+						}
+						if (sits == false) {
+							datw[i].isshow = false;
+							continue
+						}
+					}
 					datw[i].isshow = true;
 				}
-				// this.userlists = arris;
-				this.userlists = datw;
+				// this.dataList = arris;
+				this.dataList = datw;
 				this.companyi_click = false;
 				this.companyd_click = false;
 			},
@@ -613,31 +535,31 @@
 			sort() {
 				let _this = this;
 				let pattern = ':';
-				for (let k in _this.userlists) {
-					_this.userlists[k]['nusm'] = _this.userlists[k].name.departTime.replace(new RegExp(pattern), "");
+				for (let k in _this.dataList) {
+					_this.dataList[k]['nusm'] = _this.dataList[k].departTime.replace(new RegExp(pattern), "");
 				}
-				this.userlists.sort(this.compare('nusm', true))
+				this.dataList.sort(this.compare('nusm', true))
 			},
 			inverted() {
 				let _this = this;
 				let pattern = ':';
-				for (let k in _this.userlists) {
-					_this.userlists[k]['nusm'] = _this.userlists[k].name.departTime.replace(new RegExp(pattern), "");
+				for (let k in _this.dataList) {
+					_this.dataList[k]['nusm'] = _this.dataList[k].departTime.replace(new RegExp(pattern), "");
 				}
-				this.userlists.sort(this.compare('nusm', false))
+				this.dataList.sort(this.compare('nusm', false))
 			},
 			sorts() {
 				let _this = this;
-				for (let j in _this.userlists) {
-					_this.userlists[j]['nums'] = _this.userlists[j].text.cabins[0].minSalePrice;
-					this.userlists.sort(this.compare('nums', true))
+				for (let j in _this.dataList) {
+					_this.dataList[j]['nums'] = _this.dataList[j].minPrice;
+					this.dataList.sort(this.compare('nums', true))
 				}
 			},
 			inverteds() {
 				let _this = this;
-				for (let j in _this.userlists) {
-					_this.userlists[j]['nums'] = _this.userlists[j].text.cabins[0].minSalePrice;
-					this.userlists.sort(this.compare('nums', false))
+				for (let j in _this.dataList) {
+					_this.dataList[j]['nums'] = _this.dataList[j].minPrice;
+					this.dataList.sort(this.compare('nums', false))
 				}
 			},
 			cut(it, index) {
@@ -685,21 +607,14 @@
 				this.userindex.name = index;
 			},
 			 rblcok(){
-				// #ifdef H5
-				this.$router.go(-1)
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack();
-				// #endif
+				this.toBlock();
 			},
 			//查询
 			async save() {
 				let _this = this;
-				_this.userlists = [];
-				let cityName = ''; //去的城市
-				let citysName = ''; //来的城市
-				let time = ''; //去的时间
-				let times = ''; //来的时间
+				_this.dataList = [];
+				let cityName = _this.city; //出发地
+				let citysName = _this.citys; //到达地
 				let name = ''; //旅客
 				let lei = '';
 				let share = '';
@@ -708,323 +623,179 @@
 				let grade = "";
 				let passengeType = "";
 				if (_this.none == 'single') {
-					cityName = _this.city; //去的城市
-					citysName = _this.citys; //来的城市
-					time = _this.time; //去的时间
-					// let times = _this.times.re; //来的时间
-					name = _this.name; //旅客
 					lei = '1';
 					share = 1;
-					aircom = "";
-					transCity = "";
-					grade = "";
 					passengeType = "ADT";
-				} else if (_this.noneName == 'returns') {
-					cityName = _this.city; //去的城市
-					citysName = _this.citys; //来的城市
-					time = _this.time; //去的时间
-					times = _this.times; //来的时间
-					name = _this.name; //旅客
+				} else if (_this.none == 'returns') {
 					lei = '2';
 					share = 1;
-					aircom = "";
-					transCity = "";
-					grade = "";
 					passengeType = "ADT";
 				}
-				// newdata = cdlist.concat(_this.delete_list)
-				let user = {};
-				let users = {};
-				user = {
-					"aircom": aircom,
-					"fromCity": cityName.id,
-					"passengerType": passengeType,
-					"hcType": lei,
-					"toCity": citysName.id,
-					"ishareFlight": share,
-					"fromDate": time,
-					"transCity": transCity,
-					'grade': grade,
-					civilServiceTicket: this.civilServiceTicket,
-				}
-				if (_this.none == 'single') {
-					if (this.civilServiceTicket != undefined) {
-						user = {
-							"aircom": aircom,
-							"fromCity": cityName.id,
-							"passengerType": passengeType,
-							"hcType": lei,
-							"toCity": citysName.id,
-							"ishareFlight": share,
-							"fromDate": time,
-							"transCity": transCity,
-							'grade': grade,
-							civilServiceTicket: this.civilServiceTicket,
-						}
-					} else {
-						user = {
-							"aircom": this.isblcks == 4 ? this.dats.odllegList[0].flightNo.substring(0, 2) : aircom,
-							"fromCity": cityName.id,
-							"passengerType": passengeType,
-							"hcType": lei,
-							"toCity": citysName.id,
-							"ishareFlight": share,
-							"fromDate": time,
-							"transCity": transCity,
-							'grade': grade
-						}
-					}
-				} else if (_this.noneName == 'returns') {
-					if (this.civilServiceTicket != undefined) {
-						user = {
-							"aircom": aircom,
-							"fromCity": cityName.id,
-							"passengerType": passengeType,
-							"hcType": lei,
-							"toCity": citysName.id,
-							"ishareFlight": share,
-							"fromDate": time,
-							"toDate": times,
-							"transCity": transCity,
-							'grade': grade,
-							civilServiceTicket: this.civilServiceTicket,
-						}
-					} else {
-						user = {
-							"aircom": aircom,
-							"fromCity": cityName.id,
-							"passengerType": passengeType,
-							"hcType": lei,
-							"toCity": citysName.id,
-							"ishareFlight": share,
-							"fromDate": time,
-							"toDate": times,
-							"transCity": transCity,
-							'grade': grade
-						}
-					}
+				let user = {
+					"fromCity": cityName.id,//出发城市三字码
+					"passengerType": passengeType,//乘客类型 默认成人
+					"hcType": lei,//1为单程 2位往返
+					"toCity": citysName.id,//到达城市三字码
+					"ishareFlight": share,//是否包含共享航班 1为包含
+					"fromDate": this.startDate,//出发时间
+					"transCity": transCity,//中转站
+					'grade': grade,//舱位等级
+				};
+				if (this.civilServiceTicket != undefined) {//是否公务票
+					user['aircom'] = aircom;//航司编号  改签才需要 只能改同航司或者支持的航司
+					user['civilServiceTicket'] =  this.civilServiceTicket;
+				} else {
+					//改签查询 限制航司
+					user['aircom'] = this.isblcks == 4 ? this.dats.odllegList[0].flightNo.substring(0, 2) : aircom;
+					// user['aircom'] = aircom;
 				}
 				
 				try {
-					let res = await certifi.searchAirlineAJAX(user);
-					let ret = await certifi.queryAirlineList();
-
-					
-					_this.userlists = [];
+					let res = await certifi.searchAirline(user);
+					let ret = await certifi.queryAirlineList();//航司名称
+									
 					if (res.code == 200) {
-						if (res.data.search.flights == null) {
+						if (res.data.flights == null) {
 							_this.showToasts("没有合适的航班信息")
 							this.imgFlag = false
 							return
 						}
 						_this.hang = ret.data.airlineDds;
-						_this.userlist = res.data.search.flights; //城市时间
-						_this.usermap = res.data.search.ow_data; //折扣价格舱位
-						_this.flights = res.data.search.flights; //所有航班信息
-						_this.userrw = res.data.search.rw_data;
+						_this.dataList = res.data.flights;
 						_this.address = airports.addressAirportAll; //航空名字
-						if (_this.none == 'single') {
-							for (let k in _this.usermap) {
-								for (let j in _this.userlist) {
-									if (j == k) {
-										if (_this.isblcks == 4) {
-											if (cityName.id == _this.userlist[j].depart && citysName.id == _this.userlist[j].arrive) {
-												_this.userlists.push({
-													isshow: true,
-													name: _this.userlist[j],
-													text: _this.usermap[k]
-												}); //获得userlists
-											}
-										} else {
-											_this.userlists.push({
-												isshow: true,
-												name: _this.userlist[j],
-												text: _this.usermap[k]
-											}); //获得userlists
-										}
-									}
-								}
-							}
-						} else if (_this.noneName == 'returns') {
-							if (_this.goName == 0) { //往
-								for (let k in _this.usermap) {
-									for (let j in _this.userlist) {
-										if (_this.isblcks == 4) {
-											if (cityName.id == _this.userlist[j].depart && citysName.id == _this.userlist[j].arrive) {
-												_this.userlists.push({
-													isshow: true,
-													name: _this.userlist[j],
-													text: _this.usermap[k]
-												}); //获得userlists
-											}
-										} else {
-											if (j == k) {
-												_this.userlists.push({
-													isshow: true,
-													name: _this.userlist[j],
-													text: _this.usermap[k]
-												});
-											}
-										}
-									}
-								}
-							} else { //返
-								for (let k in _this.userrw) {
-									for (let j in _this.userlist) {
-										if (_this.isblcks == 4) {
-											if (cityName.id == _this.userlist[j].arrive && citysName.id == _this.userlist[j].depart) {
-												_this.userlists.push({
-													isshow: true,
-													name: _this.userlist[j],
-													text: _this.userrw[k]
-												}); //获得userlists
-											}
-										} else {
-											if (j == k) {
-												_this.userlists.push({
-													isshow: true,
-													name: _this.userlist[j],
-													text: _this.userrw[k]
-												});
-											}
-										}
-									}
-								}
-							}
-						}
-						let si = [{
+						
+						
+						let si = [{ //航空公司
 							img: '\ue620',
 							id: 'Unlimitedh',
 							text: '不限'
 						}];
-						for (let i = 0; i < _this.userlists.length; i++) {
-							si.push({
-								img: '\ue620',
-								id: _this.userlists[i].name.airline,
-								text: this.company(_this.userlists[i].name.airline)
-							})
-						}
-						let obj = {};
-						let peon = si.reduce((cur, next) => {
-							obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
-							return cur;
-						}, []) //设置cur默认类型为数组，并且初始值为空的数组
-						for (let i = 0; i < this.userchoice.length; i++) {
-							if (i == 2) {
-								this.userchoice[i].arr = peon
-							}
-						}
-						for (let k in _this.userlists) {
-							_this.userlists[k]['economyclass'] = false; //经济舱
-							_this.userlists[k]['businessclass'] = false; //头等舱和商务舱
-							_this.userlists[k]['ims'] = 'http://file.feiren.com/00/02/' + _this.userlists[k].name.airline + '.png'
-							if (k, _this.userlists[k].name.planeSize == 'L') {
-								_this.userlists[k].name.planeSize = '(大)'
-							} else if (k, _this.userlists[k].name.planeSize == 'M') {
-								_this.userlists[k].name.planeSize = '(中)'
-							} else if (k, _this.userlists[k].name.planeSize == 'S') {
-								_this.userlists[k].name.planeSize = '(小)'
-							}
-							if (k, _this.userlists[k].name.shared == true) {
-								_this.userlists[k].name.shareds = '隐藏共享'
-							}
-							if(_this.userlists[k].name.arriveTime.length > 5){
-								_this.userlists[k].name.arriveTime = _this.userlists[k].name.arriveTime.substring(0,5);
-								_this.userlists[k].name['isarriveTime'] = true;
-							} else {
-								_this.userlists[k].name['isarriveTime'] = false;
-							}
-							for (let j = 0; j < _this.address.length; j++) {
-								if (k, _this.userlists[k].name.depart == _this.address[j].airportCode) {
-									// k,
-									_this.userlists[k].name['departs'] = _this.address[j].cityCName;
-								} else if (k, _this.userlists[k].name.arrive == _this.address[j].airportCode) {
-									// k,
-									_this.userlists[k].name['arrives'] = _this.address[j].cityCName;
-								}
-								if (this.arrivalAirport == this.address[j].airportCode) {
-									this.arrivalAirport = this.address[j].cityCName;
-								}
-							}
-							for (let i = 0; i < _this.userlists[k].text.cabins.length; i++) {
-								if (_this.userlists[k].text.cabins[i].level == 'C' || _this.userlists[k].text.cabins[i].level == 'F') { //商务舱和头等舱
-									_this.userlists[k].businessclass = true;
-								} else if (_this.userlists[k].text.cabins[i].level == 'Y' || _this.userlists[k].text.cabins[i].level == '经济舱') { //经济舱
-									_this.userlists[k].economyclass = true;
-								}
-							}
-						}
-						let sis = [{
+						
+						
+						
+						let model = [{//机型
 							img: '\ue620',
 							id: 'Unlimitede',
 							text: '不限'
 						}];
-						for (let i = 0; i < _this.userlists.length; i++) {
-							sis.push({
-								img: '\ue620',
-								id: _this.userlists[i].name.planeSize,
-								text: _this.userlists[i].name.planeSize
-							})
-						}
-						let objs = {};
-						let peons = sis.reduce((cur, next) => {
-							objs[next.id] ? "" : objs[next.id] = true && cur.push(next);
-							return cur;
-						}, []) //设置cur默认类型为数组，并且初始值为空的数组
-						for (let i = 0; i < this.userchoice.length; i++) {
-							if (i == 3) {
-								for (let k = 0; k < peons.length; k++) {
-									if (peons[k].text == null) {
-										peons.splice(k, 1);
-									}
-								}
-								this.userchoice[i].arr = peons;
-							}
-						}
-						let sie = [{
+						
+						let shareds = [{ //经停
 							img: '\ue620',
 							id: 'Unlimitedg',
 							text: '不限'
 						}];
-						for (let i = 0; i < _this.userlists.length; i++) {
-							sie.push({
+						
+						let deptsi = [{//出发点
+							img: '\ue620',
+							id: 'Unlimitedk',
+							text: '所有机场'
+						}];
+						
+						let arrti = [{//到达点
+							img: '\ue620',
+							id: 'Unlimitedj',
+							text: '所有机场'
+						}];
+						for (let k = 0; k < _this.dataList.length; k++) {
+							_this.dataList[k]['ims'] = 'http://file.feiren.com/00/02/' + _this.dataList[k].airline + '.png'
+							if (k, _this.dataList[k].planeSize == 'L') {
+								_this.dataList[k].planeSize = '(大)'
+							} else if (k, _this.dataList[k].planeSize == 'M') {
+								_this.dataList[k].planeSize = '(中)'
+							} else if (k, _this.dataList[k].planeSize == 'S') {
+								_this.dataList[k].planeSize = '(小)'
+							}
+							if (k, _this.dataList[k].shared == true) {
+								_this.dataList[k].shareds = '隐藏共享'
+							}
+							if(_this.dataList[k].arriveTime.length > 5){
+								_this.dataList[k].arriveTime = _this.dataList[k].arriveTime.substring(0,5);
+								_this.dataList[k]['isarriveTime'] = true;
+							} else {
+								_this.dataList[k]['isarriveTime'] = false;
+							}
+							_this.dataList[k]['searchNo'] =  res.data.searchNo;//查询编号，用来查询舱位
+							for (let j = 0; j < _this.address.length; j++) {
+								if (k, _this.dataList[k].depart == _this.address[j].airportCode) {
+									// k,
+									_this.dataList[k]['departs'] = _this.address[j].airportCName;
+								} else if (k, _this.dataList[k].arrive == _this.address[j].airportCode) {
+									// k,
+									_this.dataList[k]['arrives'] = _this.address[j].airportCName;
+								}
+								if (this.arrivalAirport == this.address[j].airportCode) {
+									this.arrivalAirport = this.address[j].airportCName;
+								}
+							}
+							si.push({
 								img: '\ue620',
-								id: _this.userlists[i].name.shared,
-								text: _this.userlists[i].name.shareds
+								id: _this.dataList[k].airline,
+								text: this.company(_this.dataList[k].airline)
+							})
+							model.push({
+								img: '\ue620',
+								id: _this.dataList[k].planeSize,
+								text: _this.dataList[k].planeSize
+							})
+							shareds.push({
+								img: '\ue620',
+								id: _this.dataList[k].shared,
+								text: _this.dataList[k].shareds
+							})
+							deptsi.push({
+								img: '\ue620',
+								id: _this.dataList[k].depart,//出发机场
+								text: _this.dataList[k].departs
+							})
+							arrti.push({
+								img: '\ue620',
+								id: _this.dataList[k].arrive,//到达机场
+								text: _this.dataList[k].arrives
 							})
 						}
-						let obje = {};
-						let peone = sie.reduce((cur, next) => {
-							obje[next.id] ? "" : obje[next.id] = true && cur.push(next);
+						
+						//去重
+						let obj = {};
+						let peon = si.reduce((cur, next) => {//航空公司
+							obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
 							return cur;
 						}, []) //设置cur默认类型为数组，并且初始值为空的数组
+						
+						
+						let models = this.reducelist(model);//机型
+						let sharedsli = this.reducelist(shareds);//共享
+						let deptsilist = this.reducelist(deptsi);//出发机场
+						let deptarrlist = this.reducelist(arrti);//出发机场
+						
 						for (let i = 0; i < this.userchoice.length; i++) {
-							if (i == 4) {
-								for (let k = 0; k < peone.length; k++) {
-									if (peone[k].text == undefined) {
-										peone.splice(k, 1);
+							if (this.userchoice[i].id == 'model') {//机型
+								for (let k = 0; k < models.length; k++) {
+									if (models[k].text == null) {
+										models.splice(k, 1);
 									}
 								}
-								this.userchoice[i].arr = peone;
+								this.userchoice[i].arr = models;
+							}
+							if (this.userchoice[i].id == 'shared') { //共享
+								for (let k = 0; k < sharedsli.length; k++) {
+									if (sharedsli[k].text == undefined) {
+										sharedsli.splice(k, 1);
+									}
+								}
+								this.userchoice[i].arr = sharedsli;
+							}
+							if (this.userchoice[i].id == 'Airline') {//插入航空公司
+								this.userchoice[i].arr = peon;
+							}
+							if(this.userchoice[i].id == 'departure'){//出发机场
+								this.userchoice[i].arr = deptsilist;
+							}	
+							if(this.userchoice[i].id == 'arrive'){//到达机场
+								this.userchoice[i].arr = deptarrlist;
 							}
 						}
-						for (let k in _this.usermap) {
-							if (k, _this.usermap[k].cabins[0].discount < '1') {
-								let num = (k, _this.usermap[k].cabins[0].discount * 10);
-								k, _this.usermap[k].cabins[0].discount = num.toFixed(1);
-							}
-						}
-
-						for (let k in _this.userrw) {
-							if (k, _this.userrw[k].cabins[0].discount < '1') {
-								let num = (k, _this.userrw[k].cabins[0].discount * 10);
-								k, _this.userrw[k].cabins[0].discount = num.toFixed(1);
-							} else {
-								this.userrw.push(
-									this.usermap[k]['discoun'] = '全价'
-								)
-							}
-						}
+						let istls = {ul:'Time'};
+						this.cut(istls, 0);
 						this.confirm();
 					} else {
 						_this.showToasts(res.message);
@@ -1034,6 +805,14 @@
 					console.log(e)
 					
 				}
+			},
+			reducelist(model){//去重
+				let objs = {};
+				let models = model.reduce((cur, next) => {  //机型
+					objs[next.id] ? "" : objs[next.id] = true && cur.push(next);
+					return cur;
+				}, []) //设置cur默认类型为数组，并且初始值为空的数组
+				return models
 			},
 			mealss(i) {
 				let meal = [];
@@ -1119,139 +898,56 @@
 				}
 				return ie;
 			},
-			particulars(item, index) {
-				// console.log("user::"+JSON.stringify(item))
-				let cit = {
-					name: this.company(item.name.airline),
-					text: item.name.airline
+			particulars(item, index) {//选择当前航班信息 跳转舱位选择页面
+				if(this.isto == 2){//回程 颠倒下城市
+					let items = this.dats.dataOne.flightsts;//第一段时间
+					
+					let Twodata = new Date(item.departDate.substring(0,10) + ' ' + item.departTime + ':00').getTime();//第二段的出发时间
+					
+					let olddata  = new Date(items.departDate.substring(0,10) + ' ' + items.arriveTime + ':00').getTime();//第一段时间;
+					
+					if(items.isarriveTime == true){//过了12点
+						olddata = olddata + 86400000;//增加一天的毫秒数
+					}
+					if(Twodata < olddata){
+						this.showToasts('出发时间不能小于去程到达时间！')
+						return
+					}
+				}
+				let cit = {//航空名称
+					airlinename: this.company(item.airline)
 				};
-				let datw = {};
-				let stslist = {};
-				// console.log(item,this.datas)
-				// if(this.timas < this.datas.timelist.re.toString()){
-				// 	this.showToasts('返回时间不能比出发时间小!');
-				// 	return;
+				let data = item;//当前选中的信息
+				data['timelists'] = this.timelists;//当前日期信息
+				data['airlinename'] = this.company(item.airline);//航空公司
+				let dat = {};
+				// if(this.none == 'single'){
+					dat = {
+						dataOne:data,//当前段的信息
+						searchData:this.dats,//查询页面参数
+					}
 				// }
-				datw = {
-					datw: this.dats, //查询新
-					timelist: this.timelist, //时间
-					flights: this.flights, //所有航班信息
-					userlist: item, //当前航空信息
-					hang: cit, //当前航班名称
-					none: this.none, //是否单程
-				}
-				let cabinst = {};
-				let flightst = {};
-				let cabinsts = datw.userlist.text.cabins;
-				let flightsts = datw.flights;
-
-				for (let i in cabinsts) {
-					cabinst[i] = {
-						cabin: cabinsts[i].cabin,
-						fdPrice: cabinsts[i].fdPrice,
-						discount: cabinsts[i].discount,
-						level: cabinsts[i].level,
-						cabinName: cabinsts[i].cabinName,
-						changeFare: cabinsts[i].changeFare,
-						priceSource: cabinsts[i].priceSource,
-						priceInfoId: cabinsts[i].priceInfoId,
-						priceId: cabinsts[i].priceId,
-						cashBack: cabinsts[i].salePrices[0].cashBack,
-						parPrice: cabinsts[i].salePrices[0].parPrice,
-						rebate: cabinsts[i].salePrices[0].rebate,
-						minSalePrice: cabinsts[i].minSalePrice,
-						salePrices: cabinsts[i].salePrices[0].price,
-						specialType: cabinsts[i].salePrices[0].specialType,
-						price: cabinsts[i].salePrices[0].price,
-						policyId: cabinsts[i].salePrices[0].policyId,
-						lastRebateId: cabinsts[i].salePrices[0].lastRebateId,
-						lastRebateProfitId: cabinsts[i].salePrices[0].lastRebateProfitId,
-						profitConfigId: cabinsts[i].salePrices[0].profitConfigId,
-						stock: cabinsts[i].stock,
-						buyPrice: cabinsts[i].salePrices[0].buyPrice,
-
-					}
-				}
-				let tyf = [];
-				for (let k in flightsts) {
-					flightst[k] = {
-						departDate: flightsts[k].departDate,
-						departTime: flightsts[k].departTime,
-					}
-					tyf.push(k)
-
-				}
-				for (let i in tyf) {
-					if (i == index) {
-						this.flightinfoid = flightsts[tyf[i]].flightinfoid
-					}
-				}
-				// console.log("flightinfoid:"+this.flightinfoid)
-				stslist = {
-					datw: datw.datw,
-					flights: flightst,
-					timelist: datw.timelist, //时间
-					none: datw.none, //是否单程
-					hang: datw.hang, //当前航班名称
-					civilServiceTicket: this.civilServiceTicket,
-					userlist: {
-						ims: datw.userlist.ims,
-						name: {
-							isarriveTime: datw.userlist.name.isarriveTime,
-							taxFee: datw.userlist.name.taxFee,
-							mileage: datw.userlist.name.mileage,
-							fuelFee: datw.userlist.name.fuelFee,
-							airline: datw.userlist.name.airline,
-							arrive: datw.userlist.name.arrive,
-							arriveTerminal: datw.userlist.name.arriveTerminal,
-							departTerminal: datw.userlist.name.departTerminal,
-							arriveTime: datw.userlist.name.arriveTime,
-							arrives: datw.userlist.name.arrives,
-							depart: datw.userlist.name.depart,
-							departDate: datw.userlist.name.departDate,
-							departTime: datw.userlist.name.departTime,
-							departs: datw.userlist.name.departs,
-							flightTime: datw.userlist.name.flightTime,
-							no: datw.userlist.name.no,
-							plane: datw.userlist.name.plane,
-							planeSize: datw.userlist.name.planeSize,
-							yprice: datw.userlist.name.yprice,
-							cprice: datw.userlist.name.cprice,
-							fprice: datw.userlist.name.fprice,
-							nonstop: datw.userlist.name.nonstop,
-							flightId: datw.userlist.name.flightId
-						},
-						text: {
-							minFdPrice: datw.userlist.text.minFdPrice,
-							minSalePrice: datw.userlist.text.minSalePrice,
-							nMinSalePrice: datw.userlist.text.nMinSalePrice,
-							nMinSalePriceCabin: datw.userlist.text.nMinSalePriceCabin,
-							nMinSalePriceFlight: datw.userlist.text.nMinSalePriceFlight,
-							nMinSalePriceTime: datw.userlist.text.nMinSalePriceTime,
-
-							no: datw.userlist.text.no,
-							cabins: cabinst,
-							flightinfoids: this.flightinfoid,
-						}
-					}
-				}
-				uni.setStorageSync("particularst_data", JSON.stringify(stslist));
+				uni.setStorageSync("particularst_data", JSON.stringify(dat));
 				uni.navigateTo({
 					url: './particulars/particularst'
 				})
 			},
 			take(item, index) {
-				if (this.cong == true) {
+				if (this.cong == true) {//重置
 					this.ir = 'Unlimiteda';
 					this.filter[0].value = 'Unlimiteda';
 					this.iw = 'Unlimiteds';
-					this.filter[1].value = 'Unlimiteds';
-					this.ie = 'Unlimitedh';
-					this.filter[2].value = 'Unlimitedh';
+					// this.filter[1].value = 'Unlimiteds';
+					// this.ie = 'Unlimitedh';
+					this.filter[1].value = 'Unlimitedh';
 					this.iq = 'Unlimitede';
-					this.filter[3].value = 'Unlimitede';
+					this.filter[2].value = 'Unlimitede';
 					this.ih = 'Unlimitedg';
-					this.filter[4].value = 'Unlimitedg';
+					this.filter[3].value = 'Unlimitedg';
+					this.iy = 'Unlimitedk';
+					this.filter[4].value = 'Unlimitedk';
+					this.iu = 'Unlimitedj';
+					this.filter[5].value = 'Unlimitedj';
 					this.cong = false;
 				} else {
 					this.userindex.id = item.id;
@@ -1259,19 +955,101 @@
 					if (dat.name == 0) { //起飞经停
 						this.ir = item.id
 						this.filter[0].value = item.id;
-					} else if (dat.name == 1) { //舱位
-						this.iw = item.id
-						this.filter[1].value = item.id;
-					} else if (dat.name == 2) { //航空公司
-						this.ie = item.id
-						this.filter[2].value = item.id;
-					} else if (dat.name == 3) { //机型
+					// } else if (dat.name == 1) { //舱位
+					// 	this.iw = item.id
+					// 	this.filter[1].value = item.id;
+					} else if (dat.name == 1) { //航空公司
+						if(item.id != 'Unlimitedh'){
+							let ies = [];
+							if(this.ie == 'Unlimitedh'){
+								this.ie ='';
+							} else {
+								ies = this.ie.split(',');
+							}
+							if(ies.includes(item.id)){//判断是否被选中
+								for(let k = ies.length;k>=0;k--){//删除选中
+									if(ies[k] == item.id){
+										ies.splice(k,1);
+									}
+								}
+								
+							} else {
+								ies.push(item.id);
+							}
+							if(ies.length == 0){//当航司被删完后，赋值成不限
+								this.ie = 'Unlimitedh';
+								this.filter[1].value = 'Unlimitedh';
+							} else {
+								this.ie = ies.join(',')
+								this.filter[1].value = ies.join(',');
+							}
+						} else {
+							this.ie = item.id;
+							this.filter[1].value = item.id;
+						}
+					} else if (dat.name == 2) { //机型
 						this.iq = item.id
-						this.filter[3].value = item.id;
-					} else if (dat.name == 4) { //共享
-						console.log(item.id)
+						this.filter[2].value = item.id;
+					} else if (dat.name == 3) { //共享
 						this.ih = item.id
-						this.filter[4].value = item.id;
+						this.filter[3].value = item.id;
+					} else if (dat.name == 4) { //出发地
+						if(item.id != 'Unlimitedk'){
+							let ies = [];
+							if(this.iy == 'Unlimitedk'){
+								this.iy ='';
+							} else {
+								ies = this.iy.split(',');
+							}
+							if(ies.includes(item.id)){//判断是否被选中
+								for(let k = ies.length;k>=0;k--){//删除选中
+									if(ies[k] == item.id){
+										ies.splice(k,1);
+									}
+								}
+								
+							} else {
+								ies.push(item.id);
+							}
+							if(ies.length == 0){//当航司被删完后，赋值成不限
+								this.iy = 'Unlimitedk';
+								this.filter[4].value = 'Unlimitedk';
+							} else {
+								this.iy = ies.join(',')
+								this.filter[4].value = ies.join(',');
+							}
+						} else {
+							this.iy = item.id;
+							this.filter[4].value = item.id;
+						}
+					} else if (dat.name == 5) { //到达地
+						if(item.id != 'Unlimitedj'){
+							let ies = [];
+							if(this.iu == 'Unlimitedj'){
+								this.iu ='';
+							} else {
+								ies = this.iu.split(',');
+							}
+							if(ies.includes(item.id)){//判断是否被选中
+								for(let k = ies.length;k>=0;k--){//删除选中
+									if(ies[k] == item.id){
+										ies.splice(k,1);
+									}
+								}
+								if(ies.length == 0){//当航司被删完后，赋值成不限
+									this.iu = 'Unlimitedj';
+									this.filter[5].value = 'Unlimitedj';
+								}
+							} else {
+								ies.push(item.id);
+							}
+							
+							this.iu = ies.join(',')
+							this.filter[5].value = ies.join(',');
+						} else {
+							this.iu = item.id;
+							this.filter[5].value = item.id;
+						}
 					}
 				}
 			},
@@ -1390,9 +1168,9 @@
 						height: 100vh;
 					}
 					.noData{
-						width: 300upx;
-						margin-top: 20%;
-						margin-left: -100upx;
+						width: 346upx;
+						height: 386upx;
+						margin-top: 200upx;
 					}
 					.rblcok{
 						width:160upx;
@@ -1449,7 +1227,7 @@
 						.left_choice {
 							width: 200upx;
 							height: 610upx;
-							font-size: 35upx;
+							font-size: 26upx;
 							color: #afb4c1;
 							background: #eeeeee;
 
@@ -1463,7 +1241,7 @@
 								height: 100upx;
 								line-height: 100upx;
 								text-indent: 20upx;
-								color: #65d7a5;
+								color: $uni-color-primary;
 								background: #FFFFFF;
 							}
 						}
@@ -1472,8 +1250,7 @@
 							margin-left: 20upx;
 							width: 500upx;
 							height: 610upx;
-							font-size: 35upx;
-							overflow: auto;
+							font-size: 26upx;
 
 							.take {
 								width: 100%;
@@ -1485,7 +1262,9 @@
 								color: #9aa3ae;
 								border-bottom: 2upx solid #C0C0C0;
 							}
-
+							.takes{
+								color: $uni-color-primary;
+							}
 							.tackss {
 								width: 100%;
 								text-indent: 20upx;
@@ -1496,15 +1275,6 @@
 									border-bottom: 2upx solid #C0C0C0;
 									color: #b9c3cc;
 
-								}
-
-								.takes {
-									width: 100%;
-									height: 100upx;
-									line-height: 100upx;
-									text-indent: 50upx;
-									color: #3b4f62;
-									border-bottom: 2upx solid #C0C0C0;
 								}
 							}
 						}
@@ -1519,25 +1289,10 @@
 						line-height: 90upx;
 						justify-content: space-around;
 						background: #eeeeee;
-
-						.cancel {
-							font-size: 35upx;
-							color: #51ce97;
-						}
-					}
-
-					.shares {
-						width: 100%;
-						display: flex;
-						height: 90upx;
-						line-height: 90upx;
-						background: #FFFFFF;
-						padding-left: 20upx;
-
-						.cancels {
-							font-size: 28upx;
-							color: #9aa3ae;
-							margin-left: 30upx;
+						font-size: 28upx;
+						color: #333333;
+						.cancel{
+							color: $uni-color-primary;
 						}
 					}
 
@@ -1545,51 +1300,85 @@
 
 				.ticket {
 					width: calc(100% - 40upx);
-					padding: 30upx 10upx 20upx 10upx;
+					padding: 30upx 10upx;
 					text-indent: 10upx;
 					background: #FFFFFF;
 					margin: 0 10upx;
 					margin-bottom: 20upx;
-					box-shadow: 0 4upx 8upx rgba(209,209,209,50%);
+					border-radius: 15upx;
+					box-shadow: 0 4upx 8upx rgba(221, 221, 221, 0.5);
 					.above {
-						width: 100%;
+						// width: 100%;
 						display: flex;
-
-						// background: $uni-color-primary;
+						padding:  0 20upx;
 						.airticket {
-							display: flex;
-							width: 70%;
-
-							// background: red;
-							.travel_time {
-								// display: flex;
-								.arrclass{
-									position: relative;
+							width: 78%;
+							.airtts{
+								display: flex;
+								justify-content: space-between;
+								.airfons{
+									font-size: 40upx;
+									color: #333333;
+									font-weight: 600;
 									span{
-										position: absolute;
-										right: -30upx;
-										top: 2upx;
-										color: #22c071;
-										font-size: 24upx;
+										font-size: 22upx;
+										color: #007AFF;
 									}
 								}
-								
+								.airticketimg{
+									width: 140upx;
+									position: relative;
+									image{
+										width: 100upx;
+										height: 15upx;
+										margin: 0 20upx;
+									}
+									view{
+										color: #007aff;
+										font-size: 20upx;
+										position: absolute;
+										left:65upx;
+										top:15upx;
+										background: white;
+										width: 70upx;
+									}
+								}
+								.travel_time {
+									width: 50%;
+									.travfomts{
+										font-size: 24upx;
+										color: #333333;
+										line-height: 50upx;
+									}
+									.arrclass{
+										position: relative;
+										span{
+											position: absolute;
+											right: -30upx;
+											top: 2upx;
+											color:#007AFF;
+											font-size: 20upx;
+										}
+									}
+									
+								}
 							}
+							
 						}
 
 						.price {
-							color: red;
+							color: #FFA63E;
 							font-size: 40upx;
-							width: 30%;
+							width: 22%;
 							text-indent: 0;
-							padding-right: 10upx;
+							// padding-right: 30upx;
 							text-align: right;
 
 							// background: $uni-color-primary;
 							.discountjia {
-								color: #abb7c2;
+								color: #666666;
 								overflow: hidden;
-								font-size: 26upx;
+								font-size: 22upx;
 								// padding-right: 10upx;
 								// text-align: right;
 								// background: red;
@@ -1620,13 +1409,14 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 20upx 20upx 0 20upx;
+						padding:0 20upx;
 						width: calc(100% - 40upx);
-
+						margin-left: 10upx;
+						color: #666666;
 						.stsbt {
 							display: flex;
 							position: relative;
-							font-size: 32upx;
+							font-size: 22upx;
 							.stasb {
 								color: red;
 								width: 40upx;
@@ -1653,13 +1443,14 @@
 						}
 
 						image {
-							width: 40upx;
-							height: 40upx;
+							width: 30upx;
+							height: 30upx;
 						}
 					}
 
 					.ting {
 						// width: 250upx;
+						font-size: 22upx;
 						margin-right: 10upx;
 						text-align: right;
 						color: #0BC071;

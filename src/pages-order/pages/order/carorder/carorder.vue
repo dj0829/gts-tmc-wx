@@ -6,42 +6,42 @@
 		<view class="selsops">
 			<view class="selsit" @click="secks(item)" :class="seid == item.id ? 'seclk': ''" v-for="(item,index) in selst" :key="index">
 				{{item.name}}
-			</view>
+			</view> 
 		</view>
 		<view v-if="showlist">
 			<view v-if="showlist!=undefined && showlist.length > 0">
 				<view class="listshow" v-for="(item,index) in showlist" :key="index" @click="slsts(item)">
+					<view class="lislist" v-if="item.carSupplierTypeName != null && item.carSupplierTypeName != ''">
+						<view style="display: flex;flex:4;">
+							<image class="li_img" :src="item.carSupplierTypeLogo" mode=""></image>
+							<view class="li_cartype">
+								{{item.carSupplierTypeName}}
+							</view>
+							<view class="li_platenumber" v-if="item.carSaleOrderDriver != null && item.carSaleOrderDriver.vehicleNo!=null ">
+								{{item.carSaleOrderDriver.vehicleNo}}
+							</view>
+							<view class="li_types" v-if="item.carGroupName != null && item.carGroupName != ''">
+								{{item.carGroupName}}
+							</view>
+						</view>
+						<view class="li_text" :class="item.status == 5 ? 'li_texts':''">
+							{{rest(item.status)}}
+						</view>
+					</view>
 					<view class="listtops">
 						<view class="lstt_l">
-							<view class="iconfont" style="font-size: 35upx;">
-								&#xe648;
-							</view>
+							<image src="@/static/img/carbus/time_yc.png"></image>
 							<view style="margin-left: 10upx;">
 								{{item.createTime}}
 							</view>
 						</view>
-						<view class="lstt_r">
-							{{rest(item.status)}}
-						</view>
-					</view>
-					<view class="lislist" v-if="item.carSupplierTypeName != null && item.carSupplierTypeName != ''">
-						<image class="li_img" :src="item.carSupplierTypeLogo" mode=""></image>
-						<view class="li_cartype">
-							{{item.carSupplierTypeName}}
-						</view>
-						<view class="li_platenumber" v-if="item.carSaleOrderDriver != null && item.carSaleOrderDriver.vehicleNo!=null ">
-							{{item.carSaleOrderDriver.vehicleNo}}
-						</view>
-						<view class="li_types" v-if="item.carGroupName != null && item.carGroupName != ''">
-							{{item.carGroupName}}
+						<view style="color: #F98B2A;" v-if="item.premium != null">
+							￥{{item.premium}}
 						</view>
 					</view>
 					<view class="caradress">
 						<view class="catleft">
-							<view class="ca_x">
-								<view class="ca_xs">
-								</view>
-							</view>
+							<image src="@/static/img/carbus/dd1_yc.png"></image>
 						</view>
 						<view class="adname">
 							{{item.startName}}
@@ -49,10 +49,7 @@
 					</view>
 					<view class="caradress">
 						<view class="catleft">
-							<view class="ca_x" style="border: 2upx solid #F98B2A;">
-								<view class="ca_xs" style="background-color: #F98B2A;">
-								</view>
-							</view>
+							<image src="@/static/img/carbus/dd_yc.png"></image>
 						</view>
 						<view class="adname">
 							{{item.endName}}
@@ -61,9 +58,6 @@
 					<view class="rider">
 						<view>
 							乘车人：{{item.passengerName}}  {{item.passengerMobile}}
-						</view>
-						<view class="" style="color: #F98B2A;" v-if="item.premium != null">
-							￥{{item.premium}}
 						</view>
 					</view>
 				</view>
@@ -127,9 +121,21 @@
 		onLoad(item){
 			if (item.no != 0) {
 				if (item.type == 'carodd') {
-					uni.navigateTo({
-						url:'./carorderlist/carorderlist?data='  + item.no
-					})
+					// #ifdef APP-PLUS
+						uni.setStorageSync('carorderlistA_data',{
+							data:item.no
+						})
+						// this.showToasts('该用户未开通用车业务')
+						uni.navigateTo({
+							url:'carorderlist/carorderlistA'
+						})
+					//#endif
+					
+					// #ifdef  H5 || MP-WEIXIN
+						uni.navigateTo({
+							url:'carorderlist/carorderlist?data=' + item.no
+						})
+					//#endif
 				}
 			}
 		},
@@ -204,9 +210,21 @@
 			// 	return tiem.substring(0,10)
 			// },
 			slsts(item){//查看当前详情
-				uni.navigateTo({
-					url:'carorderlist/carorderlist?data=' + item.tradeNo
-				})
+				// #ifdef APP-PLUS
+					uni.setStorageSync('carorderlistA_data',{
+						data:item.tradeNo
+					})
+					// this.showToasts('该用户未开通用车业务')
+					uni.navigateTo({
+						url:'carorderlist/carorderlistA'
+					})
+				//#endif
+				
+				// #ifdef  H5 || MP-WEIXIN
+					uni.navigateTo({
+						url:'carorderlist/carorderlist?data=' + item.tradeNo
+					})
+				//#endif
 			},
 			secks(item){
 				this.showlist = null;
@@ -329,17 +347,19 @@
 			display: flex;
 			white-space: nowrap;
 			font-size: 30upx;
+			border-bottom: 1px solid #dfdfdf;
 			.selsit{
 				display: inline-block; 
 				line-height: 90upx;
 				text-align: center;
-				color: #999999;
+				color: #666666;
 				padding: 0 25upx;
 				height: 86upx;
 				border-bottom: 6upx solid #FFFFFF;
 			}
 			.seclk{
-				border-bottom: 6upx solid $uni-color-primary;
+				border-bottom: 6upx solid #007AFF;
+				color: #007AFF;
 			}
 		}
 		.selsops::-webkit-scrollbar {
@@ -360,8 +380,12 @@
 					display: flex;
 					align-items: center;
 					font-size: 30upx;
-					color: #000000;
+					color: #333333;
 					flex: 5;
+					image{
+						width: 18upx;
+						height: 18upx;
+					}
 				}
 				.lstt_r{
 					flex: 2;
@@ -371,7 +395,7 @@
 			.lislist{
 				display: flex;
 				align-items: center;
-				line-height: 60upx;
+				// line-height: 60upx;
 				margin:  10upx 0;
 				.li_img{
 					width: 40upx;
@@ -385,19 +409,30 @@
 					height: 45upx;
 					line-height: 45upx;
 					padding: 0 20upx;
-					font-size: 28upx;
-					background-color: #EBF1FF;
-					border: 1upx solid #C3C7D0;
+					font-size: 32upx;
 					border-radius: 8upx;
-					font-weight: 600;
 				}
 				.li_types{
 					height: 45upx;
-					font-size: 28upx;
+					font-size: 32upx;
 					line-height: 45upx;
 					margin-left: 20upx;
+					border-radius: 10upx;
 					padding:  0 20upx;
-					background-color: #F1F1F1;
+				}
+				.li_text{
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #007AFF;
+					background: #dbf0ff;
+					border-radius: 10upx;
+				}
+				.li_texts{
+					padding: 6upx 10upx;
+					font-size:20upx;
+					color: #999999;
+					background: #f0f0f0;
+					border-radius: 10upx;
 				}
 			}
 			.caradress{
@@ -426,6 +461,10 @@
 							background: #52C41A;
 						}
 					}
+					image{
+						width: 18upx;
+						height: 18upx;
+					}
 				}
 				.adname{
 					font-size: 30upx;
@@ -433,9 +472,10 @@
 			}
 			.rider{
 				line-height: 50upx;
-				font-size: 30upx;
+				font-size: 28upx;
 				display: flex;
 				justify-content: space-between;
+				color: #666666;
 			}
 		}
 	}

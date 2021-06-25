@@ -60,10 +60,10 @@
 								<view class="iconfont" v-if="!item.lastRank && !item.showChild">
 									&#xe8a3;
 								</view>
-								<view class="" style="width: 40upx;" v-if="item.lastRank">
+								<view   style="width: 40upx;" v-if="item.lastRank">
 								</view>
 								{{item.name}}
-								<view class="" v-if="item.userCount != null">
+								<view   v-if="item.userCount != null">
 									({{item.userCount}})
 								</view>
 							</view>

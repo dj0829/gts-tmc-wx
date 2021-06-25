@@ -158,6 +158,11 @@
 					"style": {
 						"navigationBarTitleText": "超规审批人确定"
 					}
+				},{
+					"path": "book/mainModules/majorFunction/bagittome/addbagittome",
+					"style": {
+						"navigationBarTitleText": "包给我"
+					}
 				},
 				{
 					"path": "book/mainModules/majorFunction/select_list/select_list",
@@ -171,9 +176,27 @@
 					}
 				},
 				{
+					"path": "book/mainModules/majorFunction/hotelselect/hotelselectA",
+					"style": {
+						"navigationBarTitleText": "酒店搜索"
+					}
+				},
+				{
+					"path": "book/mainModules/majorFunction/hotelselect/hoteldate",
+					"style": {
+						"navigationBarTitleText": "时间选择"
+					}
+				},
+				{
 					"path": "book/mainModules/majorFunction/hotelselect/hotellist/hotrllist",
 					"style": {
 						"navigationBarTitleText": "酒店详情"
+					}
+				},
+				{
+					"path": "book/mainModules/majorFunction/hotelselect/hotellist/hoterlintroduce",
+					"style": {
+						"navigationBarTitleText": "酒店介绍"
 					}
 				},
 				{
@@ -190,6 +213,18 @@
 				},
 				{
 					"path": "book/mainModules/majorFunction/carbusiness/carbusiness",
+					"style": {
+						"navigationBarTitleText": "用车服务"
+					}
+				},
+				{
+					"path": "book/mainModules/majorFunction/carbusiness/carbusinessA",
+					"style": {
+						"navigationBarTitleText": "用车服务"
+					}
+				},
+				{
+					"path": "book/mainModules/majorFunction/carbusiness/cartaddA",
 					"style": {
 						"navigationBarTitleText": "用车服务"
 					}
@@ -280,6 +315,12 @@
 				},
 				{
 					"path": "pages/order/carorder/carorderlist/carorderlist",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					}
+				},
+				{
+					"path": "pages/order/carorder/carorderlist/carorderlistA",
 					"style": {
 						"navigationBarTitleText": "订单详情"
 					}
@@ -401,17 +442,14 @@
 				{
 					"path": "pages/mydi/IntentList/Intentlist",
 					"style": {
-						"navigationBarTitleText": "我的意向单 "
+						"navigationBarTitleText": "我的意向单 ",
+						"enablePullDownRefresh": true, //设置为true表示当前页面开启下拉刷新
+						"backgroundTextStyle": "dark" //下拉 loading 的样式，仅支持 dark/light
 					}
 				}, {
 					"path": "pages/mydi/IntentList/intentdetails",
 					"style": {
 						"navigationBarTitleText": "酒店意向单详情 "
-					}
-				}, {
-					"path": "pages/mydi/IntentList/ticketIntentForm",
-					"style": {
-						"navigationBarTitleText": "飞机意向单 "
 					}
 				},
 				{
@@ -511,12 +549,6 @@
 					"path": "pages/mydi/myapplication/tradetails/travelsdetails",
 					"style": {
 						"navigationBarTitleText": "出差详情"
-					}
-				},
-				{
-					"path": "pages/mydi/myapplication/cationchirder/sselect-city/selectcity",
-					"style": {
-						"navigationBarTitleText": "城市选择"
 					}
 				},
 				{

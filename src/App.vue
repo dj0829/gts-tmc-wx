@@ -101,6 +101,8 @@ page{
 	fill: currentColor;
 	overflow: hidden;
 }
+
+
 .Navigation {
 	width: 100%;
 	/*  #ifdef  APP-PLUS || MP-WEIXIN */ 
@@ -159,5 +161,38 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked {
 .wx-checkbox-input.wx-checkbox-input-checked::before {
 	font-size: 30upx !important;
 }
+.share-box {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0upx;
+	left: 0upx;
+	bottom: 0upx;
+	right:0upx;
+	background-color: rgba(0, 0, 0, 0.4);
+	transition: .3s;
+	z-index: 777;
+}
+// 进入分享动画
+.share-show {
+	transition: all 0.3s ease;
+	transform: translateY(0%) !important;
+}
+
+// 离开分享动画
+.share-item {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+	background-color: #FFFFFF;
+	transition: all 0.3s ease;
+	transform: translateY(100%);
+	z-index: 888;
+	border-top-left-radius: 20upx;
+	border-top-right-radius: 20upx;
+}
 /*  #endif  */
+
 </style>

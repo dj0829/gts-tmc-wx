@@ -11,7 +11,8 @@
 			</view>
 			<view class="i_nas">
 				<span class="iconfont">&#xe623;</span>
-				<input type="number" v-model="iponel" maxlength="11" value="" />
+				<input v-if="iponels != ''" @focus="focusfns(1)" type="text" v-model="iponels" maxlength="11" value="" />
+				<input v-else type="text" v-model="iponel" maxlength="11" value="" />
 				<view class="btsncs">
 				</view>
 			</view>
@@ -29,6 +30,7 @@
 	export default{
 		data(){
 			return{
+				iponels:'',
 				namel:'',
 				iponel:'',
 				is_no:1
@@ -37,18 +39,26 @@
 		onLoad(it) {
 			let dstp = JSON.parse(it.data);
 			this.namel  = dstp.namel;
+			this.iponels = this.utils.TuoMin(dstp.iponel,1);
 			this.iponel = dstp.iponel;
 		},
 		onShow() {
 			uni.$on("carcompanystaff", rets => {
 				this.namel  = rets.name;
 				this.iponel = rets.ipone;
+				this.iponels = this.utils.TuoMin(rets.ipone,1);
 				uni.$off("carcompanystaff")
 			})
 		},
 		mounted() {
 		},
 		methods:{
+			focusfns(va){//清空手机号
+				if(va == 1 ){//手机号
+					this.iponel = '';
+					this.iponels = '';
+				}
+			},
 			mulist() { //查询所有部门
 				uni.navigateTo({
 					url:"./carcompanystaff?data=1"

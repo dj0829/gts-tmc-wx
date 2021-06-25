@@ -1,4 +1,4 @@
-<template>
+ <template>
 	<view class="tralist">
 		<loading>
 		</loading>
@@ -7,154 +7,171 @@
 				<view v-if="isid != 0" @click="rblcok" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">
 					&#xe61e;</view>
 			</view>
-			<view class="ongbutn">
+			<view class="ongbutn"> 
 				出差单详情
 			</view>
 			<view class="smtis">
 			</view>
 		</view>
-		<view class="tacks" style="padding-left:35upx">
-			<view class="iconfont" :style="{color: mestaus(status),'font-size': '60upx'}"
-				v-if="status == 2 || status == 5">&#xe60a;</view>
-			<view class="iconfont" :style="{color: mestaus(status),'font-size': '60upx'}"
-				v-if="status == 1 || status == 0">&#xe650;</view>
-			<view class="iconfont" :style="{color: mestaus(status),'font-size': '60upx'}"
-				v-if="status == 3 || status == 4">&#xe641;</view>
-			<view style="margin-left: 20upx;" v-if="collist(status)">
+		<view class="tackstop" style="padding-left:35upx;background: linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);height: 120upx;line-height: 120upx;">
+			<view class="tacksstate" v-if="status == 2 || status == 7 || status == 5">
+				<image src="@/static/img/mydi/adopt.png"></image>
+			</view>
+			<view class="tacksstate" v-if="status == 1 || status == 0">
+				<image src="@/static/img/mydi/waitfor.png"></image>
+			</view>
+			<view class="tacksstate" v-if="status == 3 || status == 4 || status == 6">
+				<image src="@/static/img/mydi/fail.png"></image>
+			</view>
+			<view style="margin-left: 20upx;color:white;font-size:42upx;" v-if="collist(status)">
 				{{collist(status)}}
 			</view>
 		</view>
 		<view class="tacks">
-			<view class="tacks_left">
-				出差人员
+			<view>
+				<view class="tacks_left">
+					出差人员
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" v-for="(item,index) in userName" :key="index">
+						{{item.userName}}
+					</view>
+				</view>
 			</view>
-			<view class="tacks_right">
-				<view class="dvslist" v-for="(item,index) in userName" :key="index">
-					{{item.userName}}
+			<view v-if="taskType != 4 && taskType != 5">
+				<view class="tacks_left">
+					出差日期
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist">
+						{{datatime(userdata)}}
+					</view>
+				</view>
+			</view>
+			<view v-if="taskType == 4 || taskType == 5">
+				<view class="tacks_left">
+					申请日期
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist">
+						{{createTimes}}
+					</view>
+				</view>
+			</view>
+			<view v-if="userreason">
+				<view class="tacks_left" v-if="taskType != 4 && taskType != 5">
+					出差事由
+				</view>
+				<view class="tacks_left" v-if="taskType == 4">
+					改签事由
+				</view>
+				<view class="tacks_left" v-if="taskType == 5">
+					退票事由
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist">
+						{{userreason?userreason:''}}
+					</view>
+				</view>
+			</view>
+			<view>
+				<view class="tacks_left">
+					费用归属(部)
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" v-if="talattribution != null">
+						{{talattribution}}
+					</view>
+				</view>
+			</view>
+			<view>
+				<view class="tacks_left">
+					费用归属(成)
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist">
+						{{costattribution?costattribution:''}}
+					</view>
+				</view>
+			</view>
+			<view v-if="(taskType == 2 || taskType == 7|| taskType == 4 || taskType == 5 ) && price > 0">
+				<view class="tacks_left" v-if="taskType == 5">
+					应退金额
+				</view>
+				<view class="tacks_left" v-if="taskType == 4">
+					改签费用
+				</view>
+				<view class="tacks_left" v-else>
+					总费用
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" style="color: #f2a53c;">
+						￥{{price}}
+					</view>
+				</view>
+			</view>
+			<view  v-if="taskType == 1 && totalBudget > 0 && totalBudget != null && totalBudget != '' ">
+				<view class="tacks_left" v-if="taskType == 1">
+					预估费用
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" style="color: #FF9000;">
+						￥{{totalBudget}}
+					</view>
+				</view>
+			</view>
+			<view  v-if="taskType == 5 && refundOtherFee > 0">
+				<view class="tacks_left">
+					手续费
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" style="color: #FF9000;">
+						￥{{refundOtherFee}}
+					</view>
 				</view>
 			</view>
 		</view>
-		<view class="tacks" v-if="taskType != 4 && taskType != 5">
-			<view class="tacks_left">
-				出差日期
+		<view class="tacks" >
+			<view v-if="traveldetails !=null && traveldetails != ''">
+				<view class="tacks_left">
+					详细说明
+				</view>
+				<view class="tacks_right">
+					<view @click="crems" v-if="trafals" class="dvslist" style="color: red;">
+						{{detaail(trafals)}}
+					</view>
+					<view class="dvslist" v-else>
+						{{traveldetails}}
+					</view>
+				</view>
 			</view>
-			<view class="tacks_right">
-				<view class="dvslist">
-					{{datatime(userdata)}}
+			<!-- 事前已取消 显示取消原因 -->
+			<view v-if="taskType == 1 && status == 6">
+				<view class="tacks_left">
+					取消原因
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist">
+						{{cancelApplication}}
+					</view>
+				</view>
+			</view>
+			<view v-if="refuseReason !=null && refuseReason != ''">
+				<view class="tacks_left">
+					驳回原因
+				</view>
+				<view class="tacks_right">
+					<view class="dvslist" style="color: red;">
+						{{refuseReason}}
+					</view>
 				</view>
 			</view>
 		</view>
-		<view class="tacks" v-if="taskType == 4 || taskType == 5">
-			<view class="tacks_left">
-				申请日期
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist">
-					{{createTimes}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks">
-			<view class="tacks_left" v-if="taskType != 4 && taskType != 5">
-				出差事由
-			</view>
-			<view class="tacks_left" v-if="taskType == 4">
-				改签事由
-			</view>
-			<view class="tacks_left" v-if="taskType == 5">
-				退票事由
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist">
-					{{userreason?userreason:''}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks" v-if="traveldetails !=null && traveldetails != ''">
-			<view class="tacks_left">
-				详细说明
-			</view>
-			<view class="tacks_right">
-				<view @click="crems" class="dvslist" style="color: red;"
-					v-if="taskType == 2 || taskType == 4 || taskType == 5">
-					{{detaail(trafals)}}
-				</view>
-				<view class="dvslist" v-else>
-					{{traveldetails}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks" v-if="refuseReason !=null && refuseReason != ''">
-			<view class="tacks_left">
-				驳回原因
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist" style="color: red;">
-					{{refuseReason}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks">
-			<view class="tacks_left">
-				费用归属(部)
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist" v-if="talattribution != null">
-					{{talattribution}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks">
-			<view class="tacks_left">
-				费用归属(成)
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist">
-					{{costattribution?costattribution:''}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks" v-if="(taskType == 2 || taskType == 4 || taskType == 5 )&& price > 0">
-			<view class="tacks_left" v-if="taskType == 5">
-				应退金额
-			</view>
-			<view class="tacks_left" v-if="taskType == 4">
-				改签费用
-			</view>
-			<view class="tacks_left" v-else>
-				总费用
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist" style="color: #FF9000;">
-					￥{{price}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks" v-if="taskType == 1 && totalBudget > 0 && totalBudget != null && totalBudget != '' ">
-			<view class="tacks_left" v-if="taskType == 1">
-				预估费用
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist" style="color: #FF9000;">
-					￥{{totalBudget}}
-				</view>
-			</view>
-		</view>
-		<view class="tacks" v-if="taskType == 5 && refundOtherFee > 0">
-			<view class="tacks_left">
-				手续费
-			</view>
-			<view class="tacks_right">
-				<view class="dvslist" style="color: #FF9000;">
-					￥{{refundOtherFee}}
-				</view>
-			</view>
-		</view>
-		<div class="cost" v-show="userName.length > 0 && userName[0].costName != null">
+		<div class="cost" v-if="taskType == 1 && userName.length > 0">
 			<view class="cost_left">
 				成本中心
 			</view>
-			<view class="cost_child" v-for="(item,index) in userName" :key="index">
+			<view class="cost_child" v-for="(item,index) in userName" :key="index" v-if="item.costName != null">
 				<view>
 					{{item.costName}}
 				</view>
@@ -166,7 +183,7 @@
 			</view>
 		</div>
 		<view class="tackis">
-			<view class="tacks_left">
+			<view class="tacks_left" style="color: #333333;font-weight: bold;">
 				出差行程
 			</view>
 			<view class="talist" v-for="(item,index) in taslist" :key="index">
@@ -179,18 +196,26 @@
 							<view>
 								{{ cityname(item) }}
 							</view>
+							<view style="margin-left:10upx;" v-if="item.vehicle == 1">
+								<view v-if="item.goBack==1 && item.deptDates">
+									往返
+								</view>
+								<view v-else>
+									单程
+								</view>
+							</view>
 						</view>
 						<view class="tl_bot">
 							{{ newdata(item) }}
 						</view>
-						<view class="tl_bots"
+						<!-- <view class="tl_bots"
 							v-if="index === 0 && nlowPriceFlight !== '' && nlowPrice !== '' && nlowPriceTime !== '' && item.vehicle === 1 ">
 							两小时最低航班/价格/时间：{{nlowPriceFlight}}/￥{{nlowPrice}}/{{nlowPriceTime}}
 						</view>
 						<view class="tl_bots"
 							v-if="index === 1 && twoNLowPriceFlight !== '' && twoNLowPrice !== '' && twoNLowPriceTime !== '' && item.vehicle === 1 ">
 							两小时最低航班/价格/时间：{{twoNLowPriceFlight}}/￥{{twoNLowPrice}}/{{twoNLowPriceTime}}
-						</view>
+						</view> -->
 					</view>
 					<view class="tl_right">
 						<view class="tldv" v-if="item.vehicle != 5">
@@ -206,8 +231,8 @@
 		<view class="tacks_list">
 			<view class="ta_s" v-for="(item,index) in filterLogPersonStatus" :key="index">
 				<view class="talist_left">
-					<view class="ta_left_tops" v-if="index == 0"></view>
-					<view class="ta_left_top" :style="{background: mestaust(item.status)}" v-if="index != 0"></view>
+					<!-- <view class="ta_left_tops" v-if="index == 0"></view>
+					<view class="ta_left_top" v-if="index != 0"></view> -->
 					<view class="ta_left_se">
 						<view class="iconfont" :style="{color: mestaust(item.status),'font-size': '44upx'}"
 							v-if="item.status == 9 || item.status == 1 || item.status == 99 || item.status == 4">
@@ -217,13 +242,13 @@
 						<view class="iconfont" :style="{color: mestaust(item.status),'font-size': '40upx'}"
 							v-if="item.status == 3">&#xe641;</view>
 					</view>
-					<view class="ta_left_top" :style="{background: mestaust(item.status)}"
+					<view class="ta_left_top"
 						v-if="index != filterLogPersonStatus.length - 1"></view>
-					<view class="ta_left_tops" v-if="index == filterLogPersonStatus.length - 1"></view>
+					<!-- <view class="ta_left_tops" v-if="index == filterLogPersonStatus.length - 1"></view> -->
 				</view>
 				<view class="talist_right">
-					<view class="absot">
-					</view>
+					<!-- <view class="absot">
+					</view> -->
 					<view class="tavri_left">
 						<view class="tavri_left_top">
 							<view v-if="item.apprvWay == 5" class="testr">
@@ -235,7 +260,7 @@
 							<view class="testr">{{item.staffName}}</view>
 						</view>
 						<view class="tavri_left_bto">
-							<view :style="{color: mestaust(item.status)}">
+							<view>
 								{{collists(item.status)}}
 							</view>
 						</view>
@@ -267,6 +292,9 @@
 		<view class="check_btn" v-if="!isched && (status==0 || status==1) && rotes('tms:myi:withdraw')">
 			<view class="chck_otn" @click="delete_s">撤回</view>
 		</view>
+		<view class="check_btn" v-if="!isched && status==2 && taskType == 1 && rotes('tms:myi:withdraw')">
+			<view class="chck_otn" @click="add_user(2)">取消申请单</view>
+		</view>
 		<view class="staleve" v-if="staleve" @click="blckis">
 			<view class="stalist" @click.stop>
 				<view class="statop" v-if="remsk.length == 0" style="color: red;">
@@ -281,8 +309,9 @@
 					<view class="setlist" v-for="(items,index) in item.list" :key="index">
 						<view class="setbod">
 							<view class="styul">
-								<view class="styli_top">
-									{{isname(items.is)}}
+								<view class="styli_top" v-if="items.is == 5">
+									<image src="@/static/img/mydi/zw.png"></image>
+									<span>{{isname(items.is)}}</span>
 								</view>
 								<view class="stulis">
 									<view class="styli_left">
@@ -316,6 +345,7 @@
 	export default {
 		data() {
 			return {
+				cancelApplication:'取消原因',
 				createTimes: '', //申请日期
 				plachols: "",
 				trafals: false, //是否有超规信息
@@ -349,6 +379,7 @@
 				twoNLowPrice: '', // 返程  最低价
 				twoNLowPriceFlight: '', // 返程 最低价航班
 				twoNLowPriceTime: '', // 返程 航班出发时间
+				applyVehicles:[],
 			}
 		},
 		onLoad(item) {
@@ -370,7 +401,7 @@
 			filterLogPersonStatus() {
 				// 如果审批进行中，则不过滤，否则过滤状态为9和10的审批日志
 				if (this.status != 0 && this.status != 1) {
-					return this.tarlis.filter(item => item.status != 9 && item.status != 10)
+					return this.tarlis.filter(item => item.status != 9 && item.status != 6)
 				}
 				return this.tarlis;
 			}
@@ -398,20 +429,17 @@
 				}
 			},
 			rblcok() {
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			},
 			taskty(it, id) {
 				if (it == 1) {
 					return '出差'
-				} else if (it == 2) {
+				} else if (it == 2 || it == 7) {
 					return '预定'
 				} else if (it == 4) {
 					return '改签'
+				} else if (it == 3) {
+					return '超规'
 				} else if (it == 5) {
 					if (id == undefined) {
 						return '退房'
@@ -466,45 +494,65 @@
 				}
 			},
 			async addok() { //确定操作
-
-				let dats = {};
-				if (this.isid == 0) {
-					dats = {
-						paramToken: this.token,
-						status: this.its,
-						remark: this.istext
+				let that = this;
+				if(this.its == 2){ //取消审核通过 但未使用的单
+					let dat = {
+						id:this.isid,
+						cancelMsg:this.istext
 					}
-				} else {
-					dats = {
-						taskId: this.isid,
-						status: this.its,
-						remark: this.istext
-					}
-				}
-				try {
-					const res = await tork.apprvTask(dats);
-
-					if (res.code == 200) {
-						if (this.isid == 0) {
+					try{
+						const res = await tork.cancelApplication(dat);
+						if (res.code == 200) {
 							this.blacks = false;
-							uni.showToast({
-								title: '审批成功！',
-								duration: 1000,
-								icon: 'none'
-							})
-							this.datalist();
-						} else {
+							this.showToasts('取消成功！')
 							setTimeout(() => {
 								uni.$emit('add_user', res);
-								uni.navigateBack({})
-							}, 500)
+								that.toBlock();
+							}, 1000)
+						} else {
+							this.showToasts(res.message)
+						}
+					}catch(e){
+						console.log(e)
+						//TODO handle the exception
+					}
+					
+				} else { //审批操作
+					let dats = {};
+					if (this.isid == 0) {//是否从短信进来
+						dats = {
+							paramToken: this.token,
+							status: this.its,
+							remark: this.istext
 						}
 					} else {
-
+						dats = {
+							taskId: this.isid,
+							status: this.its,
+							remark: this.istext
+						}
 					}
-				} catch (e) {
-					console.log(e)
-
+					try {
+						const res = await tork.apprvTask(dats);
+					
+						if (res.code == 200) {
+							if (this.isid == 0) {
+								this.blacks = false;
+								this.showToast('审批成功！');
+								this.datalist();
+							} else {
+								setTimeout(() => {
+									uni.$emit('add_user', res);
+									uni.navigateBack({})
+								}, 500)
+							}
+						} else {
+							this.showToast(res.message)
+						}
+					} catch (e) {
+						console.log(e)
+					
+					}
 				}
 			},
 			adblack() {
@@ -526,8 +574,10 @@
 			add_user(it) {
 				if (it == 1) {
 					this.plachols = "请输入你的通过意见！"
-				} else {
+				} else if(it == 3) {
 					this.plachols = "请输入你的驳回意见！"
+				} else if(it == 2){
+					this.plachols = "请输入你的取消原因！"
 				}
 				this.its = it;
 				this.blacks = true
@@ -579,21 +629,23 @@
 				}
 				try {
 					const res = await tork.detailApply(dats);
-
+					
 					if (res.code == 200) {
 						let datw = res.data;
 						that.createTimes = datw.apprvTask.createTime; //申请日期
 						that.userName = datw.tmsGssLink.applyStaffs; //出差人员
 						that.userdata = [datw.apprvTask.startDate, datw.apprvTask.endDate]; //出差时间
-						that.userreason = datw.apprvTask.reason; //理由
-						that.traveldetails = datw.apprvTask.remark; //超规原因
+						that.userreason = datw.apprvTask.reason;
+						that.traveldetails = datw.apprvTask.remark; //详细说明
 						that.price = datw.apprvTask.totalMoney; //总费用
 						that.totalBudget = datw.apprvTask.totalBudget;
 						that.refundOtherFee = datw.apprvTask.refundOtherFee; //退票手续费
 						that.talattribution = datw.apprvTask.deptName;
 						that.costattribution = datw.apprvTask.costName;
-						that.taskType = datw.apprvTask.taskType; //审批单类型
+						that.taskType = datw.apprvTask.taskType; //审批单类型 7后台录入手工单
+						that.cancelApplication = datw.apprvTask.cancelApplication;//取消原因
 						that.refuseReason = datw.apprvTask.refuseReason; //驳回原因
+						// that.applyVehicles = datw.tmsGssLink.applyVehicles
 						if (datw.tmsDpsSaleExtra.length !== 0) {
 							that.nlowPrice = datw.tmsDpsSaleExtra[0].nlowPrice;
 							that.nlowPriceFlight = datw.tmsDpsSaleExtra[0].nlowPriceFlight;
@@ -605,6 +657,7 @@
 						let applivalist = [];
 						let appflks = datw.tmsGssLink.applyVehicles;
 						for (let k = 0; k < appflks.length; k++) {
+							that.applyVehicles=appflks[k]
 							if (appflks[k].goBackGroup == null || appflks[k].goBackGroup == undefined) {
 								applivalist.push(appflks[k])
 							} else {
@@ -622,6 +675,7 @@
 								}
 							}
 						}
+						console.log(applivalist)
 						that.taslist = datw.tmsGssLink.applyHotels.concat(applivalist);
 						if (that.taskType == 4) { //改签
 
@@ -655,7 +709,7 @@
 									list = st[0];
 								}
 								this.remsk = [];
-								if ((is == 2 || is == 4 || is == 5) && list) { //判断预定或者改签 才有超规信息 且有记录才行喔
+								if ((is == 1 || is == 2 || is == 4 || is == 3 || is == 5) && list) { //判断预定或者改签 才有超规信息 且有记录才行喔
 									for (let k in list) {
 										sts[k] = {
 											list: []
@@ -745,7 +799,6 @@
 											}
 										}
 									}
-									console.log(sts);
 									this.remsk = sts;
 
 									that.trafals = true;
@@ -817,6 +870,10 @@
 					return '免审'
 				} else if (it == 9) {
 					return '无效'
+				} else if (it == 6) {
+					return '已取消'
+				} else if (it == 7) {
+					return '已使用'
 				}
 			},
 			collists(it) {
@@ -854,12 +911,7 @@
 				}
 			},
 			citname(code) {
-				let datcy = citys.addressAirportAll;
-				for (let i = 0; i < datcy.length; i++) {
-					if (datcy[i].airportCode == code) {
-						return datcy[i].cityCName
-					}
-				}
+				return this.utils.airportCtName(code);
 			},
 			typename(tm) { //回显类型
 				if (tm == 1) {
@@ -913,7 +965,7 @@
 		width: 100%;
 		font-size: 30upx;
 		color: #333333;
-
+		padding-bottom: 10upx;
 		.reblck {
 			position: fixed;
 			width: 100%;
@@ -941,17 +993,17 @@
 				.blos_btn {
 					position: absolute;
 					width: 100%;
-					height: 110upx;
+					height: 90upx;
 					left: 0;
 					bottom: 0;
 					display: flex;
 					text-align: center;
-					line-height: 110upx;
+					line-height: 90upx;
 					border-top: 2upx solid #E5E5E5;
 
 					.chck_left {
 						flex: 1;
-						height: 110upx;
+						height: 90upx;
 						background: #FFFFFF;
 						color: $uni-color-primary;
 					}
@@ -959,7 +1011,7 @@
 					.chck_right {
 						flex: 1;
 						color: #ffffff;
-						height: 110upx;
+						height: 90upx;
 						background: $uni-color-primary;
 					}
 				}
@@ -981,16 +1033,13 @@
 
 			.stalist {
 				width: 100%;
-				border-radius: 20upx;
 				max-height: 800upx;
 				overflow: scroll;
-				font-size: 35upx;
 				line-height: 90upx;
 				background: #FFFFFF;
-
+				border-radius: 20upx;
 				.statop {
 					padding: 20upx;
-
 					.reds {
 						width: 100%;
 						height: 70upx;
@@ -998,40 +1047,41 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						color: red;
-
-						.ts_text {
-							padding: 0 20upx;
-							line-height: 50upx;
-							border-radius: 50upx;
-							border: 2upx solid red;
-						}
+						color: #007aff;
+						font-size: 34upx;
+						font-weight: bold;
 					}
 
 					.setlist {
 						line-height: 50upx;
 						font-size: 30upx;
 						margin: 10upx 0;
-
 						.setbod {
-							border: 2upx solid #FFFFFF;
-							border-radius: 15upx;
-
+							
 							.styul {
 								width: 100%;
 								margin: 10upx 0;
-
 								.styli_top {
 									width: 100%;
-									color: red;
-									text-align: center;
-									font-size: 30upx;
+									color: #333333;
+									font-size: 32upx;
+									font-weight: bold;
 									line-height: 45upx;
+									image{
+										width: 6upx;
+										height: 22upx;
+										margin-left: 20upx;
+									}
+									span{
+										margin-left: 20upx;
+									}
+									
 								}
 
 								.stulis {
 									display: flex;
-
+									font-size: 28upx;
+									color: #666666;
 									.styli_left {
 										width: 30%;
 										display: flex;
@@ -1047,11 +1097,17 @@
 							}
 						}
 					}
+					.setlist:last-child{
+						border-bottom:1px dashed #e4e4e4;
+					}
 				}
 			}
 		}
 
 		.check_btn {
+			position: fixed;
+			bottom: 0;
+			left: 0;
 			width: 100%;
 			height: 110upx;
 			display: flex;
@@ -1083,30 +1139,31 @@
 		}
 
 		.tacks_list {
-			width: 100%;
+			width: calc(100% - 40upx);
+			margin-left: 20upx;
+			border-radius: 15upx;
 			background: #FFFFFF;
-			margin-bottom: 110upx;
+			margin-bottom: 120upx;
 			color: #333333;
-			padding-bottom: 40upx;
-
+			padding-top: 30upx;
 			.ta_s {
 				width: calc(100% - 50upx);
 				padding: 0 25upx;
 				display: flex;
-
 				.talist_left {
 					width: 10%;
 					display: flex;
 					flex-direction: column;
-					justify-content: space-between;
+					// justify-content: space-between;
 					align-items: center;
-
+					margin-top: 10upx;
+					height: 200upx;
 					.ta_left_top {
-						width: 6upx;
-						height: calc(50% - 30upx);
-						background: #E5E5E5;
+						width: 5upx;
+						height: calc(90% - 30upx);
+						background: #f2f2f2;
+						margin-top: 15upx;
 					}
-
 					.ta_left_se {
 						width: 100%;
 						height: 40upx;
@@ -1115,23 +1172,18 @@
 						justify-content: center;
 						overflow: hidden;
 					}
-
-					.ta_left_tops {
-						width: 6upx;
-						height: calc(50% - 30upx);
-						background: #FFFFFF;
-					}
 				}
 
 				.talist_right {
 					position: relative;
 					width: calc(100% - 20upx);
-					margin: 20upx 0 20upx 20upx;
-					line-height: 67upx;
-					background: #F6F6F6;
+					// margin: 0 0 20upx 20upx;
+					line-height: 57upx;
+					// background: #F6F6F6;
 					border-radius: 15upx;
 					display: flex;
-
+					font-size: 30upx;
+					color: #333333;
 					.tavri_left {
 						// height: 150upx;
 						width: 60%;
@@ -1141,7 +1193,6 @@
 							justify-content: space-between;
 							align-items: center;
 							text-indent: 25upx;
-
 							.testr {
 								display: inline;
 								white-space: nowrap;
@@ -1153,6 +1204,7 @@
 
 						.tavri_left_bto {
 							text-indent: 20upx;
+							color: #007aff;
 						}
 
 						.tavri_left_btm {
@@ -1175,47 +1227,57 @@
 						width: 40%;
 					}
 
-					.absot {
-						position: absolute;
-						transform: rotate(50deg);
-						top: calc(50% - 13upx);
-						left: -12upx;
-						width: 25upx;
-						height: 25upx;
-						background: #F6F6F6;
-					}
+					// .absot {
+					// 	position: absolute;
+					// 	transform: rotate(50deg);
+					// 	top: calc(50% - 13upx);
+					// 	left: -12upx;
+					// 	width: 25upx;
+					// 	height: 25upx;
+					// 	background: #F6F6F6;
+					// }
 				}
 			}
 		}
 
 		.cost {
-			width: 100%;
+			width: calc(100% - 40upx);
+			margin-left: 20upx;
+			border-radius: 15upx;
 			background: #FFFFFF;
 			margin-bottom: 20upx;
-			font-size: 35upx;
+			font-size: 34upx;
 
 			.cost_left {
 				width: 30%;
 				text-align: center;
 				line-height: 90upx;
 				height: 90upx;
-				color: #C8C7CC;
+				color: #333333;
+				font-weight: bold;
 			}
 
 			.cost_child {
-				width: calc(100% - 120upx);
-				border-top: 2upx solid #E5E5E5;
-				padding: 10upx 60upx;
+				width: 90%;
+				border-bottom: 2upx dashed #E5E5E5;
+				// padding: 10upx 60upx;
+				font-size: 30upx;
+				margin-left: 35upx;
 				display: flex;
 				justify-content: space-between;
 				font-size: 30upx;
 				text-align: center;
 				line-height: 80upx;
 			}
+			.cost_child:last-child{
+				border: 0;
+			}
 		}
 
 		.tackis {
-			width: 100%;
+			width: calc(100% - 40upx);
+			margin-left: 20upx;
+			border-radius: 15upx;
 			background: #FFFFFF;
 			margin-bottom: 20upx;
 			font-size: 35upx;
@@ -1223,40 +1285,42 @@
 			.tacks_left {
 				width: 30%;
 				text-align: center;
-				line-height: 90upx;
-				height: 90upx;
+				line-height: 80upx;
+				height: 80upx;
 				color: #C8C7CC;
 			}
-
+			.talist:last-child{
+				border: 0;
+			}
 			.talist {
 				width: calc(100% - 40upx);
 				margin-left: 40upx;
-				border-top: 2upx solid #E5E5E5;
 				padding: 10upx 0;
-
+				border-bottom: 2upx dashed #E5E5E5;
 				.tastsl {
+					// width: calc(100% - 40upx);
 					width: 100%;
 					display: flex;
-
+					padding:20upx 0 30upx 0;
 					.tl_left {
-						margin-left: 2%;
-						width: 100%;
-
+						width: calc(100% - 200upx);
 						.tl_tops {
 							display: flex;
 							align-items: center;
 							width: 100%;
-							font-size: 35upx;
+							font-size: 32upx;
 							line-height: 50upx;
 							color: #333333;
-
+							font-weight: bold;
 							.tl_tops_rights {
-								width: 120upx;
+								width: 100upx;
 								font-size: 30upx;
+								margin-right: 10upx;
 							}
 
 							.tl_tops_right {
-								width: 140upx;
+								width: 100upx;
+								margin-right: 10upx;
 								font-size: 30upx;
 							}
 
@@ -1282,28 +1346,28 @@
 						.tl_bot {
 							width: 100%;
 							height: 40upx;
-							font-size: 30upx;
-							line-height: 40upx;
-							color: #777777;
+							font-size: 28upx;
+							line-height: 50upx;
+							color: #999999;
 						}
 					}
 
 					.tl_right {
-						width: 25%;
+						width: 200upx;
 						height: 90upx;
 						display: flex;
 						align-items: center;
 						justify-content: center;
-
 						.tldv {
-							padding: 0 12upx;
+							padding: 0 18upx;
 							height: 45upx;
 							line-height: 45upx;
 							text-align: center;
 							font-size: 26upx;
-							color: $uni-color-primary;
-							border: 2upx solid $uni-color-primary;
+							color: #52b57f;
+							border: 2upx solid #52b57f;
 							border-radius: 60upx;
+							margin-bottom: 40upx;
 						}
 					}
 				}
@@ -1315,9 +1379,7 @@
 				}
 			}
 		}
-
-		.tacks {
-			// width: 100%;
+		.tackstop{
 			height: 90upx;
 			line-height: 90upx;
 			display: flex;
@@ -1326,23 +1388,46 @@
 			font-size: 35upx;
 			padding-right: 22upx;
 			overflow: hidden;
-
-			.tacks_left {
-				width: 30%;
-				color: #C8C7CC;
-				text-align: center;
+			.tacksstate{
+				font-size: 42upx;
+				image{
+					width: 56upx;
+					height: 56upx;
+					margin-top: 30upx;
+				}
 			}
-
-			.tacks_right {
-				width: 70%;
-				display: flex;
+		}
+		.tacks {
+			width: calc(100% - 40upx);
+			margin-left: 20upx;
+			border-radius: 15upx;
+			display: flex;
+			flex-flow: column;
+			background: #FFFFFF;
+			margin-bottom: 20upx;
+			font-size: 30upx;
+			overflow: hidden;
+			padding: 20upx 0;
+			view{
 				height: 90upx;
-				overflow: scroll;
-				font-size: 32upx;
-
-				.dvslist {
-					margin-right: 10upx;
-					white-space: nowrap;
+				line-height: 90upx;
+				display: flex;
+				.tacks_left {
+					width: 250upx;
+					color: #999999;
+					text-align: center;
+					margin-left: 30upx;
+				}
+				.tacks_right {
+					width: 70%;
+					display: flex;
+					height: 90upx;
+					overflow: scroll;
+					color: #333333;
+					.dvslist {
+						margin-right: 10upx;
+						white-space: nowrap;
+					}
 				}
 			}
 		}

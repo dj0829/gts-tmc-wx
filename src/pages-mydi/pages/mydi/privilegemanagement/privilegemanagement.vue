@@ -66,12 +66,7 @@
 				}
 			},
 			roblak(){//返回
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			}
 		}
 	}

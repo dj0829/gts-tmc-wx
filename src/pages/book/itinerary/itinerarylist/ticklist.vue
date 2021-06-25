@@ -2,20 +2,24 @@
 	<view class="trandetails">
 		<headnavigation titles="机票详情"></headnavigation>
 		<view class="navstop">
-			<view class="">
-				订单号：{{cont.sale.no}}
-			</view>
-			<view class="cits_bls">
-				<view class="cits_sgs">
-					￥{{cont.salePrice}}
+			<view style="margin-left:30upx;">
+				<view style="font-size:42upx;font-weight:bold;margin:10upx 0;">{{cont.sale.statusName}}</view>
+				<view style="margin:15upx 0;">
+					订单号：{{cont.sale.no}}
 				</view>
+				<view style="margin:15upx 0;" v-if="cont.passenagerTicketNo != null">取票号:{{cont.passenagerTicketNo}}</view>
 			</view>
-			<view class="lisst">
+			<!-- <view class="cits_bls">
+				<view class="cits_sgs">
+					￥{{cont.salePrice}}       
+				</view>
+			</view> -->
+			<!-- <view class="lisst">
 				<view class="citst" style="margin-top: 30upx;">
 					<view class="cits_t">
 						<view style="color: #FF3404;display: flex;">
 							<view style="flex: 1;">订单状态:{{cont.sale.statusName}}</view>
-							<!-- <view style="color: #007aff;" @click="flights">航班动态</view> -->
+							<view style="color: #007aff;" @click="flights">航班动态</view>
 						</view>
 						<view class="cits_sa">
 							<view class="no_ts" style="display: flex;"> 
@@ -66,48 +70,98 @@
 						</view>
 					</view>
 				</view>
-					<view class="btuserlist" >
-						<view class="btuse" >
-							乘机人
-							<view class="btul">
-								<view class="user_t">
-									<view class="user_l">
-										{{cont.factName}}
-									</view>
-									<view class="user_o" style="margin-left: 88upx;">
-										成人票
-									</view>
-									<view style=" color: #007aff;">
-										{{cont.statusName}}
-									</view>
+			</view> 
+			 -->
+			<view class="lisst">
+				<view class="citst">
+					<view class="cits_t">
+						<view class="citys">
+							<view class="citys_l">
+								<view class="scis_t">
+									{{yeada(cont.departTime,1)}}
 								</view>
-								<view class="user_t">
-									<view class="user_l">
-										{{catype(cont.cardType)}}
-									</view>
-									<view class="user_o">
-										{{cont.cardNo}}
-									</view>
+								<view class="scis_o">
+									{{yeada(cont.factDepartTime,0)}}
 								</view>
-								<view class="user_t">
-									<view class="user_l">
-										手机号
-									</view>
-									<view class="user_o">
-										{{cont.phone}}
-									</view>
+								<view class="scis_b">
+									{{citys(cont.depart)}}
+								</view>
+							</view>
+							<view class="citys_l">
+								<view class="scis_t" style="padding-top:60upx;">
+									
+								</view>
+								<view class="scis_s" @click="gettrainWs">
+									<view>经停信息</view>
+									<image src="@/static/img/home/home_bj.png"></image>
+								</view>
+								<view class="scis_b" style="text-align: center;">
+									{{busdate(cont.factDepartTime,cont.factArriveTime)}}
+								</view>
+							</view>
+							<view class="citys_l">
+								<view class="scis_t" style="margin-left:10upx;">
+									{{yeada(cont.departTime,1)}}
+								</view>
+								<view class="scis_o">
+									{{yeada(cont.factArriveTime,0)}}
+								</view>
+								<view class="scis_b">
+									{{citys(cont.arrive)}}
 								</view>
 							</view>
 						</view>
-						<view class="liass">
-							<view class="liass_l">
-								联系信息
+						<!-- <view class="money">
+							<view class="moneytext">
+								<span>票价：</span>
+								<span style="color:#FFA63E;">￥{{cont.changeOrderPrice}}</span>
 							</view>
-							<view class="liass_r">
-								{{cont.sale.contacts}}　{{cont.sale.contactPhone}}
-							</view>
+						</view> -->
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="btuserlist" >
+			<view class="btuse">
+				乘机人
+				<view class="btul">
+					<view class="user_t">
+						<view class="user_l">
+							{{cont.factName}}
+						</view>
+						<view class="user_o">
+							成人票
+						</view>
+						<view style=" color: #007aff;">
+							{{cont.statusName}}
 						</view>
 					</view>
+					<view class="user_t">
+						<view class="user_l">
+							{{catype(cont.cardType)}}
+						</view>
+						<view class="user_o">
+							{{cont.cardNo}}
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							手机号
+						</view>
+						<view class="user_o">
+							{{cont.phone}}
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="btuserlist" style="font-size:28upx">
+			<view class="liass">
+				<view class="liass_l" style="font-size:28upx;flex:0.5;">
+					联系信息
+				</view>
+				<view class="liass_r" style="text-align: right;">
+					{{cont.sale.contacts}}　{{cont.sale.contactPhone}}
 				</view>
 			</view>
 		</view>
@@ -145,11 +199,7 @@
 				})
 			},	
 			citys(its){//回显城市
-				for (let j = 0; j < this.address.length; j++) {  //循环城市
-					if(this.address[j].airportCode == its){
-						return this.address[j].cityCName
-					}
-				}
+				 return this.utils.airportCName(its);
 			},
 			catype(it){//返回证件类型
 				if(it == 'NI'){
@@ -186,7 +236,7 @@
 						week = 7
 					}
 					let ts = item.substring(5,10).split('-');
-					return ts[0] + '月' + ts[1] + '日' + ' 周' + this.weeks[week-1]
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week-1]
 				}
 			},
 			async slet(){
@@ -227,44 +277,34 @@
 		padding-bottom: 300upx;
 		background: #F5F5F5;
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
+			background: linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);
 			.cits_bls{
 				display: flex;
 			}
 			.lisst{
-				position: absolute;
 				left: 0;
-				top: 150upx;
-				width: calc(100% - 40upx);
-				padding:  0 20upx;
+				top: 110upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
 						color: #333333;
-						.cits_sa{
-							display: flex;
-							.no_t{
-								flex: 2;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
-							}
-							.no_ts{
-								flex: 5;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
-							}
+						.no_t{
+							width: 100%;
+							height: 60upx;
+							line-height: 60upx;
+						}
+						.money{
+							font-size: 26upx;
+							color: #333333;
+							margin-left: 40upx;
 						}
 						.citys{
 							width: 100%;
@@ -278,27 +318,43 @@
 								align-items: center;
 								.scis_t{
 									line-height: 60upx;
-									font-size: 55upx;;
+									font-size: 26upx;
+									color:#333333;
 								}
 								.scis_o{
 									line-height: 80upx;
-									font-size: 35upx;
-                  display: flex;
+									font-size: 54upx;
+									font-weight: bold;
+									color:#333333;
 								}
 								.scis_b{
 									line-height: 60upx;
-									font-size: 28upx;
-									color: #C8C7CC;
+									font-size: 20upx;
+									color: #666666;
+									width: 140upx;
+									text-align: left;
 								}
 								.scis_s{
 									position: relative;
-									margin: 0 auto;
+									margin: 5upx auto;
 									border-radius: 35upx;
 									width: 130upx;
-									line-height: 35upx;
+									display: flex;
+									justify-content: center;
+									align-items: center;
 									height: 35upx;
 									color: $uni-color-primary;
-									border: 2upx solid $uni-color-primary;
+									view{
+										position: absolute;
+										font-size: 20upx;
+										color: #666666;
+										z-index: 999;
+									}
+									image{
+										position: absolute;
+										width: 200upx;
+										height: 40upx;
+									}
 									.sci_l{
 										position: absolute;
 										width: 30upx;
@@ -319,60 +375,16 @@
 							}
 						}
 					}
-					.cits_b{
-						width: calc(100% - 80upx);
-						color: $uni-color-primary;
-						padding: 0 40upx;
-						height: 90upx;
-						background: #FFFFFF;
-						display: flex;
-						align-items: center;
-						justify-content: space-between;
-						.cits_bl{
-							display: flex;
-							.cits_cl{
-								width: 130upx;
-								height: 45upx;
-								line-height: 45upx;
-								text-align: center;
-								background: #FFFFFF;
-								color:#72b2de;
-								border-radius: 45upx;
-							}
-							.cits_sg{
-								flex:1;
-								color:#8a8a8a;
-								
-							}
-						}
-					}
-					.Check{
-						line-height: 100upx;
-						text-align: center;
-						display: flex;
-						.updatas{
-								width: 50%;
-								height: 100upx;
-								color: #FFFFFF;
-								background: #F48F00;
-								border-bottom-left-radius: 15upx;
-							}
-						.deletes{
-							width: 50%;
-							height: 100upx;
-							color: #FFFFFF;
-							background: red;
-							border-bottom-right-radius: 15upx;
-						}
-					}
 				}
-				.btuserlist{
-					width: 100%;
-					margin-top: 20upx;
+			}
+		}
+		.btuserlist{
+					width: calc(100% - 40upx);
+					margin: 20upx;
 					border-radius: 15upx;
 					background: #FFFFFF;
 					.btuse{
-						color: #C8C7CC;
+						color: #333333;
 						font-size: 35upx;
 						width: calc(100% - 40upx);
 						padding: 20upx;
@@ -386,7 +398,7 @@
 								line-height: 50upx;
 								font-size: 28upx;
 								.user_l{
-									flex: 3;
+									width: 220upx;
 								}
 								.user_o{
 									flex: 5;
@@ -403,7 +415,7 @@
 						width: calc(100% - 40upx);
 						padding: 0 20upx;
 						display: flex;
-						color: #C8C7CC;
+						color: #333333;
 						line-height: 80upx;
 						.liass_l{
 							font-size: 35upx;
@@ -419,8 +431,6 @@
 						}
 					}
 				}
-			}
-		}
 	}
 	
 </style>

@@ -41,7 +41,7 @@
 		name: "registered",
 		data() {
 			return {
-				show: false,
+				show: true,
 				count: '',
 				timer: null,
 				companyName: '', //公司名称

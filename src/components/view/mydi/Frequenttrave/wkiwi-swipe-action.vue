@@ -72,7 +72,6 @@
 			},
 			bindClickBtn(item, index) {
 				this.messageIndex = -1;
-				console.log(item.text +'message第'+ index+ '项');
 				
 			},
 			touchStart(event) {

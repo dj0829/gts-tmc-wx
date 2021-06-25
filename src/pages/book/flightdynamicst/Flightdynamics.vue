@@ -19,7 +19,7 @@
 					<calendar :ishtoel="ishtoel" @change="lischang" :singleDate="singleDate" startDate="2019-10-10"></calendar>
 				</view>
 				<view class="timesl" v-if="isbox">
-					<ss-city :current="currentPage" :fails="currs"></ss-city>
+					<ss-city :sBusirticket="Busirticket" :current="currentPage"></ss-city>
 				</view>
 				<view class="timesl" v-if="!isbox">
 					<view class="stls">
@@ -42,10 +42,10 @@
 							{{item.flightState}}
 						</view>
 						<view class="box_bo">
-							<view class="">
+							<view  >
 								{{item.flightCompany}}{{item.flightNo}}&nbsp;&nbsp;{{item.flightDeptimePlanDate}}
 							</view>
-							<view class="">
+							<view  >
 								{{item.strat}} — {{item.endrat}}
 							</view>
 						</view>
@@ -70,30 +70,36 @@
 				重新搜索
 			</view>
 		</view>
+		<tabBar :currentPage="currentPages"></tabBar>
 	</view>
 </template>
 
 <script>
 	import {mapState} from 'vuex';
-	import ssCity from '../../../components/view/book/ss-city/ss-city.vue' //城市
-	import calendar from '../../../components/view/book/date-picker/date-picker.vue'; //日期
+	import tabBar from '@/components/view/Navigations.vue'
+	import ssCity from '@/components/view/book/ss-city/ss-city.vue' //城市
+	import calendar from '@/components/view/book/date-picker/date-picker.vue'; //日期
 
 
 	import torok from '@/api/torowk.js'
 	export default {
 		components: {
 			calendar,
-			ssCity
-		},
-		computed:{
-			 ...mapState(['vx_city_left'])
+			ssCity,
+			tabBar
 		},
 		mounted() {
 		},
 		data() {
 			return {
-				
-				
+				currentPages: 'Book',
+				Busirticket: [{
+					name: '深圳',
+					id: 'SZX'
+				}, {
+					name: '北京',
+					id: 'PKX'
+				}], //飞机城市
 				pums: '',
 				isbox:true,
 				currentPage: 'Planeticket',
@@ -108,9 +114,24 @@
 			//下拉刷新的时候请求一次数据
 			this.flightsByAddress(2);
 		},
+		onShow(){
+			uni.$on("Busirticket_add", res => {
+				let rtos = res.data;
+				if (res.name == "Planeticket") {
+					this.Busirticket = [{
+						name: rtos[0].name,
+						id: rtos[0].id
+					}, {
+						name: rtos[1].name,
+						id: rtos[1].id
+					}];
+				}
+				uni.$off("Busirticket_add")
+			})
+		},
 		methods: {
 			async flightsByAddress(it){
-				var citys = this.vx_city_left;
+				var citys = this.Busirticket;
 				let FyTrnsferParam;
 				let res;
 				try{

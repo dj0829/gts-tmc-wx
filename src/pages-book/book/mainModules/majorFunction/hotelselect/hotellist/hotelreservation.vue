@@ -5,23 +5,21 @@
 		<headnavigation titles="订单填写"></headnavigation>
 		<view class="htos_top">
 			<view class="titles">{{datalist.datalist.resName}}</view>
-			<view class="tilopens">{{datalist.hots.supPriceName}}</view>
-			<view class="tiskt">{{eats(datalist.hots.breakfastCount)}} <span v-if="datalist.hots.roomFeature!=null">{{datalist.hots.roomFeature}}</span>
-			</view>
+			<!-- <view class="tilopens">{{datalist.hots.supPriceName}}</view> -->
 			<view class="tiskt">
-				{{datalist.datatiem.choiceDate[0].month}}月
-				{{datalist.datatiem.choiceDate[0].day}}日
-				&nbsp;周{{datalist.datatiem.choiceDate[0].week}}&nbsp;
-				入住,&nbsp;
-				{{datalist.datatiem.choiceDate[1].month}}月
-				{{datalist.datatiem.choiceDate[1].day}}日
-				&nbsp;周{{datalist.datatiem.choiceDate[1].week}}&nbsp;
-				离店,&nbsp;
-				{{datalist.datatiem.dayCount}}天
+				{{datalist.datatiem.choiceDate[0].month}}月{{datalist.datatiem.choiceDate[0].day}}日
+				&nbsp;周{{datalist.datatiem.choiceDate[0].week}} - 
+				{{datalist.datatiem.choiceDate[1].month}}月{{datalist.datatiem.choiceDate[1].day}}日
+				&nbsp;周{{datalist.datatiem.choiceDate[1].week}}
+				<view class="tiskttext">
+					<view>{{datalist.datatiem.dayCount}}晚</view>
+				</view>
+			</view>
+			<view class="tiskt" style="font-size:22upx;color:#666666;">{{eats(datalist.hots.breakfastCount)}}<span style="color:#e5e5e5;margin-left:10upx;">|</span><span style="margin-left:10upx;" v-if="datalist.hots.roomFeature!=null" v-html="roomFeature"></span>
 			</view>
 			<view class="tskgout">
 				<view class="chekoutl">
-					取消规则:
+					取消规则
 				</view>
 				<view class="chekouts">
 					{{bookingNotesos}}
@@ -29,55 +27,31 @@
 			</view>
 		</view>
 		<view class="black_mu" @click="isshow" v-if="blac_show"></view>
-		<!-- <view class="userlist" :class="shos ? 'show' : ''">
-			<view class="userlist_top">
-				{{use_text}}
+		<view class="userlist">
+			<view class="cu_time">
+				<passenger :isretun="isretun" tynames="住客" ref="passengers" @butaluser="bustlist" :butaluserlist="buserlists"  types="2"></passenger>
 			</view>
-			<view class="ci_list">
-				<view class="cl_val" v-if="si_pl == 'fot'" v-for="(item, index) in id_list" :key="index" @click="ad_cion(item, index)">
-					<view>{{ item.name }}</view>
+			<view class="userls" v-for="(item, idnex) in deptlists" :key="idnex">
+				<view class="use-tles">
+					{{ item.name }}
 				</view>
-				<view class="cl_valt"  v-if="si_pl == 'fots'" >
-					<view  v-for="(item, index) in user_lists" :key="index" @click="ad_cions(item, index)">
-						<view class="cl_vals" v-if="item.is == 0">{{ item.userName }}</view>
-						<view class="ad_vals" v-else-if="item.is == indes">{{ item.userName }}</view>
-						<view class="ck_vals" v-else>{{ item.userName }}</view>
+				<view class="use_list" v-for="(its,indexs) in item.list" :key="indexs">
+					<view class="us_tps">
+						<view>{{its.name}}</view>
+						<view class="us_rights">
+							<picker :range="its.certificateList" :range-key="'cardTypename'" @change="CostCencdChange($event,idnex,indexs,its)">		
+								{{ TuoMin(its.certificateList[item.indx[indexs].index].cardNo,its.certificateList[item.indx[indexs].index].cardType) }}
+							</picker>
+							<view class="iconfont" style="">&#xe8a3;</view>
+						</view>
 					</view>
 				</view>
 			</view>
-		</view> -->
-		<!-- <view class="hotsev">
-			<view class="hots" @click="hos_lk">
-				<view class="htos_left">
-					:
-				</view>
-				<view class="htos_right">
-					<picker class="picks" :range="hoslist" :range-key="'name'"  @change="hostchang">
-						<view class="uni-input">{{hoslist[hostindex].name}}</view>
-					</picker>
-				</view>
-				<view class="iconfont" style="font-size: 35upx;">
-					&#xe61f;
-				</view>
-			</view>
-			<view class="hots" v-for="(item,index) in htosfor" :key="index" @click="addmon(item,index)">
-				<view class="htos_left">
-					{{item.name}}
-				</view>
-				<view class="htos_right">
-					<view class="htos_adli" v-for="(items,indexs) in item.userlist" :key="indexs">
-						{{items.userName}}
-					</view>
-				</view>
-				<view class="iconfont" style="color: #007aff;font-size: 45upx;">
-					{{item.icon}}
-				</view>
-			</view>
-		</view> -->
+		</view>
 		<view class="istaf">
-			<view class="ravelv">
+			<view class="ravelv" v-if="hoslist.length > 0">
 				<view class="ts">
-					<view class="rav_left">房间数:</view>
+					<view class="rav_left">房间数</view>
 					<view class="ravright">
 						<view class="bos">
 							<picker class="picks" :range="hoslist" :range-key="'name'" @change="hostchang">
@@ -88,11 +62,9 @@
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="istaf">
 			<view class="ravelv">
 				<view class="ts">
-					<view class="rav_left">最早入住时间:</view>
+					<view class="rav_left">最早到店</view>
 					<view class="ravright">
 						<view class="bos">
 							<picker class="picks" mode="time" :value="times" start="09:01" end="21:01" @change="bindTimeChange">
@@ -103,11 +75,9 @@
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="istaf">
 			<view class="ravelv">
 				<view class="ts">
-					<view class="rav_left">最晚入住时间:</view>
+					<view class="rav_left">最晚到店</view>
 					<view class="ravright">
 						<view class="bos">
 							<picker class="picks" mode="time" :value="timed" start="09:01" end="21:01" @change="bindTimeChanges">
@@ -118,117 +88,60 @@
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="optslist" :class="ops_list ? 'show' : ''">
-			<view class="btns">
-				<view class="btns_z" @click="isshow">
-					取消
-				</view>
-				<view class="btns_z"></view>
-				<view class="btns_z" @click="okisd">
-					确定
-				</view>
-			</view>
-			<view class="stlist">
-				<view class="sltleft">
-					<view class="ulsk_list" @click="slcikd(item.id)" :class="slid == item.id? 'cked':''" v-for="(item,index) in ullist"
-					 :key="index">
-						{{item.name}}
-					</view>
-				</view>
-				<view class="sltright">
-					<view class="sltrig_top">
-						<view class="sltiig_top_left">当前选择:</view>
-						<view class="sltiig_top_right" @click="reblocks(item)" :class="slit_id_checd == item.id ? 'stis':''" v-for="(item,index) in slitlist"
-						 :key="index">
-							{{item.name}}
-						</view>
-					</view>
-					<view class="sltrig_bot">
-						<view class="striglist" @click="clslitk(item)" v-for="(item,index) in sli_namelist" :key="index">
-							<view class="stlis_left">
-								<view class="">
-									{{item.name}}
-								</view>
-							</view>
-							<view class="stlis_right" v-if="slit_id_checd == item.id">
-								<view class="iconfont" style="color: #007aff;">
-									&#xe60b;
-								</view>
-							</view>
+			<view class="ravelv" v-if="datalist.hots.supplierType == 5">
+				<view class="ts">
+					<view class="rav_left">特殊需求</view>
+					<view class="ravright">
+						<view class="bos">
+							<input type="text" v-model="orderRemark" placeholder="如：尽量安排大床/无烟房等" value="" />
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="botmis">
-				当前选择的成本中心是:{{botname}}
+			<view class="ravelv" v-if="datalist.datlist.isbtd  == 1 && resonIds != -1" style="margin-bottom:30upx;">
+				<view class="ts">
+					<view class="rav_left">出行事由</view>
+					<view class="ravright">
+						<view class="bos">
+							<!-- <input type="text" v-model="reson" placeholder="请输入出行事由" value="" /> -->
+							<subjects @change="subclcks" :type="toisblcks"  :oldResonIds="old_resonIds"></subjects>
+						</view>
+					</view>
+				</view>
 			</view>
+			
 		</view>
+		
 		<view class="istaf" v-if="isshowcenter">
 			<view class="ravelv">
 				<view class="ts">
-					<view class="rav_left">归属部门:</view>
+					<view class="rav_left">归属部门</view>
 					<view class="ravright">
 						<view class="bos">
 							{{attdepartment}}
 						</view>
 					</view>
 				</view>
-			</view>
-			<view class="ravelv">
-				<view class="ts">
-					<view class="rav_left">成本中心:</view>
-					<view class="ravright" @click="approval()">
-						<view class="bos">
-							{{NameCenter.name}}
-						</view>
-						<view class="iconfont">&#xe8a3;</view>
-					</view>
-				</view>
-			</view>
-			<view class="ravelv" v-if="CostCi">
-				<view class="ts">
-					<view class="rav_left">成本审批人:</view>
-					<view class="ravright" @click="appswlists('CostCenterlist')">
-						<view class="bos">
-							<view class="swname" v-for="(item,index) in TravelCostCenlist" :key="index">
-								{{item.staffName}}
-							</view>
-						</view>
-						<view class="iconfont">&#xe8a3;</view>
-					</view>
-				</view>
-			</view>
-			<view class="ravelv" v-if="CostCis">
-				<view class="ts">
-					<view class="rav_left">部门审批人:</view>
-					<view class="ravright" @click="appswlists('Deparapprover')">
-						<view class="bos">
-							<view class="swname" v-for="(item,index) in TravelDepartlist" :key="index">
-								{{item.staffName}}
-							</view>
-						</view>
-						<view class="iconfont">&#xe8a3;</view>
-					</view>
-				</view>
+				<constCenter :morconst="morconsts" @costcCks="costcCk" :toisblcks="toisblcks"  :isblckt="isblckt" :sttos="sttos"></constCenter>
 			</view>
 		</view>
-		<view class="istaf" v-if="datalist.datlist.isblcks == 2 && datalist.datlist.isbtd == 1">
+		<!-- <view class="istaf" v-if="datalist.datlist.isbtd  == 1 && resonIds != -1" style="margin-bottom:30upx;">
 			<view class="ravelv">
 				<view class="ts">
-					<view class="rav_left">出行事由:</view>
+					<view class="rav_left">出行事由</view>
 					<view class="ravright">
 						<view class="bos">
 							<input type="text" v-model="reson" placeholder="请输入出行事由" value="" />
+							<subjects @change="subclcks" :oldResonIds="old_resonIds"></subjects>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<view class="istaf">
 			<view class="ravelv">
 				<view class="ts">
-					<view class="rav_left">联系人:</view>
+					<view class="rav_left">联系人</view>
 					<view class="ravright">
 						<view class="bos">
 							<input type="text" v-model="user_name" placeholder="请输入联系人" value="" />
@@ -236,51 +149,14 @@
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="istaf">
 			<view class="ravelv">
-				<view class="ts">
-					<view class="rav_left">联系电话:</view>
+				<view class="ts" style="border:0;">
+					<view class="rav_left">联系电话</view>
 					<view class="ravright">
 						<view class="bos">
-							<input type="number" maxlength="11" v-model="user_ipone" placeholder="请输入联系电话" value="" />
+							<input v-if="user_ipones != ''" type="text" v-model="user_ipones" maxlength="11" @focus="focusfns(1)" value="" />
+							<input v-else type="number" v-model="user_ipone" maxlength="11"  placeholder="请输入联系电话" value="" />
 						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-		<view class="isswflist" :class="switfal ? 'show' : ''">
-			<view class="btns">
-				<view class="btns_z" @click="isshow">
-					取消
-				</view>
-				<view class="btns_z" v-if="isswf">
-					成本审核人选择
-				</view>
-				<view class="btns_z" v-if="!isswf">
-					部门审核人选择
-				</view>
-				<view class="btns_z" @click="oksoption">
-					确定
-				</view>
-			</view>
-			<view class="isstops" v-if="isswf">
-				<view class="isstop" v-for="(item,index) in CostCenterlist" :key="index">
-					{{index+1}}级审批：
-					<view class="wors">
-						<picker :range="item.apprvCostFlowNodePersons" :range-key="'staffName'" @change="CostCenterChange($event,index)">
-							{{ item.apprvCostFlowNodePersons[CostCenter[index].index].staffName }}
-						</picker>
-					</view>
-				</view>
-			</view>
-			<view class="isstops" v-if="!isswf">
-				<view class="isstop" v-for="(item,index) in Deparapprover" :key="index">
-					{{index+1}}级审批：
-					<view class="wors">
-						<picker :range="item.apprvDeptFlowNodePersons" :range-key="'staffName'" @change="DeparappChange($event,index)">
-							{{ item.apprvDeptFlowNodePersons[Deparapp[index].index].staffName }}
-						</picker>
 					</view>
 				</view>
 			</view>
@@ -306,7 +182,7 @@
 						房间数量：
 					</view>
 					<view class="scse_r">
-						<view class="">
+						<view  >
 							{{hostindex + 1}}间
 						</view>
 					</view>
@@ -316,7 +192,7 @@
 						住宿天数：
 					</view>
 					<view class="scse_r">
-						<view class="">
+						<view  >
 							{{timeli}}晚
 						</view>
 					</view>
@@ -326,7 +202,7 @@
 						总人数：
 					</view>
 					<view class="scse_r">
-						<view class="">
+						<view  >
 							{{userlists.length}}人
 						</view>
 					</view>
@@ -358,31 +234,49 @@
 		</view>
 		<view class="btnbottm">
 			<view class="btnbo_left">
-				￥{{connum}}
+				<view class="money"><span style="font-size:24upx;">￥</span>{{connum}}</view>
 				<view class="scslist" @click="clikst">
 					费用详情
 				</view>
 			</view>
-			<view class="btnbo_right" v-if="rotes('tms:hotel:reserve')" @click="btnok">
-				提交下单
+			<view class="btnbo_right" :class="isbtns ? 'btoks':''" v-if="rotes('tms:hotel:reserve')" @click="btnok">
+				<view>提交下单</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import constCenter from '@/components/view/book/cost-center/costCenter.vue'
+	import passenger from "@/components/view/book/passenger/passenger";
 	import order from '@/api/order.js'
 	import tork from '@/api/torowk.js'
+	import mydi from '@/api/mydi.js'
+	import subjects from '@/components/view/book/subject-matter/subjectMatter.vue'
 	export default {
+		components:{
+			passenger,
+			subjects,
+			constCenter
+		},
 		data() {
 			return {
+				orderRemark:'',//特殊要求
+				old_resonIds:0,//默认事由id  (事前)
+				resonIds:-1,
+				isretun: false,
+				deptlists:[],//处理过后的旅客信息
+				isbtns:false,//是否点击了提交
+				isGetStaffList:false,//是否没有审批流
 				resids: 0,
 				bookingNotesos: '',
 				supplierNo: 0,
 				timeli: 0,
 				reson: '', //出行事由
+				resonName:'',
 				orderRoomInfos: [], //当前房价信息
 				user_name: '', //联系人
+				user_ipones:'',
 				user_ipone: '', //联系电话
 				Brokerage: 0, //服务费
 				costs: false,
@@ -444,7 +338,7 @@
 				orderUseDateDetails: [],
 				firPrices: 0,
 				isblckt: false,//事前是否违规再次审批
-				sttos:0,//事前是否违规再次审批  1为开启二次审批 3为违规再次审批
+				sttos:1,//事前是否违规再次审批  1为开启二次审批 3为违规再次审批
 				vehicleId: '',
 				Deparapp: [],
 				hotel: '',
@@ -452,38 +346,49 @@
 				proDataJson: '',
 				linkManPassengerNo:'',//联系人旅客编号
 				isshowcenter:false,//是否显示审批信息
+				roomFeature:'',
+				buserlists:[],//回填用户列表
+				carld:[],//证件列表
+				morconsts:{},//事前默认成本中心
+				toisblcks:1,//1事前2事中
 			}
 		},
 		onLoad(item) {
-			this.datalist = JSON.parse(uni.getStorageSync("hotelreservation_data"));
-			this.isblckt = this.datalist.isblckt; //事前是否需要二次审批
-			this.userlists = this.datalist.datlist.butalist;
-			let leng = this.datalist.datlist.butalist.length; //入住人数量
-			this.id_list = [];
-			for (let i = 0; i < leng; i++) {
-				this.hoslist.push({
-					id: i + 1,
-					name: (i + 1) + '间'
-				})
+			let oplist = JSON.parse(uni.getStorageSync("hotelreservation_data"));
+			this.datalist = oplist;
+			this.isblckt = this.datalist.isblckt; //超标审批
+			var str =this.datalist.hots.roomFeature;
+			if(str != null){
+				this.roomFeature= str.replace(/、/g,"<span style='color:#e5e5e5;'> | </span>")
 			}
-			this.hostindex = leng - 1;
-			// for (let i = 0; i < this.datalist.datlist.butalist.length; i++) {
-			// 	this.user_lists.push(this.datalist.datlist.butalist[i])
-			// 	this.user_lists[i]['is'] = 0;//判断在哪个房间 为0时没在房间
-			// }
+			this.id_list = [];
 			this.cshttext = this.datalist.hots; //当前酒店信息
+			this.toisblcks = this.datalist.datlist.isblcks;
 		},
 		mounted() {
-			this.usernams();
+			this.userlists = this.datalist.datlist.butalist;//出行人信息
+			this.buserlists = this.userlists;	
+			this.userlistoks();
+			this.usernams();//获取联系人
 			this.HotelBrokerages(); //获取手续费
-			if (this.datalist.isarsrl == false && this.datalist.datlist.isblcks == 1) { //不是免审
-				this.getRuleMainSetting();
-			} else {
+			if(this.isblckt){//是否 超标审批
+				this.sttos = 3;//1为事前审批 3为超标审批
 				this.isshowcentermt();//是否显示审批信息
+			} else {
+				if (this.datalist.isarsrl == false && this.toisblcks == 1) { //事前 不是免审 不是免审
+					this.getRuleMainSetting(); //获取公司是否 改签 事前是否 需要审核
+				} else {
+					this.isshowcentermt();//是否显示审批信息
+				}
 			}
-			if (this.datalist.datlist.isblcks == 1) { //判断是否事前 不是免审
+			
+			if (this.toisblcks == 1) { //判断是否事前 不是免审
 				this.attdepartment = this.datalist.datlist.mokksli.deptName;
 				this.NameCenter = {
+					name: this.datalist.datlist.mokksli.costName,
+					id: this.datalist.datlist.mokksli.costId
+				}
+				this.morconsts = {
 					name: this.datalist.datlist.mokksli.costName,
 					id: this.datalist.datlist.mokksli.costId
 				};
@@ -493,30 +398,140 @@
 					this.attdepartment = data.deptName;
 				}
 			}
+			if(this.datalist.datlist.isbtd ==2){ //除了因私 别的都不能修改用户
+				this.isretun = false;
+				
+			} else {
+				this.isretun = true;
+			}
 			this.toZHXBooks(); //价格校验
-			this.selts(); //查询成本中心
 		},
 		methods: {
+			costcCk(item){//更改成本信息
+				this.CostCis = item.CostCis;
+				this.CostCi = item.CostCi;
+				this.isGetStaffList = item.isGetStaffList;
+				this.NameCenter = {
+					name:item.NameCenter.name,
+					id:item.NameCenter.id
+				};
+				this.TravelCostCenlist = item.TravelCostCenlist;
+				this.TravelDepartlist = item.TravelDepartlist;
+			},	
+			TuoMin(no,type){//回显证件号
+				return this.utils.TuoMin(no,type)
+			},
+			subclcks(data){//返回当前选中的事由id
+				this.reson = data.id;
+				this.resonName = data.name;
+			},
+			bustlist(item){//修改出行人
+				this.buserlists = item;
+				if(this.buserlists.length != 0){
+					this.userlistoks();
+				} else {
+					this.deptlists = [];
+					this.hoslist = [];
+				}
+				this.prics();
+			},
+			caname(item) { //回显证件名字
+				for (let i = 0; i < this.carld.length; i++) {
+					if (this.carld[i].code == item) {
+						return this.carld[i].name
+					}
+				}
+			},
+			CostCencdChange(e, index,ins, trus) { //选择当前证件
+				let ev = e.detail.value;//当前修改的下标
+				this.deptlists[index].indx[ins].index = ev;//当前修改的下标
+				this.deptlists[index].list[ins].okcardType = trus.certificateList[ev].cardType;//修改当前选中的证件类型
+				this.deptlists[index].list[ins].okcardNo = trus.certificateList[ev].cardNo;//修改当前选中的证件号
+				if(trus.certificateList[ins].firstName != null && trus.certificateList[ev].lastName != null){//判断是否存在证件名
+					this.deptlists[index].list[ins].name = trus.certificateList[ev].firstName + trus.certificateList[ev].lastName;//修改成选中的证件名
+				}
+			},
+			async userlistoks() {
+				let st = [];
+				this.deptlists = [];
+				if (this.buserlists.length != 0) {
+					this.hoslist = [];
+					let leng = this.buserlists.length; //入住人数量
+					for (let i = 0; i < leng; i++) { //重置房间数量
+						this.hoslist.push({
+							id: i + 1,
+							name: (i + 1) + '间'
+						})
+					}
+					this.hostindex = leng - 1;//默认跟着人数走
+					this.resonIds = 0;
+					if (this.buserlists[0].vehicleId != undefined) {
+						this.vehicleId = this.buserlists[0].vehicleId; //事前id
+						this.reson = this.buserlists[0].reson;
+						this.old_resonIds = this.buserlists[0].reson;
+					}
+					for (let i = 0; i < this.buserlists.length; i++) {
+						st.push(this.buserlists[i].passengerNo);
+					}
+					try {
+						const res = await mydi.getPassengerListByNos(st);//获取用户的证件信息
+						if (res.code == 200) {
+							this.carld = res.data.cardTypeList; //证件类型
+							this.userlists = res.data.passList; //用户信息
+							let cotypes = '';//部门名称
+							let deptlist = [];//根据部门分类
+							for (let i = 0; i < this.userlists.length; i++) {
+								this.userlists[i]['carval'] = '';
+								if (this.userlists[i].certificateList[0].firstName != null && this.userlists[i].certificateList[0].lastName !=
+									null) {
+									this.userlists[i].name = this.userlists[i].certificateList[0].firstName + this.userlists[i].certificateList[
+										0].lastName;
+								}
+								for (let k = 0; k < this.userlists[i].certificateList.length; k++) {//插入证件名称
+									this.userlists[i].certificateList[k]['cardTypename'] = this.caname(this.userlists[i].certificateList[k].cardType);
+								}
+								this.userlists[i]['okcardType'] = this.userlists[i].certificateList[0].cardType;//储存当前选中的证件类型
+								this.userlists[i]['okcardNo'] = this.userlists[i].certificateList[0].cardNo;//储存当前选中的证件号
+								if(cotypes.indexOf(this.userlists[i].deptId) == -1){//不存在的新部门
+									deptlist.push({
+										indx:[{index:0}],
+										id:this.userlists[i].deptId,
+										name:this.userlists[i].deptName,
+										list:[this.userlists[i]]
+									})
+									
+									cotypes = cotypes + ',' + this.userlists[i].deptId;
+								} else {//存在
+									for(let k in deptlist){
+										if(deptlist[k].id == this.userlists[i].deptId){
+											deptlist[k].list.push(this.userlists[i]);
+											deptlist[k].indx.push({index:0});
+										}
+									}
+								}
+							}
+							this.deptlists = deptlist;//重组后的部门人员信息
+						}
+					} catch (e) {
+						console.log(e)
+						
+					}
+				}
+			},
 			isshowcentermt(){
-				//1事前2事中 3事前违规在次 4改签
+				//1事前2事中 3事前违规在次 
 				if(this.datalist.datlist.isbtd == 1 && !this.datalist.isarsrl){ //因公 非免审
-					if(this.datalist.datlist.isblcks == 2||
-					this.datalist.datlist.isblcks == 4 && this.RuleMas||
-					this.datalist.datlist.isblcks == 1 && this.isblckt == true){
+					if(this.toisblcks == 2 ||
+					(this.toisblcks == 1 && this.isblckt == true)){//事前需要二审
 						this.isshowcenter = true;//显示审批信息
 					}
 				}
 			},
 			async getRuleMainSetting() { //事前是否二次过审
-
 				try {
 					let res = await order.RuleMainSetting();
 
 					let stw = res.data.examineSwitch.split(',');
-					this.isblckt = this.datalist.isblckt; //事前是否需要二次审批
-					if(this.isblckt){
-						this.sttos = 3;
-					}	
 					for (let i in stw) {
 						/**
 						 * 3代表事前二次过审
@@ -530,23 +545,24 @@
 						}
 					}
 					this.isshowcentermt();//是否显示审批信息
-					if (this.isblckt == true) { //如果需要二次审批 默认载入成本中心
-						this.okisd();
-					}
 				} catch (e) {
 					console.log(e);
 
 				}
 			},
-			async usernams() { //获取联系人
-				if (this.datalist.datlist.butalist[0].vehicleId != undefined) {
-					this.vehicleId = this.datalist.datlist.butalist[0].vehicleId; //事前id
+			focusfns(va){//清空手机号
+				if(va == 1 ){//手机号
+					this.user_ipone = '';
+					this.user_ipones = '';
 				}
+			},
+			async usernams() { //获取联系人
 				try {
 					const res = await tork.getContactInfo();
 					if (res.code == 200) {
 						this.user_name = res.data.name;
 						this.user_ipone = res.data.phone;
+						this.user_ipones = this.utils.TuoMin(res.data.phone,1);
 					} else {
 						this.showToasts(res.message);
 					}
@@ -571,6 +587,8 @@
 
 				try {
 					let dats = that.datalist;
+					console.log(dats.datatiem)
+					uni.showLoading({title: '房价校验中',mask:true});
 					if (dats.hots.supplierType == 5) {//中航信
 						let res = await tork.toZHXBook({
 							checkInDate: dats.datatiem.choiceDate[0].re,
@@ -687,8 +705,8 @@
 						}
 					} else if (dats.hots.supplierType == 7) {//华住
 						let res = await tork.toHuazhuBook({
-							checkInDate: dats.datlist.se_doubletimel,
-							checkOutDate: dats.datlist.se_doubletimer,
+							checkInDate: dats.datatiem.choiceDate[0].re,
+							checkOutDate: dats.datatiem.choiceDate[1].re,
 							hotelId: dats.hots.resId,
 							guaranteeMode: dats.hots.guaranteeMode,
 							roomTypeId: dats.hots.proId,
@@ -712,8 +730,9 @@
 								for (let k in prics) {
 									sit.push({
 										useDate: k,
+										amountPriceSum:prics[k].amountPriceSum,
 										amountPrice: prics[k].amountPrice,
-										oneDateaAmountPrice: prics[k].amountPriceSum,
+										oneDateaAmountPrice: prics[k].distributionSalePrice
 									})
 									that.firPrices += prics[k].amountPriceSum;
 									this.timeli += 1;
@@ -841,6 +860,50 @@
 								this.orderUseDateDetails = sit;
 							}
 						}
+					} else if (dats.hots.supplierType == 11) {//美团酒店
+						let res = await tork.toMeituanBook({
+							hotelDetailSearchReq: {
+								checkinDate: dats.datatiem.choiceDate[0].re,
+								checkoutDate: dats.datatiem.choiceDate[1].re,
+								proId: dats.hots.proId,
+								productUniqueId: dats.hots.productUniqueId,
+								holMidId: dats.datlist.hotelCode,
+								cityName: dats.datlist.city.name,
+								supplierType: dats.hots.supplierType,
+								travelType: dats.datlist.isbtd,
+								hotelCode: dats.hots.resId
+							}
+						})
+						if (res.code == 200) {
+							let dat = res.data; 
+							if (dat.hasOwnProperty('error')) {
+								this.hotelError(dat);
+							} else {
+								that.resids = '';
+								that.orderRoomInfos = dat.orderRoomInfos; //采购价
+								that.bookingNotesos = dat.hotel.cancelDescription; //取消规则
+								let prics = dat.room.proSaleInfoDetailsTarget; //销售采购价
+								that.proDataJson = dat.room.proDataJson; //产品信息
+								that.linkManPassengerNo = dat.linkManPassengerNo;
+								that.yaDuoRoom = dat.room;
+								let sit = [];
+								that.supplierNo = dat.hotel.supplierNo;
+								that.firPrices = 0;
+								for (let k in prics) {
+									sit.push({
+										otherFee: prics[k].otherFee,
+										useDate: k,
+										amountPrice: prics[k].amountPrice,
+										oneDateaAmountPrice: prics[k].amountPriceSum,
+										breakfastNum: prics[k].breakfastNum
+									})
+									that.firPrices += prics[k].amountPriceSum;
+									this.timeli += 1;
+								}
+								this.prics();
+								this.orderUseDateDetails = sit;
+							}
+						}
 					} else if (dats.hots.supplierType == 12) {//腾邦酒店
 						let res = await tork.toOwnBook({
 							"holMidId": dats.datlist.hotelCode,
@@ -876,8 +939,9 @@
 							}
 						}
 					}
+					uni.hideLoading();
 				} catch (e) {
-
+					uni.hideLoading();
 					console.log(e)
 				}
 
@@ -892,7 +956,7 @@
 			async btnok() {
 				let dats = this.datalist;
 				let that = this;
-				let userlists = this.userlists;
+				let deptlists = this.deptlists;
 				let NameCenter = that.NameCenter; //成本中心
 				let TravelCostCenlist = that.TravelCostCenlist; //成本审批人
 				let TravelDepartlist = that.TravelDepartlist; //部门审批人
@@ -901,19 +965,30 @@
 				let user_ipone = this.user_ipone; //联系电话
 				let isbtd = dats.datlist.isbtd; //1因公2因私
 				let isblcks = dats.datlist.isblcks; //1事前 2事中
-				if (NameCenter.id == '' && isblcks == 2 && isbtd == 1 && dats.isarsrl == false) {
-					that.showToasts("请选择成本中心！");
+				if(deptlists[0].list.length == 0){
+					that.showToasts("最少一名入住人！");
 					return
-				} else if (TravelCostCenlist.length == 0 && isbtd == 1 && dats.isarsrl == false && this.CostCi == true) {
-					that.showToasts("清选择成本审批人！");
-					return
-				} else if (TravelDepartlist.length == 0 && isbtd == 1 && dats.isarsrl == false && this.CostCis == true) {
-					that.showToasts("清选择部门审批人！");
-					return
-				} else if (that.reson == '' && isbtd == 1 && isblcks == 2) {
+				}
+				if(this.isshowcenter == true){
+					if (NameCenter.id == '') {
+						that.showToasts("请选择成本中心！");
+						return
+					} else if (TravelCostCenlist.length == 0 && this.CostCi == true) {
+						that.showToasts("清选择成本审批人！");
+						return
+					} else if (TravelDepartlist.length == 0 && this.CostCis == true) {
+						that.showToasts("清选择部门审批人！");
+						return
+					} else if( that.CostCis == false && that.CostCi == false && that.isGetStaffList == true){//除了免审 其他必须有审批流程
+						that.showToasts("未配置审批流程，请联系管理员设置！");
+						return
+					}
+				}
+				if (that.reson == '' && isbtd == 1) {
 					that.showToasts("请输入出行事由！");
 					return
-				} else if (user_name == '') {
+				}
+				if (user_name == '') {
 					that.showToasts("请输入联系人！");
 					return
 				} else if (user_ipone == '' || this.utils.zzPhone(user_ipone)) {
@@ -922,27 +997,43 @@
 				}
 				let usersalist = [];
 				let ists = 0;
-				for (let i = 0; i < userlists.length; i++) { //出行人信息
-					usersalist.push({
-						name: userlists[i].userName,
-						phone: userlists[i].phone,
-						deptName: userlists[i].deptName,
-						costcenterName: userlists[i].costcenterName,
-						passengerNo: userlists[i].passengerNo,
-						employeeType: userlists[i].istrue,
-					})
+				for (let i = 0; i < deptlists.length; i++) { //出行人信息
+					for (let k in deptlists[i].list) {
+						let Select_phone = '';
+						if (deptlists[i].list[k].phone != '') {
+							Select_phone = deptlists[i].list[k].phone;
+						} else {
+							Select_phone = deptlists[i].list[k].telePhone;
+						}
+						let birthdate = "";
+						if (deptlists[i].list[k].birthdate != null) {
+							birthdate = deptlists[i].list[k].birthdate.substring(0, 10);
+						} else {
+							birthdate = null
+						}
+						usersalist.push({
+							cardNo: deptlists[i].list[k].okcardNo,
+							cardType: deptlists[i].list[k].okcardType,
+							name: deptlists[i].list[k].name,
+							phone: Select_phone,
+							deptName:deptlists[i].list[k].deptName,
+							costcenterName:deptlists[i].list[k].costcenterName,
+							passengerNo:deptlists[i].list[k].passengerNo,
+							employeeType:deptlists[i].list[k].employeeType,
+						});
+					}
 				}
 				let dat = {};
 				let attrtime = this.times.split(':').join(''); //最早入店时间
 				let atendtime = this.timed.split(':').join(''); //最晚入店时间
 				let room;
-				if (this.datalist.hots.supplierType == 9 || this.datalist.hots.supplierType == 8) {
+				if (this.datalist.hots.supplierType == 9 || this.datalist.hots.supplierType == 8 || this.datalist.hots.supplierType == 11) {
 					room = this.yaDuoRoom;
 				} else {
 					room = this.hotel.room;
 				}
 				let hotel = this.hotel.hotel;
-				//7-华珠 8-亚朵 9-景江
+				//7-华住 8-锦江 9-亚朵
 				for (var i = 0; i < TravelCostCenlist.length; i++) { //成本中心审批人
 					apprvTaskStaffts.push({
 						deptCost: 2,
@@ -962,21 +1053,12 @@
 					})
 				}
 				let invs = "";
-				if (JSON.stringify(dats.starLevelLimit) == '{}' && JSON.stringify(dats.highLimit) == '{}') {
+				if (JSON.stringify(dats.limitNativeRule) == '{}') {
 					ists = 0;
 					invs = ""
 				} else {
 					let issu = [];
-					if (dats.starLevelLimit.length > 0) {
-						issu.push({
-							'starLevelLimit': dats.starLevelLimit
-						})
-					}
-					if (dats.highLimit.length > 0) {
-						issu.push({
-							'highLimit': dats.highLimit
-						})
-					}
+					issu.push(dats.limitNativeRule)
 					invs = JSON.stringify({
 						information: issu
 					});
@@ -990,13 +1072,13 @@
 						orderRoomInfos: this.orderRoomInfos
 					},
 					orderCreateReq: {
+						breakfastCount: dats.hots.breakfastCount, //早餐类型
 						hotelImg: dats.datalist.imgUrl,
 						dbCancelRule: this.bookingNotesos, //取消规则
 						bookCount: this.hostindex + 1, //房间数量
 						linkManName: user_name, //联系人
 						linkManMobile: user_ipone, //联系电话
 						proId: dats.hots.proId,
-						resId: this.resids,
 						zhxResId: dats.hots.hotelCode,
 						bedTypeName: dats.hots.bedTypeName, //房间类型
 						beforeTotalPrice: this.connum, //总价
@@ -1019,8 +1101,9 @@
 					hotelBookExtendReq: {
 						apprvTaskEntity: {
 							taskType: isblcks, //1为事前2为事中，
-							beforeMiddle: isblcks, //1为事前2为事中
-							reason: that.reson, //理由
+							beforeMiddle: 2, //1为事前2为事中
+							reason: that.resonName, //理由
+							reasonId:that.reson,
 						},
 						passengers: usersalist, //出行人信息
 						travelType: isbtd //因公因私
@@ -1048,6 +1131,12 @@
 						vendorCode: dats.hots.vendorCode,
 					}
 				}
+				if(this.datalist.hots.supplierType != 10 && this.datalist.hots.supplierType != 5){//除了如家和中航信
+					dat.orderCreateReq['resId'] = this.resids;
+				}
+				if(this.datalist.hots.supplierType == 5){
+					dat.orderCreateReq['orderRemark'] = this.orderRemark;
+				}
 				if (this.datalist.hots.supplierType == 7) { //华珠
 					dat.orderCreateReq['rateCodeType'] = room.rateCodeType;
 					dat['holAddOrder'] = {
@@ -1060,39 +1149,51 @@
 						rateCode: room.productUniqueId,
 						activityId: room.activityId,
 					}
-				} else if (this.datalist.hots.supplierType == 9 || this.datalist.hots.supplierType == 8) {
+				} else if (this.datalist.hots.supplierType == 9 || this.datalist.hots.supplierType == 8|| this.datalist.hots.supplierType == 11) {
 					dat.orderRoomInfos.checkInDate = dats.datatiem.choiceDate[0].res.substring(0, 10);
 					dat.orderRoomInfos.checkOutDate = dats.datatiem.choiceDate[1].res.substring(0, 10);
-					dat.orderCreateReq.arriveHotelTime = dats.datatiem.choiceDate[0].re + " " + "23";
 					dat.orderCreateReq['changeRule'] = room.changeRule;
 					dat.orderCreateReq['cashScale'] = room.cashScale;
 					dat.orderCreateReq['ruleValue'] = room.ruleValue;
 					dat.orderCreateReq['cancelPenalty'] = room.cancelPenalty;
-					if (this.datalist.hots.supplierType == 8) {
+					if (this.datalist.hots.supplierType == 8 || this.datalist.hots.supplierType == 11) {//锦江 || 美团
 						dat.orderCreateReq['linkManPassengerNo'] = this.linkManPassengerNo;
 						dat.orderCreateReq['proDataJson'] = this.proDataJson; //产品数据
+						if(this.datalist.hots.supplierType == 11){//美团
+							dat.orderCreateReq['totalRebateRateProfit'] = room.totalRebateRateProfit; //佣金
+						}
+					} else {//亚朵
+						dat.orderCreateReq.arriveHotelTime = this.timed.substring(0,2);
 					}
 				} else {
 					dat.orderCreateReq['channelData'] = dats.hots.channelData;
 				}
-				if ((isblcks == 2 && isbtd == 1 && dats.isarsrl == false) || (isblcks == 1  && isbtd == 1 && dats.isarsrl == false &&
-						this.isblckt == true)) { //事中因公 不是免审 或者 事前需要二次审批
+				if(this.datalist.hots.supplierType == 5){
+					dat.orderCreateReq['orderRemark'] = this.orderRemark;
+				}
+				if (that.isshowcenter == true && isbtd == 1) { //事中因公 不是免审 或者 事前需要二次审批
+					let inst = 0; //1事前审批 2事中审批  3超标审批 4改签审批
+					if (this.isblckt == true) { //是否超规审批 或者事前需要审批
+						inst = this.sttos;
+					} else {
+						inst = isblcks;
+					}
+					dat.hotelBookExtendReq.apprvTaskEntity.beforeMiddle = isblcks;
+					dat.hotelBookExtendReq.apprvTaskEntity.taskType = inst;
 					dat.hotelBookExtendReq.apprvTaskEntity['remark'] = invs;
 					dat.hotelBookExtendReq.apprvTaskEntity['apprvTaskStaffs'] = apprvTaskStaffts; //审批人信息
 					dat.hotelBookExtendReq.apprvTaskEntity['costId'] = NameCenter.id; //成本中心id
 					dat.hotelBookExtendReq.apprvTaskEntity['costName'] = NameCenter.name; //成本中心名称
 				}
-				if ((isblcks == 1  && isbtd == 1 && that.datalist.isarsrl == false) || (isblcks == 1 && isbtd == 1 && dats.isarsrl == false &&
-						this.isblckt == true)) { //事前 因公 不是免审 非二次审批
+				if (isblcks == 1  && isbtd == 1) { //事前 因公 
+					dat.hotelBookExtendReq.apprvTaskEntity.beforeMiddle = 1;
 					dat.hotelBookExtendReq.apprvTaskEntity['travelNo'] = this.datalist.datlist.mokksli.travelNo; //出差单号
 					dat.hotelBookExtendReq.apprvTaskEntity['vehicleId'] = this.vehicleId;
 					dat.hotelBookExtendReq.apprvTaskEntity['costId'] = NameCenter.id; //成本中心id
 					dat.hotelBookExtendReq.apprvTaskEntity['costName'] = NameCenter.name; //成本中心名称
-				} 
-				// else if (isbtd == 2 || (isbtd == 1 && that.datalist.isarsrl == true)) { //因私 或者免审
-
-				// }
+				}
 				try {
+					this.isbtns = true;
 					let res = await tork.hotelBook(dat);
 
 					if (res.code == 200) {
@@ -1110,8 +1211,9 @@
 					} else {
 						that.showToasts(res.message);
 					}
+					this.isbtns = false;
 				} catch (e) {
-
+					this.isbtns = false;
 					//TODO handle the exception
 				}
 			},
@@ -1141,245 +1243,6 @@
 				} else {
 					this.costs = true;
 					this.blac_show = true;
-				}
-			},
-			approval() {
-				if (this.isblckt == true) {
-					return
-				}
-				this.ops_list = true
-				this.blac_show = true;
-				this.sli_old(); //点击成本中心
-			},
-			sli_old() { //点击成本中心默认值
-				let ls = this.treeLists;
-				this.sli_namelist = [];
-				for (let i = 0; i < ls.length; i++) {
-					if (ls[i].parentId.length == 0) {
-						this.sli_namelist.push(ls[i])
-					}
-				}
-				// this.slit_id_checd = 0;
-				this.slitlist = [];
-			},
-			// 重新生成数组
-			renderTreeLists(list = [], rank = 0, parentId = []) { //成本中心
-				list.forEach(item => {
-					this.treeLists.push({
-						id: item.id,
-						name: item.text,
-						userCount: item.a_attr.userCount,
-						ischecds: 0,
-						parentId, // 父级id数组
-						rank, // 层级
-						showChild: false, //子级是否显示
-						show: rank === 0 // 自身是否显示
-					});
-					if (Array.isArray(item.children) && item.children.length > 0) {
-						let parents = [...parentId];
-						parents.push(item.id);
-						this.renderTreeLists(item.children, rank + 1, parents);
-					} else {
-						this.treeLists[this.treeLists.length - 1].lastRank = true;
-					}
-				});
-			},
-			clslitk(item) { //点击成本中心部门
-				this.botname = item.name;
-				let id = item.id
-				let ls = this.treeLists;
-				let ik = 0;
-				for (var i = 0; i < ls.length; i++) { //判断是否有子集
-					if (ls[i].parentId.length > 0 && ls[i].parentId.includes(id)) {
-						ik++;
-					}
-				}
-				if (ik > 0) { //有子集
-					this.sli_namelist = []
-					for (var i = 0; i < ls.length; i++) { //取出当前子集
-						if (id == ls[i].id) {
-							this.slit_id_checd = ls[i].id
-							if (ls[i].parentId.length == 0) {
-								this.slitlist = [];
-							}
-							if (this.slitlist.length > 0) {
-								let ids = this.slitlist.length - 1;
-								if (JSON.stringify(this.slitlist[ids].parentId) == JSON.stringify(ls[i].parentId)) {
-									this.slitlist.splice(ids, 1);
-								}
-							}
-							this.slitlist.push(ls[i])
-						}
-						if (ls[i].parentId.length > 0 && ls[i].parentId.includes(id)) { //判断当前点击的是否有子集
-							if (ls[i].parentId.indexOf(id) == ls[i].parentId.length - 1) {
-								this.sli_namelist.push(ls[i])
-							}
-						}
-					}
-				} else {
-					for (var i = 0; i < ls.length; i++) { //没有子集
-						if (ls[i].id == id) {
-							this.slit_id_checd = ls[i].id
-							if (ls[i].parentId.length == 0) {
-								this.slitlist = [{
-									name: ls[i].name,
-									id: ls[i].id,
-									parentId: []
-								}]
-							} else {
-								let ids = this.slitlist.length - 1;
-								if (JSON.stringify(this.slitlist[ids].parentId) == JSON.stringify(ls[i].parentId)) {
-									this.slitlist.splice(ids, 1);
-								}
-								this.slitlist.push(ls[i])
-							}
-						}
-					}
-				}
-			},
-			okisd() { //选择当前成本中心
-				// if (this.isblckt == true) {
-				// 	this.TravelCostCenlist = [];
-				// 	this.TravelDepartlist = [];
-				// 	this.appswlist();
-				// 	return
-				// }
-				this.ops_list = false
-				this.blac_show = false;
-				if (this.cbid == this.slit_id_checd) {
-					return
-				}
-				this.cbname = this.botname;
-				this.cbid = this.slit_id_checd;
-				this.NameCenter.name = this.cbname;
-				this.NameCenter.id = this.cbid;
-				this.TravelCostCenlist = [];
-				this.TravelDepartlist = [];
-				this.appswlist();
-			},
-			async selts() { //查询成本中心
-				let _this = this;
-				try {
-					let res = await tork.getCostCenterList();
-
-					if (res.code == 200) {
-						_this.treeLists = [];
-						_this.renderTreeLists(res.data);
-					} else {
-						_this.showToasts(res.message);
-					}
-				} catch (e) {
-					console.log(e)
-
-				}
-			},
-			CostCenterChange(e, index) { //选择当前成本中心审批人
-				this.CostCenter[index].index = e.detail.value;
-			},
-			DeparappChange(e, index) { //选择当前部门审批人
-				this.Deparapp[index].index = e.detail.value;
-			},
-			oksoption() { //部门和成本中心审批人确定
-				let that = this;
-				let st = that.isswf; //是成本中心还是部门 true为成本中心
-				let itn = true;
-				let uls = [];
-				if (st) {
-					uls = that.CostCenterlist; //成本中心
-				} else {
-					uls = that.Deparapprover; //成本中心
-				}
-				if (itn) {
-					let sus = [];
-					let suname = [];
-					if (st) { //成本中心
-						for (let i = 0; i < uls.length; i++) {
-							for (var k = 0; k < uls[i].apprvCostFlowNodePersons.length; k++) {
-								if (k == that.CostCenter[i].index) {
-									sus.push({
-										deptCost: 2,
-										nodeId: uls[i].apprvCostFlowNodePersons[k].nodeId,
-										personId: uls[i].apprvCostFlowNodePersons[k].id,
-										staffId: uls[i].apprvCostFlowNodePersons[k].staffId,
-										staffName: uls[i].apprvCostFlowNodePersons[k].staffName
-									})
-								}
-							}
-						}
-						this.TravelCostCenlist = sus
-					} else { //部门
-						for (let i = 0; i < uls.length; i++) {
-							for (var k = 0; k < uls[i].apprvDeptFlowNodePersons.length; k++) {
-								if (k == that.Deparapp[i].index) {
-									sus.push({
-										deptCost: 1,
-										nodeId: uls[i].apprvDeptFlowNodePersons[k].nodeId,
-										personId: uls[i].apprvDeptFlowNodePersons[k].id,
-										staffId: uls[i].apprvDeptFlowNodePersons[k].staffId,
-										staffName: uls[i].apprvDeptFlowNodePersons[k].staffName
-									})
-								}
-							}
-						}
-						this.TravelDepartlist = sus
-					}
-					that.switfal = false;
-					that.blac_show = false;
-				}
-			},
-			async appswlist(itname) { //选择审批人
-				let that = this;
-				let nuarry = [];
-				let nus = that.datalist.datlist.butalist; //出差人的集合
-				for (var i = 0; i < nus.length; i++) {
-					nuarry.push(nus[i].passengerNo) //获取出行人员id
-				}
-
-				let res;
-				try {
-					if (this.isblckt == true) {
-						res = await tork.getStaffList({
-							costId: that.NameCenter.id,
-							passengerNos: nuarry,
-							applyType: this.sttos
-						});
-					} else {
-						res = await tork.getStaffList({
-							costId: that.NameCenter.id,
-							passengerNos: nuarry,
-							applyType: 1
-						});
-					}
-
-					if (res.code == 200) {
-						if (res.data.deptStaffs.length == 0) {
-							that.CostCis = false;
-						} else {
-							that.CostCis = true;
-							that.Deparapprover = res.data.deptStaffs; //部门审批人
-							for (let i = 0; i < that.Deparapprover.length; i++) {
-								that.Deparapp.push({
-									index: 0
-								})
-							}
-						}
-						if (res.data.costStaffs.length == 0) {
-							that.CostCi = false;
-						} else {
-							that.CostCi = true;
-							that.CostCenterlist = res.data.costStaffs; //成本审批人
-							for (let i = 0; i < that.CostCenterlist.length; i++) {
-								that.CostCenter.push({
-									index: 0
-								})
-							}
-						}
-						that.TravelCostCenlist = []
-						that.TravelDepartlist = []
-					}
-				} catch (e) {
-					console.log(e)
-
 				}
 			},
 			adsl(it) {
@@ -1416,19 +1279,6 @@
 			// 		return
 			// 	}
 			// },
-			appswlists(itname) { //点击审批人
-				if (this.NameCenter.id == '') {
-					this.showToasts("请先选择成本中心")
-					return
-				}
-				if (itname == 'CostCenterlist') {
-					this.isswf = true
-				} else {
-					this.isswf = false
-				}
-				this.switfal = true;
-				this.blac_show = true;
-			},
 			// addmon(item,index){ //点加修改房间人员
 			// 	this.use_text = '请从以下旅客中选择入住人';
 			// 	this.si_pl = 'fots';
@@ -1485,11 +1335,11 @@
 			// },
 			eats(is) {
 				if (is == 0 || is == null) {
-					return '无早餐、'
+					return '无早餐'
 				} else if (is == 1) {
-					return '单早餐、'
+					return '单早餐'
 				} else if (is == 2) {
-					return '双早餐、'
+					return '双早餐'
 				}
 			},
 			sour(item) {
@@ -1523,292 +1373,83 @@
 		}
 
 		.userlist {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			transition: all 0.3s ease;
-			-webkit-transform: translateY(100%);
-			transform: translateY(100%);
-			min-height: 200upx;
 			width: 100%;
-			z-index: 889;
+			padding: 10upx 0;
 			background: #ffffff;
-
-			.userlist_top {
-				height: 90upx;
-				width: 100%;
-				line-height: 90upx;
-				background: #f1f1f1;
-				text-align: center;
+			color: #333333;
+			font-size: 30upx;
+			margin-top: 20upx;
+			.cu_time {
+				width: calc(100% - 40upx);
+				margin-top: 10upx;
+				padding: 10upx 20upx 15upx 20upx;
+				background-color: #FFFFFF;
+				// border-bottom: 2upx solid #f1f1f1;
+				border-radius: 10upx;
 			}
-
-			.ci_list {
-				max-height: 550upx;
-				overflow: scroll;
-				font-size: 35upx;
-
-				.cl_val {
-					position: relative;
+			
+			.userls {
+				width: calc(100% - 80upx);
+				padding: 10upx 40upx 15upx 40upx;
+				background-color: #FFFFFF;
+				border-bottom: 2upx solid #f1f1f1;
+				border-radius: 15upx;
+				margin-top: 20upx;
+				color: #333333;
+				.use-tles{
+					font-size: 34upx;
+					line-height: 50upx;
+					font-weight: 600;
+				}
+				.use_list{
 					width: 100%;
-					text-align: center;
-					line-height: 90upx;
-					height: 90upx;
-					border-bottom: 2upx solid #f1f1f1;
-				}
-
-				.cl_valts {
-					width: calc(100% - 40upx);
-					padding: 20upx 20upx;
-					font-size: 35upx;
-
-					.datlist {
-						margin-bottom: 20upx;
-						width: calc(100% - 40upx);
-						padding: 20upx 20upx 30upx 20upx;
-						color: #FFFFFF;
-						background: $brgk_blue;
-						border-radius: 10upx;
-						line-height: 50upx;
-						font-size: 35upx;
-
-						.datlist_t_l {
-							width: 100%;
-							display: flex;
-
-							image {
-								width: 50upx;
-								height: 50upx;
-								margin-right: 10upx;
-							}
-						}
-
-						.datlist_t_r {
-							width: 100%;
-							font-size: 30upx;
-						}
-
-						.datlist_b {
-							line-height: 60upx;
-							font-size: 55upx;
-						}
-					}
-				}
-
-				.cl_valt {
-					width: calc(100% - 40upx);
-					padding: 20upx 20upx;
-					display: flex;
-					flex-wrap: wrap;
-					align-content: space-between;
-					font-size: 35upx;
-
-					.cl_vals {
-						text-align: center;
-						width: 190upx;
-						line-height: 60upx;
-						margin: 20upx 20upx;
-						height: 60upx;
-						color: #C0C0C0;
-						border: 2upx solid #C0C0C0;
-						border-radius: 5upx;
-					}
-
-					.ad_vals {
-						text-align: center;
-						width: 190upx;
-						line-height: 60upx;
-						margin: 20upx 20upx;
-						height: 60upx;
-						color: $uni-color-primary;
-						border: 2upx solid $uni-color-primary;
-						border-radius: 5upx;
-					}
-
-					.ck_vals {
-						text-align: center;
-						width: 190upx;
-						line-height: 60upx;
-						margin: 20upx 20upx;
-						height: 60upx;
-						color: #FFFFFF;
-						background: #C0C0C0;
-						border: 2upx solid #C0C0C0;
-						border-radius: 5upx;
-					}
-				}
-			}
-		}
-
-		.optslist {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			transition: all 0.3s ease;
-			-webkit-transform: translateY(100%);
-			transform: translateY(100%);
-			min-height: 200upx;
-			width: 100%;
-			z-index: 889;
-			background: #ffffff;
-
-			.btns {
-				width: 100%;
-				height: 90upx;
-				display: flex;
-				text-align: center;
-				line-height: 90upx;
-				font-size: 35upx;
-				background: #E5E5E5;
-
-				.btns_z {
-					flex: 1;
-					height: 90upx;
-					color: $uni-color-primary;
-				}
-			}
-
-			.stlist {
-				width: 100%;
-				height: 400upx;
-				background: #E5E5E5;
-				display: flex;
-
-				.sltleft {
-					height: 400upx;
-					width: 30%;
-
-					.ulsk_list {
-						width: 100%;
-						height: 90upx;
-						text-align: center;
-						font-size: 35upx;
-						line-height: 90upx;
-					}
-
-					.cked {
-						background: #FFFFFF;
-					}
-				}
-
-				.sltright {
-					width: 70%;
-					height: 400upx;
-					background: #FFFFFF;
-
-					.sltrig_top {
-						width: 100%;
-						height: 90upx;
-						overflow: scroll;
-						line-height: 90upx;
-						font-size: 25upx;
+					.us_tps{
 						display: flex;
-						border-bottom: 2upx solid #F1F1F1;
-
-						.sltiig_top_left {
-							width: 140upx;
-							text-indent: 20upx;
-							color: #F1F1F1;
-						}
-
-						.sltiig_top_right {
-							padding: 0 5px;
-							min-width: 100upx;
-							text-indent: 10upx;
-							color: #333333;
-						}
-
-						.stis {
-							color: $uni-color-primary !important;
-						}
-					}
-
-					.sltrig_bot {
-						width: calc(100% -20upx);
-						height: 310upx;
-						padding-left: 20upx;
-						overflow: scroll;
-
-						.striglist {
-							width: 100%;
-							height: 90upx;
-							border-bottom: 2upx solid #F1F1F1;
-							line-height: 90upx;
+						height: 80upx;
+						align-items: center;
+						justify-content: space-between;
+						.us_rights{
 							display: flex;
-
-							.stlis_left {
-								width: 90%;
-							}
-
-							.stlis_right {
-								width: 10%;
-								text-align: center;
-							}
+						}
+					}
+					.kaihu {
+						width: 100%;
+						display: flex;
+						font-size: 28upx;
+						// flex-direction: column;
+						// justify-content: center;
+						margin-top: 20upx;
+						text-indent: 35upx;
+						align-items: center;
+						position: relative;
+					
+						input {
+							margin-left: 30upx;
+							text-indent: 30upx;
+							font-size: 28upx;
+							border: 1upx solid #C0C0C0;
+							border-radius: 10upx;
+						}
+					
+						.absts {
+							margin-left: 30upx;
+							position: absolute;
+							width: 350upx;
+							// height: 300upx;
+							background-color: #FFFFFF;
+							z-index: 200;
 						}
 					}
 				}
+				
 			}
-
-			.botmis {
-				width: 100%;
-				height: 60upx;
-				font-size: 30upx;
-				color: $uni-color-primary;
-				text-align: center;
-				line-height: 60upx;
+			
+			.userls:last-child {
+				border: 0;
 			}
 		}
-
-		.isswflist {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			transition: all 0.3s ease;
-			-webkit-transform: translateY(100%);
-			transform: translateY(100%);
-			min-height: 150upx;
-			width: 100%;
-			z-index: 889;
-			background: #ffffff;
-
-			.btns {
-				width: 100%;
-				height: 90upx;
-				display: flex;
-				text-align: center;
-				line-height: 90upx;
-				font-size: 35upx;
-				background: #E5E5E5;
-
-				.btns_z {
-					flex: 1;
-					height: 90upx;
-					color: $uni-color-primary;
-				}
-			}
-
-			.isstops {
-				padding: 40upx 10%;
-				width: calc(100% - 20%);
-
-				.isstop {
-					height: 90upx;
-					line-height: 90upx;
-					width: 100%;
-					display: flex;
-					align-items: center;
-
-					.wors {
-						font-size: 35upx;
-						width: 60%;
-						height: 50upx;
-						line-height: 50upx;
-						padding-left: 20upx;
-						border: 2upx solid #C8C7CC;
-					}
-				}
-			}
-		}
-
+		
+		
 		.hotsev {
 			width: 100%;
 			background: #FFFFFF;
@@ -1844,100 +1485,152 @@
 		}
 
 		.htos_top {
-			width: calc(100% - 80upx);
+			width: 100%;
 			background: #FFFFFF;
-			margin: 20upx;
-			padding: 20upx;
+			padding: 36upx 20upx;
 			line-height: 45upx;
 			border-radius: 15upx;
-
+			color: #333333;
 			.titles {
-				font-size: 40upx;
+				font-weight: bold;
+				font-size: 34upx;
+				margin-left: 10upx;
 			}
-
 			.tilopens {
-				font-size: 35upx;
+				font-size: 28upx;
 			}
 
 			.tiskt {
-				font-size: 25upx;
-				color: #C0C0C0;
+				margin-left: 10upx;
+				font-size: 28upx;
+				color: #333333;
+				display: flex;
+				font-weight: bold;
+				margin-top: 30upx;
+				.tiskttext {
+						border: 1px solid #ececec;
+						border-radius: 30upx;
+						width: 66upx;
+						line-height: 35upx;
+						font-size: 18upx;
+						color: #333333;
+						text-align: center;
+						box-shadow: 0 2upx 2upx rgba(233, 233, 233, 0.5);
+						margin-left: 60upx;
+						view{
+							margin-top: 5upx;
+						}
+					}
 			}
 
 			.tskgout {
-				font-size: 25upx;
-				display: flex;
-
+				background: #fdf9f8;
+				width:calc(100% - 40upx);
+				padding: 15upx 0;
+				border-radius: 15upx;
+				margin-top: 20upx;
+				font-size: 22upx;
 				.chekoutl {
-					width: 22%;
+					color:#333333;
+					font-weight: bold;
+					margin-left: 20upx;
 				}
-
 				.chekouts {
+					margin-left: 20upx;
 					width: 78%;
-					color: red;
+					color: #B04D4D;
 				}
 			}
 		}
-
 		.istaf {
 			width: 100%;
 			margin-top: 20upx;
 			font-size: 30upx;
-
 			.ravelv {
-				width: calc(100% - 40upx);
-				padding: 0 20upx;
-				height: 90upx;
+				width: 100%;
+				// width: calc(100% - 80upx);
+				// padding: 0 20upx;
+				padding-right: 20upx;
 				background: #FFFFFF;
-				margin-bottom: 20upx;
-
+				// margin-left: 20upx;
+				// border-radius: 15upx;
+				// margin-bottom: 20upx;
+				.tswos{
+					padding: 0 20upx;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					font-size: 22upx;
+					color: #333333;
+					height:70upx;
+					.tswo_le{
+						color: #FF9000;
+					}
+					.tswo_ri{
+						span{
+							color: #007AFF;
+						}
+					}
+				}
 				.ts {
 					line-height: 90upx;
 					display: flex;
-
+			
 					.rav_left {
-						width: 30%;
+						width: 25%;
 						text-align: center;
-						color: #c0c0c0;
+						color: #666666;
+						font-size: 28upx;
 					}
-
+			
 					.ravright {
-						width: 70%;
+						width: 75%;
 						display: flex;
-
+			
 						.bos {
-							width: 93%;
+							width: 85%;
 							height: 90upx;
 							overflow: scroll;
 							display: flex;
 							align-items: center;
-
+							color: #333333;
+							margin-left: 30upx;
+							.navigas{
+								width: 100%;
+								
+							}
 							.swname {
 								line-height: 90upx;
 								font-size: 30upx;
 								color: #333333;
 								padding: 0 10upx;
 							}
-
+			
 							.userlists {
 								height: 90upx;
 								font-size: 30upx;
 								margin: 0 10upx;
 							}
-
+			
 							input {
 								font-size: 30upx;
 								width: 100%;
+								color: #333333;
+								margin-right: 10upx;
+								margin-bottom: 5upx;
 							}
-
-							.picks {
-								width: 100%;
+							.navimd{
+								color: #C0C0C0;
 							}
 						}
-
+			
+						.bot {
+							display: flex;
+						}
+			
 						.bost {
 							width: 93%;
-
+			
 							.userlists {
 								font-size: 30upx;
 								margin: 0 10upx;
@@ -1947,7 +1640,6 @@
 				}
 			}
 		}
-
 		.costlists {
 			position: fixed;
 			bottom: 0;
@@ -2016,7 +1708,7 @@
 		.btnbottm {
 			width: 100%;
 			height: 90upx;
-			line-height: 90upx;
+			// line-height: 90upx;
 			background: #FFFFFF;
 			position: fixed;
 			bottom: 0upx;
@@ -2032,20 +1724,33 @@
 				text-indent: 20upx;
 				display: flex;
 				justify-content: space-between;
-
+				.money{
+					margin-left: 10upx;
+					font-size: 46upx;
+					margin-top: 15upx;
+				}
 				.scslist {
+					margin-right: 20upx;
 					padding-right: 10upx;
-					font-size: 28upx;
-					color: #FF9000;
+					font-size: 26upx;
+					color: #007AFF;
+					margin-top: 25upx;
+
 				}
 			}
 
 			.btnbo_right {
-				width: 30%;
+				width: 210upx;
 				text-align: center;
-				height: 90upx;
+				height: 74upx;
 				color: #FFFFFF;
-				background: #FF6600;
+				background: #FFA63E;
+				border-radius: 50upx;
+				margin-top: 10upx;
+				view{
+					height: 30upx;
+					margin-top: 15upx;
+				}
 			}
 		}
 	}

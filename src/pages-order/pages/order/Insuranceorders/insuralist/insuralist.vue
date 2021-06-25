@@ -13,101 +13,137 @@
 			</view>
 		</view>
 		<view class="navstop" v-if="plsitsti.protect > -1">
-			<view class="">
-				订单号：{{plsitsti.trExtend.transationOrderNo}}
+			<view class="toptext">
+				<view style="font-size:42upx;font-weight:bold;padding:15upx 0;">{{userstatus(plsitsti.saleOrderExt.saleOrder.orderChildStatus)}}</view>
+				<view>出差单号：{{plsitsti.trExtend.travelNo}}</view>
+				<view>
+					预订单号：{{plsitsti.trExtend.transationOrderNo}}
+				</view>
 			</view>
 			<view class="lisst">
 				<view class="citst">
 					<view class="cits_t">
-						<view class="">
-							保险名称：{{plsitsti.insurance.name}}
+						<view style="display:flex;">
+							<span style="font-size:36upx;color:#333333;font-weight:bold;margin-bottom:5upx;flex:1;">{{plsitsti.insurance.name}}</span>
+							<!-- <span style="text-align: right;font-size:26upx;color:#23b60f;flex:1;">保险规则</span> -->
 						</view>
-						<view class="">
+						<view>
 							保险公司：{{plsitsti.insurance.companyName}}
 						</view>
-						<view class="">
+						<view  >
 							投保日期：{{plsitsti.saleOrderExt.createTime}}
 						</view>
 					</view>
-					<view class="cits_b">
-						<view class="cits_bt">
-							<view class="cits_bts" v-if="plsitsti.saleOrderExt.internatOrcivil == 1">订单类别：国内</view>
-							<view class="cits_bts" v-if="plsitsti.saleOrderExt.internatOrcivil == 2">订单类别：国际</view>
-							<view class="cits_bts">保险类型：{{intype(plsitsti.saleOrderExt.insurance.insureType)}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts" style=" color: #007aff;">支付状态：{{pustatus(plsitsti.saleOrderExt.saleOrder.payStatus)}}</view>
-							<view class="cits_bts" style=" color: #007aff;">订单状态：{{userstatus(plsitsti.saleOrderExt.saleOrder.orderChildStatus)}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts">生效日期：{{subtime(plsitsti.saleOrderExt.effectDate)}}</view>
-							<view class="cits_bts">失效日期：{{subtime(plsitsti.saleOrderExt.expireDate)}}</view>
-						</view>
-						<!-- <view class="cits_bt">
-							<view class="cits_bts">出发城市：{{plsitsti.saleOrderExt.insureExtVo.flightInfo.originCity}}</view>
-							<view class="cits_bts">到达城市：{{plsitsti.saleOrderExt.insureExtVo.flightInfo.destinationCity}}</view>
-						</view>
-						<view class="cits_bt">
-							<view class="cits_bts">起飞时间：{{subtime(plsitsti.saleOrderExt.insureExtVo.flightInfo.flightDate)}}</view>
-							<view class="cits_bts">航班号：{{plsitsti.saleOrderExt.insureExtVo.flightInfo.flightNo}}</view>
-						</view> -->
-						<view class="cits_bt">
-							<view class="cits_bts">保期：{{plsitsti.insurance.endDays}}天</view></view>
+				</view>
+			</view>
+		</view>
+		<view class="btuserlist">
+			<view class="btuse" v-if="plsitsti.saleOrderExt.insurance">
+				<view class="cits_b" v-if="plsitsti">
+					<view class="cits_bt" v-if="plsitsti.saleOrderExt">
+						<view style="flex:0.5;">订单类别</view>
+						<view style="flex:1;" v-if="plsitsti.saleOrderExt.internatOrcivil == 1">国内</view>
+						<view style="flex:1;" v-if="plsitsti.saleOrderExt.internatOrcivil == 2">国际</view>
+					</view>
+					<view class="cits_bt">
+						<view style="flex:0.5;">保险类型</view><view style="flex:1;">{{intype(plsitsti.saleOrderExt.insurance.insureType)}}</view>
+					</view>
+					<!-- <view class="cits_bt">
+						<view style="flex:0.5;">支付状态</view><view style="flex:1;">{{pustatus(plsitsti.saleOrderExt.saleOrder.payStatus)}}</view>
+					</view>
+					<view class="cits_bt">
+						<view style="flex:0.5;">订单状态</view><view style="flex:1;">{{userstatus(plsitsti.saleOrderExt.saleOrder.orderChildStatus)}}</view>
+					</view> -->
+					<view class="cits_bt">
+						<view style="flex:0.5;">生效日期</view><view style="flex:1;">{{subtime(plsitsti.saleOrderExt.effectDate)}}</view>
+					</view>
+					<view class="cits_bt">
+						<view style="flex:0.5;">失效日期</view><view style="flex:1;">{{subtime(plsitsti.saleOrderExt.expireDate)}}</view>
+					</view>
+					<view class="cits_bt" v-if="plsitsti.saleOrderExt.insureExtVo">
+						<view style="flex:0.5;">出发城市</view><view style="flex:1;">{{plsitsti.saleOrderExt.insureExtVo.flightInfo.originCity}}</view>
+					</view>
+					<view class="cits_bt" v-if="plsitsti.saleOrderExt.insureExtVo">
+						<view style="flex:0.5;">到达城市</view><view style="flex:1;">{{plsitsti.saleOrderExt.insureExtVo.flightInfo.destinationCity}}</view>
+					</view>
+					<view class="cits_bt" v-if="plsitsti.saleOrderExt.insureExtVo">
+						<view style="flex:0.5;">起飞时间</view><view style="flex:1;">{{subtime(plsitsti.saleOrderExt.insureExtVo.flightInfo.flightDate)}}</view>
+					</view>
+					<view class="cits_bt" v-if="plsitsti.saleOrderExt.insureExtVo">
+						<view style="flex:0.5;">航班号</view><view style="flex:1;">{{plsitsti.saleOrderExt.insureExtVo.flightInfo.flightNo}}</view>
+					</view>
+					<view class="cits_bt">
+						<view style="flex:0.5;">保期</view><view style="flex:1;">{{plsitsti.insurance.endDays}}天</view>
+					</view>
+					<view class="cits_bt">
+						<view style="flex:0.5;">总额</view><view style="flex:0.4;color:#FFA63E;">￥{{numprice}}</view><view style="flex:0.6;color:#007aff;">{{pustatus(plsitsti.saleOrderExt.saleOrder.payStatus)}}</view>
 					</view>
 				</view>
-				<view class="btuserlist">
-					<view class="btuse">
-						被保人信息
-						<view class="btul" v-for="(item,index) in userlist" :key="index">
-							<view class="user_t">
-								<view class="user_l">
-									{{item.insuredName}}
-								</view>
-								<view class="user_t">
-									<view style=" color: #007aff;">
-										状态:{{userstatus(item.status)}}
-									</view>
-								</view>
-								<view class="user_o" v-if="payStatus != 1">
-									<view class="uses_sp" @click="upmessages(3,'确定退保吗？',item)"  v-if="item.status == 2">
-										退保
-									</view>
-									<!-- buyWay:购买方式 1=线上 2=线下 -->
-									<!-- isCivilServant是否公务员保险：0代表非公务员，1代表公务员保险 -->
-									<!-- <view class="uses_st" @click="remobk(item)"  v-if="item.status == 1 &&(payStatus==3 || payStatus ==4)">
-										重新投保
-									</view> -->
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									{{catype(item.insuredCertiType)}}
-								</view>
-								<view class="user_os">
-									{{item.insuredCertiNo}}
-								</view>
-								<view class="user_r">
-									￥{{item.premium}}
-								</view>
+			</view>
+		</view>
+		<view class="btuserlist">
+			<view class="btuse">
+				<view style="color:#333333;font-size:34upx;font-weight:bold;">被保人信息</view>
+				<view class="btul" v-for="(item,index) in userlist" :key="index">
+					<view class="user_t">
+						<view class="user_l">
+							{{item.insuredName}}
+						</view>
+						<view class="user_t">
+							<view class="user_text">
+								{{userstatus(item.status)}}
 							</view>
 						</view>
-					</view>
-					<view class="liass">
-						<view class="liass_l">
-							投保人信息
-						</view>
-						<view class="liass_r">
-							{{plsitsti.saleOrderExt.creator}}　{{plsitsti.saleOrderExt.holderPhone}}
-						</view>
-					</view>
-					<view class="liass">
-						<view class="liass_l">
-							总价
-						</view>
-						<view class="liass_p">
-							￥{{numprice}}
+						<view class="user_o">
+							<view class="uses_sp" @click="upmessages(3,'确定退保吗？',item)"  v-if="item.status == 2 && payStatus != 1">
+								退保
+							</view>
+							<!-- buyWay:购买方式 1=线上 2=线下 -->
+							<!-- isCivilServant是否公务员保险：0代表非公务员，1代表公务员保险 -->
+							<!-- <view class="uses_st" @click="remobk(item)"  v-if="item.status == 1 &&(payStatus==3 || payStatus ==4)">
+								重新投保
+							</view> -->
 						</view>
 					</view>
+					<view class="user_t">
+						<view class="user_l">
+							{{catype(item.insuredCertiType)}}
+						</view>
+						<view class="user_os">
+							{{utils.TuoMin(item.insuredCertiNo,item.insuredCertiType)}}
+						</view>
+						<view class="user_r">
+							￥{{item.premium}}
+						</view>
+					</view>
+					<view class="user_t" v-if="item.policyNo">
+						<view class="user_l">
+							保单号
+						</view>
+						<view class="user_os">
+							{{item.policyNo}}
+						</view>
+						<view class="user_r">
+						</view>
+					</view>
+				</view>
+			</view>
+			<!-- <view class="liass">
+				<view class="liass_l">
+					总价
+				</view>
+				<view class="liass_p">
+					￥{{numprice}}
+				</view>
+			</view> -->
+		</view>
+		<view class="btuserlist" style="margin-bottom:130upx;">
+			<view class="liass" v-if="plsitsti.saleOrderExt">
+				<view class="liass_l">
+					投保人信息
+				</view>
+				<view class="liass_r">
+					{{plsitsti.saleOrderExt.creator}}　{{utils.TuoMin(plsitsti.saleOrderExt.holderPhone,1)}}
 				</view>
 			</view>
 		</view>
@@ -182,14 +218,20 @@
 			},
 			async unsotp(num){
 				let that = this;
-				
 				try{
 					if(num == 1){
 						let res = await order.insuranceOrderCancel({
 							saleOrderNo:that.codes,
 							isRefund: 1
 						});//全部退保
-						
+						if(res.code == 200){
+							that.showToasts("退保成功!");
+							setTimeout(()=>{
+								that.slet();
+							},500)
+						} else {
+							that.showToasts(res.message);
+						}
 					}
 				}catch(e){
 					console.log(e)
@@ -416,12 +458,7 @@
 				}
 			},
 			rblcok(){
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			}
 		}
 	}
@@ -438,7 +475,7 @@
 			height: 90upx;
 			display: flex;
 			align-items: center;
-			background: #109DED;
+			background: linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);
 			justify-content: space-between;
 			.ongbutns{
 				color: #FFFFFF;
@@ -629,130 +666,159 @@
 			transform: translateY(0);
 		}
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
+			background: linear-gradient(to right, #4e92fd 0%, #6e46fe 100%);
+			.toptext{
+				margin: 0 30upx;
+				view{
+					margin:10upx 0;
+				}
+			}
 			.lisst{
-				position: absolute;
 				left: 0;
 				top: 110upx;
-				width: calc(100% - 40upx);
-				padding:  0 20upx;
+				// width: calc(100% - 40upx);
+				// padding:  0 20upx;
+				margin-top: 20upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
-						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
-						color: #333333;
-						line-height: 40upx;
-					}
-					.cits_b{
-						width: calc(100% - 40upx);
-						color: #333333;
-						padding: 0 20upx;
+						padding: 10upx 20upx;
 						background: #FFFFFF;
-						border-bottom-left-radius: 15upx;
-						border-bottom-right-radius: 15upx;
-						.cits_bt{
-							display: flex;
-							line-height: 50upx;
-							align-items: center;
-							justify-content: space-between;
-							.cits_bts{
-								flex: 1;
-							}
+						border-radius: 15upx;
+						color: #666666;
+						font-size: 28upx;
+						line-height: 40upx;
+						view{
+							margin: 20upx 10upx;
 						}
 					}
 				}
-				.btuserlist{
-					width: 100%;
+			}
+		}
+		.btuserlist{
+			width: calc(100% - 40upx);
+			margin: 20upx;
+			margin-top: 20upx;
+			border-radius: 15upx;
+			background: #FFFFFF;
+			.btuse{
+				color: #C8C7CC;
+				width: calc(100% - 40upx);
+				padding: 20upx;
+				.btul{
 					margin-top: 20upx;
-					border-radius: 15upx;
-					background: #FFFFFF;
-					.btuse{
-						color: #C8C7CC;
-						width: calc(100% - 40upx);
-						padding: 20upx;
-						.btul{
-							margin-top: 10upx;
-							color: #333333;
-							.user_t{
-								display: flex;
-								width: 100%;
-								height: 50upx;
-								line-height: 50upx;
-								font-size: 28upx;
-								.user_l{
-									flex: 3;
-								}
-								.user_os{
-									flex: 7;
-									text-align: left;
-								}
-								.user_o{
-									flex: 6;
-									display: flex;
-									justify-content: flex-end;
-									align-items: center;
-									.uses_sp{
-										margin-left:20upx;
-										height: 40upx;
-										line-height: 40upx;
-										border-radius: 5upx;
-										padding: 2upx 6upx;
-										background: red;
-										color: #FFFFFF;
-									}
-									.uses_st{
-										margin-left:20upx;
-										height: 40upx;
-										line-height: 40upx;
-										border-radius: 5upx;
-										padding: 2upx 6upx;
-										background: #FF9000;
-										color: #FFFFFF;
-									}
-								}
-								.user_r{
-									flex: 2;
-									justify-content: flex-end;
-									display: flex;
-									color: #FF9000;
-								}
-								.user_t{
-									flex: 3;
-								}
+					color: #333333;
+					.user_t{
+						display: flex;
+						width: 100%;
+						margin: 10upx 0;
+						// height: 50upx;
+						// line-height: 50upx;
+						font-size: 28upx;
+						.user_text{
+							display: flex;
+							line-height:30upx;
+							padding: 4px 5px;
+							font-size: 10px;
+							color: #007AFF;
+							background: #dbf0ff;
+							border-radius: 5px;
+						}
+						.user_l{
+							display: flex;
+							align-items: center;
+							flex: 3;
+						}
+						.user_os{
+							flex: 7;
+							text-align: left;
+						}
+						.user_o{
+							flex: 6;
+							display: flex;
+							justify-content: flex-end;
+							align-items: center;
+							.uses_sp{
+								font-size: 26upx;
+								margin-left:20upx;
+								height: 40upx;
+								line-height: 40upx;
+								border-radius: 5upx;
+								padding: 2upx 20upx;
+								background: #007aff;
+								color: #FFFFFF;
+							}
+							.uses_st{
+								margin-left:20upx;
+								height: 40upx;
+								line-height: 40upx;
+								border-radius: 5upx;
+								padding: 2upx 6upx;
+								background: #FF9000;
+								color: #FFFFFF;
 							}
 						}
-					}
-					.liass{
-						width: calc(100% - 40upx);
-						padding: 0 20upx;
-						display: flex;
-						color: #C8C7CC;
-						line-height: 80upx;
-						.liass_l{
-							font-size: 35upx;
-							flex: 1;
-						}
-						.liass_r{
-							color: #333333;
-							text-align: right;
+						.user_r{
+							font-size: 30upx;
 							flex: 2;
+							justify-content: flex-end;
+							display: flex;
+							color: #f2a53c;
 						}
-						.liass_p{
-							text-align: right;
-							flex: 1;
-							font-size: 35upx;
-							color: #FF9000;
+						.user_t{
+							flex: 3;
 						}
 					}
+				}
+				.cits_b{
+					// width: calc(100% - 40upx);
+					color: #333333;
+					// padding: 0 20upx 20upx 20upx;
+					background: #FFFFFF;
+					border-bottom-left-radius: 15upx;
+					border-bottom-right-radius: 15upx;
+					font-size: 30upx;
+					.cits_bt{
+						display: flex;
+						line-height: 60upx;
+						align-items: center;
+						justify-content: space-between;
+						font-size: 30upx;
+						color: #333333;
+						view:nth-child(1){
+							color: #666666;
+							margin-left: 10upx;
+						}
+						view:nth-child(2){
+							font-weight: 600;
+						}
+					}
+				}
+			}
+			.liass{
+				width: calc(100% - 40upx);
+				padding: 0 20upx;
+				display: flex;
+				color: #333333;
+				line-height: 90upx;
+				.liass_l{
+					font-size:30upx;
+					flex: 1;
+				}
+				.liass_r{
+					color: #333333;
+					flex: 2;
+				}
+				.liass_p{
+					text-align: right;
+					flex: 1;
+					font-size: 35upx;
+					color: #FF9000;
 				}
 			}
 		}

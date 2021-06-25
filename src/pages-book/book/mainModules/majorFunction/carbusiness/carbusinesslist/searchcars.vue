@@ -2,7 +2,7 @@
 	<view class="citysfs">
 		<view class="cittop">
 			<view class="cli_right" @click="closest">
-				<cover-image class='imgs' src='/static/img/carbus/carbusingimg/leftj.png'></cover-image>
+				<image class='imgs' src='/static/img/carbus/carbusingimg/leftj.png'></image>
 			</view>
 			<view class="cit_left" @click="citylistfl">
 				<view class="ciname">{{city_vl}}</view>
@@ -77,7 +77,6 @@
 				} else {
 					this.hitorylist = []
 				}
-				console.log(this.hitorylist)
 			} else {
 				let sut = uni.getStorageSync("carhistoy" + uni.getStorageSync('appWxId'));
 				if (sut.length > 0) {
@@ -187,11 +186,10 @@
 				}
 			},
 			async seatck(va, ls) {
-				console.log("va", va, 'ls', ls)
 				let _this = this;
 				let tys = "";
 				if (_this.addfor == 3 && _this.flotsid == 2 || ls == true) {
-					tys = '飞机场'
+					tys = '飞机场,机场附属'
 				} else {
 					tys = '基础设施,房产小区,银行金融,教育学校,文化场馆'
 				}
@@ -215,7 +213,7 @@
 <style scoped lang="scss">
 	.citysfs {
 		width: 100%;
-		/*  #ifdef MP-WEIXIN */
+		/*  #ifdef APP-PLUS|| MP-WEIXIN */
 		padding-top: 80upx;
 		/*  #endif  */
 		background-color: #FFFFFF;

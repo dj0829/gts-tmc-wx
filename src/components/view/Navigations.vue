@@ -52,7 +52,7 @@
 		},
 		mounted() {
 			//微信小程序
-			// #ifdef MP-WEIXIN
+			// #ifdef APP-PLUS || MP-WEIXIN
 				this.tabBar.splice(2,1);
 			// #endif
 		},

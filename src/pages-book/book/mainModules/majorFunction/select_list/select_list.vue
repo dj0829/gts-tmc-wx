@@ -17,7 +17,7 @@
 						{{newdata(item.citys)}}
 					</view>
 					<view class="tl_botsb">
-						出差事由：{{item.reson}}
+						出差事由：{{item.resonName}}
 					</view>
 				</view>
 				<view class="tl_right">
@@ -27,9 +27,14 @@
 				</view>
 			</view>
 		</view>
+		<!-- #ifdef APP-PLUS -->
+		<view class="Navigations">
+		<!-- #endif -->
+		<!-- #ifdef H5 || MP-WEIXIN -->
 		<view class="Navigations" :style="{paddingTop:navPaddingTops + 'rpx'}">
-			<view class="smtis">
-				<view @click="rblcok" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</view>
+		<!-- #endif -->
+			<view class="smtisl">
+				<view @click="rblcok" class="iconfont" style="color: #FFFFFF;">&#xe61e;</view>
 			</view>
 			<view class="btn_top">
 				<view class="btn_top_bl" :class="btnchend? 'clik':''" @click="itck('left')">
@@ -39,15 +44,18 @@
 					因私
 				</view>
 			</view>
-			<view class="smtis">
+			<view class="smtisr" @click="toZC">
+				出差政策
 			</view>
 		</view>
-		
 		<view class="boxbgd">
 			<view class="bgrd">
-				<image v-if="currentPage == 'Planeticket'" src="https://file.feiren.com/gss/public_tms_04.png" mode=""></image>
-				<image v-if="currentPage == 'Train'" src="https://file.feiren.com/gss/public_tms_02.png" mode=""></image>
-				<image v-if="currentPage == 'Hotel'" src="https://file.feiren.com/gss/public_tms_03.jpg" mode=""></image>
+				<image v-if="currentPage == 'Planeticket'" src="https://file.feiren.com/gss/public_tms_04.png" mode="">
+				</image>
+				<image v-if="currentPage == 'Train'" src="https://file.feiren.com/gss/public_tms_02.png" mode="">
+				</image>
+				<image v-if="currentPage == 'Hotel'" src="https://file.feiren.com/gss/public_tms_03.jpg" mode="">
+				</image>
 			</view>
 			<view class="boxlist" ref="boxlist">
 				<view class="box_top" v-if="boxli && currentPage != 'Train'">
@@ -62,7 +70,8 @@
 				</view>
 				<view class="box_bottom" :class="[boxli ? 'boxli':'boxlis',currentPage == 'Train' ? ' box_bottoms':'']">
 					<view class="box_tos">
-						<view class="in_chox" @click="bts_k" v-if="(tccrBeforeMiddle == 1 || tccrBeforeMiddle == 0  ) && sitsj">
+						<view class="in_chox" @click="bts_k"
+							v-if="(tccrBeforeMiddle == 1 || tccrBeforeMiddle == 0  ) && sitsj">
 							<view class="iconfont" :style="bt_bol? 'color:#6E46FE':'color: #C0C0C0'">{{ btns }}</view>
 							使用出差预订
 						</view>
@@ -73,11 +82,12 @@
 					</view>
 					<view class="cit_it">
 						<view class="cu_time">
-							<ss-city :isretun="isretun" :current="currentPage"></ss-city>
+							<ss-city :sBusirticket="Busirticket" :sBusitraiket="Busitraiket" :tsta_Hotelket="sta_Hotelket"  :isretun="isretun" :current="currentPage"></ss-city>
 						</view>
 						<view class="cu_time">
-							<calendar :isretun="isretun" :currentlist="currentPage" :ishtoel="ishtoel" @change="lischang" :singleDate="singleDate"
-							 :startDate="startDate" :current="currentPage" :endDate="endDate"></calendar>
+							<calendar :isretun="isretun" :currentlist="currentPage" :ishtoel="ishtoel"
+								@change="lischang" :singleDate="singleDate" :startDate="startDate"
+								:current="currentPage" :endDate="endDate"></calendar>
 						</view>
 					</view>
 					<view class="cl_bts" v-if="currentPage == 'Train'" @click="bts_ks">
@@ -85,31 +95,39 @@
 						只看高铁/动车
 					</view>
 					<view class="cit_its" v-if="currentPage == 'Hotel'" @click="startClick">
-						<view class="cit_itsde" v-if="wx_hotels">
+						<view class="cit_itsde" v-if="wx_hotels.name != ''">
 							<view>
-								{{wx_hotels}}
+								{{wx_hotels.name}}
 							</view>
 							<view class="iconfont" style="color: #C8C7CC;" @click.stop="delets">
 								&#xe641;
 							</view>
 						</view>
-
 						<view style="color: #C0C0C0;" v-else>
 							关键字/位置/品牌/酒店名
 						</view>
 					</view>
 					<view class="cit_it">
-						<view class="cu_time" v-if="isbtd == 1 || (currentPage != 'Planeticket' && isbtd == 2)">
-							<passenger :isretun="isretun" ref="passengers"></passenger>
+						<view class="cu_time" v-if="isbtd == 1 ">
+							<passenger @ishow="ishows" :isretun="isretun" @butaluser="butaluser" :butaluserlist="butaluserlist" ref="passengers"></passenger>
 						</view>
-						<view class="bt_col" @click="Ticket_Inquiry" v-if="rotes(selecttype)">
-							{{btn_ck}}查询
+						
+						<view class="btns_list" v-if="rotes(selecttype)">
+							<view class="bt_col" @click="Ticket_Inquiry(1)" >
+								{{btn_ck}}查询
+							</view>
+							<!-- <view class="btmaps" @click="Ticket_Inquiry(2)" v-if="currentPage == 'Hotel'">
+								<image src="/static/img/home/mapbts.png" mode=""></image>
+								<view class="">
+									地图查询
+								</view>
+							</view> -->
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
-		<tabBar :currentPage="currentPages"></tabBar>
+		<tabBar v-if="tabisshow" :currentPage="currentPages"></tabBar>
 	</view>
 </template>
 
@@ -126,7 +144,15 @@
 	export default {
 		data() {
 			return {
-				navPaddingTops:0,
+				tabisshow:true,
+				resonList:[],//出行事由
+				butaluserlist:[],//出差人员
+				wx_hotels:{
+					id:0,//关键词下标
+					type:'',//关键词类型
+					name:''//关键词名称
+				}, //搜索城市酒店的地址
+				navPaddingTops: 0,
 				tccrBeforeMiddle: 9,
 				extendOne: '', //政府采购
 				currentPages: 'Book',
@@ -152,9 +178,22 @@
 				bt_sbol: true,
 				bt_bol: false,
 				bt_bols: false,
-				
-				
-				mokksli: {}, //使用出差预定是需要传的参数
+				mokksli: {}, //使用出差预定需要传的参数
+				Busirticket: [{
+					name: '深圳',
+					id: 'SZX'
+				}, {
+					name: '北京',
+					id: 'BJS'
+				}], //出差飞机城市
+				Busitraiket: [{
+					name: '深圳',
+					id: 'shenzhen'
+				}, {
+					name: '北京',
+					id: 'beijing'
+				}], //火车出差城市
+				sta_Hotelket: {id:"shenzhen",name:"深圳"}, //出差酒店城市
 			}
 		},
 		components: {
@@ -165,20 +204,14 @@
 		},
 		computed: {
 			...mapState([
-				'userinfo',
-				'vx_city_left', //搜索飞机的地址
-				'tr_city_left', //搜索火车的地址
-				'wx_Hotel', //搜索城市的酒店
-				'wx_hotels', //搜索城市酒店的地址
-				'butaluserlist', //人员
 				'se_Singletime', //单程时间
 				'se_doubletimel',
 				'se_doubletimer', //往返时间
-				'singleDate',
-				'longitudelatitude'
+				'singleDate'
 			])
 		},
 		onLoad(item) {
+			
 			this.currentPage = item.type
 			if (this.currentPage == 'Planeticket') { //飞机
 				this.selecttype = 'tms:dps:query';
@@ -193,11 +226,6 @@
 				this.boxli = false;
 				this.$store.commit('singleDate_add', false);
 			}
-			// if(this.singleDate){
-			//     this.isbox = true;
-			// } else {
-			//     this.isbox = false;
-			// }
 			if (this.singleDate) {
 				if (JSON.stringify(this.se_Singletime) != '{}') {
 					this.startDate = this.se_Singletime.re;
@@ -214,24 +242,114 @@
 				}
 			}
 		},
+		onShow() {
+			uni.$on('wx_Hotel_Ais',(res)=>{
+				if(res.ts == 0){
+					this.wx_hotels = {
+						id:res.id,//关键词下标
+						type:res.type,//关键词类型
+						name:res.data//关键词名称
+					}
+				}
+				uni.$off('wx_Hotel_Ais')
+			})
+			uni.$on("Busirticket_add", res => {
+				let rtos = res.data;
+				if (res.name == "Planeticket") {
+					this.Busirticket = [{
+						name: rtos[0].name,
+						id: rtos[0].id
+					}, {
+						name: rtos[1].name,
+						id: rtos[1].id
+					}];
+				} else if (res.name == "Train") {
+					this.Busitraiket = [{
+						name: rtos[0].name,
+						id: rtos[0].id
+					}, {
+						name: rtos[1].name,
+						id: rtos[1].id
+					}];
+				} else if (res.name == "Hotel") {
+					if(rtos.type == 'city'){
+						this.sta_Hotelket = rtos.city;//城市
+						this.wx_hotels = {
+							id:0,//关键词下标
+							type:'',//关键词类型
+							name:''//关键词名称
+						};
+					} else {//除了城市 现阶段只有行政区
+						this.sta_Hotelket = rtos.city;//城市
+						this.wx_hotels = {
+							id:rtos.id,//关键词下标 或者当前地标
+							type:rtos.type,//关键词类型
+							name:rtos.data//关键词名称
+						};
+					}
+					// if(rtos.city.name == '深圳'){//测试数据写死
+					// 	this.wx_hotels = {
+					// 		id:1,//关键词下标
+					// 		type:'position',//关键词类型
+					// 		name:'福田区'//关键词名称
+					// 	};
+					// }
+				}
+				uni.$off("Busirticket_add")
+			})
+			uni.$on("Busirticket_adds", res => {
+				let rtos = res.data;
+				this.sta_Hotelket = rtos.city;//城市
+				this.wx_hotels = {
+					id:rtos.id,//关键词下标 或者当前地标
+					type:rtos.type,//关键词类型
+					name:rtos.data//关键词名称
+				};
+				uni.$off("Busirticket_adds")
+			})
+		},
+		watch:{
+			wx_Hotel(Va){
+				this.wx_hotels.name = '';//清空关键字
+			}
+		},
 		mounted() {
+			// this.Busirticket = [{
+			// 		name: '深圳1',
+			// 		id: 'SZX'
+			// 	}, {
+			// 		name: '北京2',
+			// 		id: 'PKX'
+			// 	}]; //出差飞机城市
 			// #ifdef MP-WEIXIN
-			let res=wx.getMenuButtonBoundingClientRect();
+			let res = wx.getMenuButtonBoundingClientRect();
 			this.navPaddingTops = res.top + res.height - 5;
 			// #endif
-			
+
 			// 返回值
-				// width 	number 	宽度，单位：px
-				// height 	number 	高度，单位：px
-				// top 	number 	上边界坐标，单位：px
-				// right 	number 	右边界坐标，单位：px
-				// bottom 	number 	下边界坐标，单位：px
-				// left 	number 	左边界坐标，单位：px
+			// width 	number 	宽度，单位：px
+			// height 	number 	高度，单位：px
+			// top 	number 	上边界坐标，单位：px
+			// right 	number 	右边界坐标，单位：px
+			// bottom 	number 	下边界坐标，单位：px
+			// left 	number 	左边界坐标，单位：px
 			this.infoimgs();
 		},
 		methods: {
+			ishows(da){
+				this.tabisshow = da;
+			},
+			toZC(){//跳转政策
+				uni.navigateTo({
+					url: '/pages-mydi/pages/mydi/information/travelPolicy/travelPolicy?type=' + this.currentPage,
+				});
+			},
+			butaluser(item){//选择当前人员
+				this.butaluserlist = item;
+			},
 			async infoimgs() {
-				if (uni.getStorageSync('TB_ddvalue') != null && uni.getStorageSync('TB_ddvalue') != undefined && uni.getStorageSync(
+				if (uni.getStorageSync('TB_ddvalue') != null && uni.getStorageSync('TB_ddvalue') != undefined && uni
+					.getStorageSync(
 						'ul_dding') != '') {
 					let rec = await login.accountlogins({
 						sessionId: uni.getStorageSync('TB_ddvalue')
@@ -246,20 +364,21 @@
 					if (this.currentPage == 'Planeticket') {
 						this.bts_b();
 					}
-					this.$refs['passengers'].colllist();
 					this.tccrBeforeMiddle = userinfo.tccrBeforeMiddle;
 					let datas = uni.getStorageSync('userinfo' + uni.getStorageSync('appWxId')); //个人信息
 					if (datas) {
-						this.$store.commit('butaluserlist_add', [{
-							istrue: 1,
-							passengerNo: datas.passengerVo.id, //暂时没有该参数
-							userName: datas.user.name,
-							userId: datas.user.id,
-							deptName: datas.user.deptName,
-							deptId: datas.user.deptId,
-							phone: datas.user.phone,
-							costcenterName: datas.user.customerName
-						}]);
+						if(datas.passengerVo.certificateList != null && datas.passengerVo.certificateList !=''){
+							this.butaluserlist = [{
+								istrue: 1,
+								passengerNo: datas.passengerVo.id, //暂时没有该参数
+								userName: datas.user.name,
+								userId: datas.user.id,
+								deptName: datas.user.deptName,
+								deptId: datas.user.deptId,
+								phone: datas.user.phone,
+								costcenterName: datas.user.customerName
+							}]
+						}
 					}
 				} else {
 					this.$store.commit('logout');
@@ -273,7 +392,7 @@
 				this.switfal = false;
 			},
 			delets() { //删除地址
-				this.$store.commit('wx_hotels_Ai', '');
+				this.wx_hotels.name = '';
 			},
 			bts_ks() {
 				if (this.bt_bols) {
@@ -319,10 +438,11 @@
 				}
 			},
 			startClick() { //酒店地址搜索
-				let list = this.wx_Hotel;
-				let wx_hotels = this.wx_hotels;
+				let list = this.sta_Hotelket;
+				let wx_hotels = this.wx_hotels.name;
 				uni.navigateTo({
-					url: '/pages/book/sselect-city/selectcity?sta=right&type=' + this.currentPage + '&list=' + list + '&wx_hotels=' + wx_hotels
+					url: '/pages/book/sselect-city/selectcity?sta=right&type=' + this.currentPage + '&list=' +
+						list.name + '&sdata=0&wx_hotels=' + wx_hotels
 				});
 			},
 			itck(item) {
@@ -331,27 +451,15 @@
 					this.isbtd = 1;
 					this.sitsj = true;
 				} else {
-					//h5
-					// #ifdef  H5 || MP-WEIXIN
 					this.btns = '\ue80c';
 					this.sitsj = false;
 					this.bt_bol = false;
 					this.btnchend = false
 					this.isbtd = 2
-					// #endif
-					//app
-					// #ifdef APP-PLUS
-					this.showToasts('app端暂不支持因私')
-					// #endif
 				}
 			},
 			rblcok() { //返回
-				// #ifdef H5
-				history.back()
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack();
-				// #endif
+				this.toBlock();
 			},
 			//政府采购
 			async bts_b() {
@@ -389,19 +497,28 @@
 					} else if (this.currentPage == 'Planeticket' && this.isbox == false) { //飞机往返
 						num = 4;
 					}
-					
+
 					try {
 						const res = await tork.getAgreeApprvTask({
 							type: num
 						});
-						
+
 						if (res.code == 200) {
 							if (res.data.length == 0) {
 								this.showToasts("没有合适的出差申请！")
 							} else {
+								this.resonList = [{//出行事由
+									id:22,
+									name:'见客户'
+								},{
+									id:33,
+									name:'参观学习'
+								},{
+									id:44,
+									name:'其他'
+								}];
 								this.stlist = [];
 								let dat = res.data;
-								// console.log(dat)
 								for (let i in dat) {
 									if (num == 3) {
 										for (let k in dat[i].tmsGssLink.applyHotels) {
@@ -409,7 +526,8 @@
 											datd.std = 6
 											this.stlist.push({
 												id: dat[i].tmsGssLink.applyHotels[k].id,
-												reson: dat[i].reason, //出差事由
+												reson: dat[i].reasonId, //出差事由
+												resonName:dat[i].reason,
 												citys: datd, //出差信息
 												nams: dat[i].tmsGssLink.applyStaffs, //出差人
 												sit: {
@@ -430,8 +548,10 @@
 												let nums = 0;
 
 												for (let p in applivalist) {
-													if (appflks[k].goBackGroup != null && appflks[k].goBackGroup != undefined) {
-														if (applivalist[p].citys.goBackGroup == appflks[k].goBackGroup) {
+													if (appflks[k].goBackGroup != null && appflks[k].goBackGroup !=
+														undefined) {
+														if (applivalist[p].citys.goBackGroup == appflks[k]
+															.goBackGroup) {
 															nums = 1;
 														}
 													}
@@ -441,7 +561,8 @@
 													applivalist.push({
 														id: appflks[k].id,
 														ids: appflks[k + 1].id,
-														reson: dat[i].reason,
+														reson: dat[i].reasonId,
+														resonName:dat[i].reason,
 														citys: appflks[k], //出差信息
 														nams: dat[i].tmsGssLink.applyStaffs, //出差人
 														sit: {
@@ -461,7 +582,8 @@
 												datd.std = num
 												this.stlist.push({
 													id: dat[i].tmsGssLink.applyVehicles[k].id,
-													reson: dat[i].reason,
+													reson: dat[i].reasonId,
+													resonName:dat[i].reason,
 													citys: datd, //出差信息
 													nams: dat[i].tmsGssLink.applyStaffs, //出差人
 													sit: {
@@ -485,7 +607,7 @@
 						}
 					} catch (e) {
 						console.log(e)
-						
+
 					}
 
 
@@ -499,28 +621,26 @@
 			adduslit(item) { //确定
 				let vehicleIdBack = 0;
 				if (this.currentPage == 'Train') {
-					this.$store.commit("tr_city_left_add", [{
+					this.Busitraiket = [{
 						id: item.citys.deptCityCode,
 						name: item.citys.deptCityName
 					}, {
 						id: item.citys.arrivCityCode,
 						name: item.citys.arrivCityName
-					}])
+					}];
 				} else if (this.currentPage == 'Planeticket') {
-					this.$store.commit("vx_city_le_add", [{
+					this.Busirticket = [{
 						id: item.citys.deptCityCode,
 						name: item.citys.deptCityName
 					}, {
 						id: item.citys.arrivCityCode,
 						name: item.citys.arrivCityName
-					}])
+					}];
 				} else if (this.currentPage == 'Hotel') {
-					this.$store.commit("wx_Hotel_Ai", {
-						id: item.citys.cityCode,
-						name: item.citys.cityName,
-						ts: false
-					});
-					this.$store.commit("wx_hotels_Ai", item.citys.remark)
+					this.sta_Hotelket = {
+						id: item.citys.cityCode == null ? '0' : item.citys.cityCode,
+						name: item.citys.cityName
+					};
 				}
 				if (item.citys.std == 6) { //酒店
 					this.startDate = item.citys.inDate.substring(0, 10); //出行开始时间
@@ -537,17 +657,22 @@
 				}
 				let userlis = [];
 				for (var i = 0; i < item.nams.length; i++) { //出差人员
+					if(item.nams[i].haveCardInfo == false){
+						this.showToasts(item.nams[i].userName + '没有证件信息')
+						return
+					}
 					userlis.push({
 						phone: item.nams[i].phone,
 						istrue: item.nams[i].tempPerson,
 						passengerNo: item.nams[i].passengerNo,
 						userName: item.nams[i].userName,
 						userId: item.nams[i].id,
+						reson:item.reson,//出差事由
 						vehicleId: item.id, //事前出差单id
 						vehicleIdBack: vehicleIdBack
 					})
 				}
-				this.$store.commit('butaluserlist_add', userlis);
+				this.butaluserlist = userlis;
 				this.mokksli = item.sit;
 				this.isretun = true;
 				this.blac_show = false;
@@ -557,8 +682,6 @@
 				this.isblcks = 1;
 			},
 			newstaname(tm) { //回显城市名称
-				console.log("goBack" + tm.goBack)
-				console.log("ve " + tm.vehicle)
 				if (tm.vehicle == 1 || tm.vehicle == 2) {
 					return tm.deptCityName + '-' + tm.arrivCityName;
 				} else {
@@ -576,7 +699,7 @@
 			},
 			newdata(tm) { //回显时间
 				if ((tm.deptDate == null && tm.std != 6) || (tm.inDate == null && tm.outDate == null && tm.std == 6)) {
-					console.log(111111)
+
 					return
 				}
 				let sta = '';
@@ -640,7 +763,7 @@
 					that.$store.commit('se_doubletimer_add', item.choiceDate[1])
 				}
 			},
-			Ticket_Inquiry() {
+			Ticket_Inquiry(maps) {
 				let isbtd = this.isbtd; //因公还是因私 1为因公
 				let isblcks = this.isblcks; //是否出差预定 1为是
 				let st = this.tccrBeforeMiddle; //用户是事前还是事中
@@ -654,27 +777,17 @@
 				}
 				let rtime = this.se_doubletimel.re; //开始时间
 				let etime = this.se_doubletimer.re; //结束时间
-				let nams = this.wx_Hotel.name; //城市
 				let butaluserlist = this.butaluserlist; //人员
-				console.log(butaluserlist)
 				if (this.currentPage == 'Planeticket') {
 					let bool = true;
-					if (this.isbox == true) {
-						if (this.vx_city_left[0].name == "") {
-							this.showToasts("请选择出发城市")
-							bool = false;
-						}
-					} else {
-						if (this.vx_city_left[0].name == "") {
-							this.showToasts("请选择出发城市")
-							bool = false;
-						}
-					}
-					if (butaluserlist.length == 0) {
+					if (butaluserlist.length == 0 && isbtd == 1) {
 						this.showToasts('请选择出行人！')
 						return
-					} else if(butaluserlist.length > 9){
+					} else if (butaluserlist.length > 9) {
 						this.showToasts('出行人数不能大于9人！')
+						return
+					} else if(this.Busirticket[0].name == this.Busirticket[1].name){
+						this.showToasts('出发到达城市不能相同');
 						return
 					}
 					if (this.currentPage == 'Planeticket' && this.isbtd == 2) {
@@ -682,106 +795,45 @@
 					}
 					if (bool == true) {
 						let dateFang = null;
-						let datw = {};
-						if (this.isbox == true) {
-							if (this.extendOne == 1 && this.bt_sbol == true) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_Singletime.re,
-									butalist: butaluserlist, //人员
-									none: 'single',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd, //1因公2因私
-									civilServiceTicket: '1' //是否选中
-								}
-							} else if (this.extendOne == 1 && this.bt_sbol == false) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_Singletime.re,
-									butalist: butaluserlist, //人员
-									none: 'single',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd, //1因公2因私
-									civilServiceTicket: '0' //是否选中
-								}
-							} else if (this.extendOne == 0) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_Singletime.re,
-									butalist: butaluserlist, //人员
-									none: 'single',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd, //1因公2因私
-								}
-							}
-							uni.setStorageSync("ticketinquiry_data", JSON.stringify(datw));
-							uni.navigateTo({
-								url: '../ticketInquiry/ticketinquiry'
-							})
-						} else {
-							if (this.extendOne == 1 && this.bt_sbol == true) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_doubletimel.re,
-									timedates: this.se_doubletimer.re,
-									butalist: butaluserlist, //人员
-									none: 'returns',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd, //1因公2因私
-									civilServiceTicket: '1' //是否选中
-								}
-							} else if (this.extendOne == 1 && this.bt_sbol == false) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_doubletimel.re,
-									timedates: this.se_doubletimer.re,
-									butalist: butaluserlist, //人员
-									none: 'returns',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd, //1因公2因私
-									civilServiceTicket: '0' //是否选中
-								}
-							} else if (this.extendOne == 0) {
-								datw = {
-									mokksli: this.mokksli,
-									type: this.currentPage,
-									city: this.vx_city_left[0],
-									citys: this.vx_city_left[1],
-									timedate: this.se_doubletimel.re,
-									timedates: this.se_doubletimer.re,
-									butalist: butaluserlist, //人员
-									none: 'returns',
-									isblcks: isblcks, //1事前2事中
-									isbtd: isbtd //1因公2因私
-								}
-							}
-							uni.setStorageSync("ticketinquiry_data", JSON.stringify(datw));
-							uni.navigateTo({
-								url: '../ticketInquiry/ticketinquiry'
-							})
+						let datw = {
+							mokksli: this.mokksli,
+							city: this.Busirticket[0],
+							citys: this.Busirticket[1],
+							timedate: this.se_Singletime.re,
+							butalist: butaluserlist, //人员
+							none: 'single',
+							isto:1,//当前行程  1为去 2为回   往返才用到
+							isblcks: isblcks, //1事前2事中
+							isbtd: isbtd, //1因公2因私
 						}
+						
+						if(this.extendOne == 1&& this.bt_sbol == true){//是否公务员票
+							datw['civilServiceTicket'] = '1';
+						} else{
+							datw['civilServiceTicket'] = '0';
+						}
+						
+						if (this.isbox == true) {//单程
+							datw.none = 'single'
+						} else { //往返
+							datw['timedates']= this.se_doubletimer.re;
+							datw.timedate = this.se_doubletimel.re;
+							datw.none = 'returns';
+						}
+						uni.setStorageSync("ticketinquiry_data", JSON.stringify(datw));
+						uni.navigateTo({
+							url: '../ticketInquiry/ticketinquiry'
+						})
 					}
 				} else if (this.currentPage == 'Hotel') {
-					if (butaluserlist.length == 0) {
+					let nams = this.sta_Hotelket; //城市
+					if (butaluserlist.length == 0 && isbtd == 1) {
 						this.showToasts('请选择出行人！')
 						return
 					}
-
+					if(this.wx_hotels.name != ''){//如果有关键字 清空经纬度
+						nams.id = '';
+					}
 					let datw = {
 						mokksli: this.mokksli,
 						city: nams,
@@ -790,31 +842,45 @@
 						se_doubletimer: etime,
 						butalist: butaluserlist, //人员
 						isblcks: isblcks,
-						isbtd: isbtd
+						isbtd: isbtd,
+						map:maps
 					}
-					uni.navigateTo({
-						url: '../hotelselect/hotelselect?data=' + JSON.stringify(datw)
-					})
+					
+					// #ifdef H5 || MP-WEIXIN
+						uni.navigateTo({
+							url: '../hotelselect/hotelselect?data=' + JSON.stringify(datw)
+						})
+					// #endif
+					// #ifdef APP-PLUS
+						uni.navigateTo({
+							url: '../hotelselect/hotelselectA?data=' + JSON.stringify(datw)
+						})
+					// #endif
+					
 				} else if (this.currentPage == "Train") {
-					if (butaluserlist.length == 0) {
+					if (butaluserlist.length == 0 && isbtd == 1) {
 						this.showToasts('请选择出行人！')
 						return
-					} else if(butaluserlist.length > 5){
+					} else if (butaluserlist.length > 5) {
 						this.showToasts('出行人数不能大于5人！')
+						return
+					} else if(this.Busitraiket[0].name == this.Busitraiket[1].name){
+						this.showToasts('出发到达城市不能相同');
 						return
 					}
 					let datw = {
 						mokksli: this.mokksli,
-						city: this.tr_city_left[0],
-						citys: this.tr_city_left[1],
+						city: this.Busitraiket[0],
+						citys: this.Busitraiket[1],
 						timedate: this.se_Singletime.re,
 						butalist: butaluserlist, //出行人员
 						sit: this.bt_bols, //是否只搜高铁
 						isblcks: isblcks, //1事前2事中
 						isbtd: isbtd //1因公2因私
 					}
+					uni.setStorageSync('trainselectData',datw);
 					uni.navigateTo({
-						url: '../trainselect/trainselect?data=' + JSON.stringify(datw)
+						url: '../trainselect/trainselect'
 					})
 				}
 			}
@@ -823,7 +889,7 @@
 </script>
 
 <style>
-	page{
+	page {
 		background: #E5E5E5;
 	}
 </style>
@@ -832,7 +898,7 @@
 
 	.select_list {
 		width: 100%;
-		
+
 
 		.black_mu {
 			position: fixed;
@@ -942,10 +1008,11 @@
 			width: 100%;
 			height: 90upx;
 			width: 100%;
-			/*  #ifdef  APP-PLUS || MP-WEIXIN */
-			// padding-top: 75upx;
+			/*  #ifdef  APP-PLUS */
+			padding-top: 70upx;
 			/*  #endif  */
 			display: flex;
+			justify-content: space-between;
 			align-items: center;
 			background: $brgk_blue;
 
@@ -955,7 +1022,6 @@
 				border-radius: 55upx;
 				border: 2upx solid #FFFFFF;
 				display: flex;
-				margin-left: 22%;
 
 				.btn_top_bl {
 					width: 140upx;
@@ -973,6 +1039,16 @@
 					color: #6E46FE;
 				}
 			}
+			.smtisl{
+				text-indent: 20upx;
+				width: 150upx;
+			}
+			.smtisr{
+				color: #FFFFFF;
+				font-size: 28upx;
+				width: 150upx;
+				text-align: center;
+			}
 		}
 
 		.boxbgd {
@@ -982,6 +1058,7 @@
 			.bgrd {
 				width: 100%;
 				height: 400upx;
+
 				image {
 					width: 100%;
 					height: 100%;
@@ -994,6 +1071,7 @@
 				left: 30upx;
 				width: calc(100% - 60upx);
 				padding: 0;
+
 				.box_top {
 					position: relative;
 					font-size: 35upx;
@@ -1051,7 +1129,7 @@
 				.box_bottom {
 					width: 100%;
 					background: #FFFFFF;
-					padding: 20upx 0;
+					padding: 20upx 0 30upx 0;
 
 					.box_tos {
 						display: flex;
@@ -1073,7 +1151,7 @@
 						margin: 0 20upx;
 						padding-left: 20upx;
 						color: #C0C0C0;
-						height: 90upx;
+						height: 96upx;
 						border-bottom: 2upx solid #F1F1F1;
 						font-size: 35upx;
 						display: flex;
@@ -1084,9 +1162,9 @@
 						width: 94%;
 						font-size: 35upx;
 						margin: 0 3%;
-						height: 90upx;
+						height: 96upx;
 						border-bottom: 2upx solid #F1F1F1;
-						line-height: 90upx;
+						line-height: 96upx;
 
 						.cit_itsde {
 							display: flex;
@@ -1100,19 +1178,43 @@
 
 						.cu_time {
 							width: 100%;
+							height: 96upx;
+							// display: flex;
+							// align-items: center;
 							border-bottom: 2upx solid #F1F1F1;
 						}
-
-						.bt_col {
+						.btns_list{
 							margin-top: 20upx;
 							width: 100%;
+							display: flex;
 							height: 100upx;
-							color: #FFFFFF;
-							font-size: 40upx;
-							text-align: center;
-							line-height: 100upx;
-							border-radius: 110upx;
-							background: $brgk_blue;
+							align-items: center;
+							
+							.bt_col {
+								flex: 5;
+								height: 100upx;
+								color: #FFFFFF;
+								font-size: 40upx;
+								text-align: center;
+								line-height: 100upx;
+								border-radius: 110upx;
+								background: $brgk_blue;
+							}
+							.btmaps{
+								flex: 2;
+								height: 100upx;
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								flex-direction:column;
+								color: #999999;
+								font-size: 20upx;
+								image{
+									width: 45upx;
+									height: 40upx;
+									margin-bottom: 5upx;
+								}
+							}
 						}
 					}
 				}

@@ -4,13 +4,14 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const store = new Vuex.Store({  
     state: { //定义全局变量
+		mapad:1,
 		loading: false,
 		getMenuBtnList:[],//权限列表
 		token_succ: {},//微信公众号token
 		//因公出行城市
-		vx_city_left: [{name: '',id: ''},{name:'',id: ''}],//搜索出行机票出发城市
-		tr_city_left: [{name: '北京',id: 'beijing'},{name:'上海',id: 'shanghai'}],//搜索出行火车出发城市
-		wx_Hotel: {id:"beijing",name:"北京",ts:false},//搜索出行酒店城市
+		vx_city_left: [{name: '深圳',id: 'SZX'},{name:'北京',id: 'PKX'}],//搜索出行机票出发城市
+		tr_city_left: [{name: '深圳',id: 'shenzhen'},{name:'北京',id: 'beijing'}],//搜索出行火车出发城市
+		wx_Hotel: {id:"shenzhen",name:"深圳",ts:false},//搜索出行酒店城市
 		wx_hotels: '',//搜索出行酒店地址
 		longitudelatitude: [],//经度纬度
 		singleDate: true,//单双程
@@ -26,6 +27,9 @@ const store = new Vuex.Store({
 		user_token: "",//用户唯一token
     },  
     mutations: {   //方法
+		mapad_add(state,provider){
+			state.mapad = provider;
+		},
 		showLoading(state, show) {
 			state.loading = show;
 	    },

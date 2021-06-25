@@ -89,7 +89,10 @@
 						</view>
 						<view class="frop_pls">
 							<view class="opls">
-								<view class="opls"><input type="text" id="for_ints" v-model="item.value" :placeholder="item.plahth" /></view>
+								<view class="opls">
+									<input v-if="item.values != ''" type="text" id="for_ints" @focus="focusfns(2,item,index)" v-model="item.values"  />
+									<input v-else type="text" id="for_ints" @focus="focusfns(2,item,index)" v-model="item.value" :placeholder="item.plahth" />
+								</view>
 							</view>
 						</view>
 						<view class="frop_right"><view class="rig_delt" v-if="index > 0" @click="de_icd(item, index)">删除</view></view>
@@ -152,6 +155,7 @@
 					name: "身份证",
 					plahth: "请确保姓名和证件号码与证件一致",
 					value:"",
+					values:'',
 					val:"NI",
 					id:"",
 					delFlag: ""
@@ -242,6 +246,7 @@
 				 			name: "身份证",
 				 			plahth: "请确保姓名和证件号码与证件一致",
 				 			value:"", //值
+							values:'',
 				 			val:"NI" //对应值
 				 		})
 				 	}
@@ -281,6 +286,12 @@
 					
 				}
 			},
+			focusfns(va,item,index){//编辑的时候 清除第一次获取光标时候的值
+				if(va == 2){//证件
+					this.englishname_list[index].value = '';//清空证件值
+					this.englishname_list[index].values = '';//清空证件值
+				}
+			},
 			depd_d(id){
 				let _this = this;
 				let datas = [];
@@ -293,7 +304,8 @@
 							   t_name: "englishname",
 							   name: _this.id_list[i].name,
 							   plahth: "请确保姓名和证件号码与证件一致",
-							   value: id[k].cardNo,
+							   values:this.utils.TuoMin(id[k].cardNo,id[k].cardType),//脱敏后的数据
+							   value:id[k].cardNo,
 							   val: id[k].cardType
 						   })
 					   }
@@ -352,7 +364,6 @@
 			genhuang(nums) {
 				this.mao = this.tabBar[nums].name;
 				this.sex=this.tabBar[nums].code;
-				// console.log(this.sex=this.tabBar[nums].code)
 				this.iesShow_H5 = false
 				setTimeout(() => {
 					this.companye_click = false;

@@ -62,7 +62,6 @@
 		},
 		onLoad(res) {
 			this.teas = JSON.parse(res.data);
-			console.log(this.teas);
 		},
 		mounted() {
 			this.usernams();
@@ -95,7 +94,6 @@
 					return
 				}
 				let userInfo = uni.getStorageSync('userinfo'+ uni.getStorageSync('appWxId'));//检验是否是登录状态
-				//console.log(userInfo.user.customUserId);
 						
 				 
 			 
@@ -160,14 +158,12 @@
 				}
 			},
 			rblcok(){
-				// #ifdef  APP-PLUS
+				// #ifdef  APP-PLUS || MP-WEIXIN
 					uni.navigateBack({
 					})
 				// #endif
-				// #ifdef  H5 || MP-WEIXIN
-					uni.navigateTo({
-						url:'./cruise'
-					})
+				// #ifdef  H5 
+					history.back();
 				// #endif
 			},
 		}

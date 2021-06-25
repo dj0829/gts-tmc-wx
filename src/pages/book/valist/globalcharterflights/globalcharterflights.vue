@@ -90,7 +90,6 @@
 						prices: this.datalist[index].cfProductPrice[this.chines].price,//单价
 						taxation:this.datalist[index].cfProductPrice[this.chines].taxation,//税费
 					}
-					console.log(dats)
 					setTimeout(()=>{
 						uni.navigateTo({
 							url:'./globalcharterflightsadd?data=' + JSON.stringify(dats)
@@ -131,7 +130,7 @@
 				let that = this;
 				for (let j = 0; j < that.airportlist.length; j++) {
 					if (name == that.airportlist[j].airportCode) {
-						return that.airportlist[j].cityCName;
+						return that.airportlist[j].airportCName;
 					}
 				}
 				return name

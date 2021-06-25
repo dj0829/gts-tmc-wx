@@ -51,7 +51,6 @@
 			}
 		},
 		onLoad(it) {
-			console.log(JSON.parse(it.data))
 			let dstp = JSON.parse(it.data);
 			this.costlist = dstp;
 		},

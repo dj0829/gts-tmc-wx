@@ -1,0 +1,754 @@
+<template>
+	<div class="carA_box" id="carA_box">
+		<map id="midMap"  v-if="mapsit" :include-points="include_points" class="carmap" :scale="scale"  @regionchange="regionchange" :latitude="latitude" :longitude="longitude" :markers="markers" >
+			<cover-view class="cat_top">
+				
+				<div class="rouck" @click="roublock">
+					<text class="iconfont" style="font-size: 14px;">&#xe61e;</text>
+				</div>
+				<div class="antbns">
+					<div class="anlis" @click="isbk(item.id)" :class="ibtnk == item.id ? 'anlisk':''" v-for="(item,index) in ibtlist" :key="index">
+						<text :class="ibtnk == item.id ? 'fontsits':'fontsit'">{{item.name}}</text>
+					</div>
+				</div>
+				<div class="roucks">
+				</div>
+			</cover-view >
+			<cover-view class="cat_section" :style="{marginTop: gotop + 'px'}">
+				<div class="cat_sec_top">
+					<text style="line-height: 25px;font-size: 12px;color: #FFFFFF;">在当前位置上车</text>
+				</div>
+				<div class="cat_sec_tbns">
+					<text class="iconfont" style="color: #6ECB65;font-size: 20px;">&#xe640;</text>
+				</div>
+			</cover-view>
+			<cover-view class="cat_bootom">
+				<div class="cat_bootoms">
+					<div class="cat_boos">
+						<div class="cauls">
+							<div class="cadlit" @click="catopck(item.id)" :class="catopvalue == item.id ? 'cadlited':''" v-for="(item,index) in catoplist" :key="index">
+								<text style="font-size: 14px;line-height: 50px;" :class="catopvalue == item.id ? 'cadfonts':''">{{item.name}}</text>
+							</div>
+						</div>
+						<div class="rouckt" @click="d_oks()">
+							<text class="iconfont" style="color: #007aff;font-size: 35px;line-height: 50px;text-align: center;">&#xe642;</text>
+						</div>
+					</div>
+				</div>
+				<div class="cat_selt">
+					<div class="cat_sels">
+						<div class="cacitysd"  v-if="catopvalue == 3">
+							<div class="cflits" v-for="(item,index) in flots" @click="flotsid = item.id" :class="flotsid == item.id ? 'cflitsd':''" :key="index">
+								<text style="line-height: 25px;text-align: center;font-size: 14px;" :class="flotsid == item.id ? 'fontssd':''">{{item.name}}</text>
+							</div>
+						</div>
+						<div class="cacitys" v-if="catopvalue == 2 || (catopvalue ==3 && flotsid == 2)">
+							<div class="catleft">
+								<text class="iconfont" style="color: #000000;font-size: 18px;">&#xe8a5;</text>
+							</div>
+							<div class="adresx" style="border-style: solid;border-color: #F1F1F1;border-bottom-width: 1px;">
+								<htimepicker sTime="0" cTime="23" interval="1" @changeTime="changeTime">
+									<div slot="pCon" class="changeTime">
+									    <div class="ctiemns" v-if="timeop == ''">
+									    	<text style="color: #cccccc;">请选择预约时间</text>
+									    </div>
+										<div v-else>
+											<text >{{timeop}}</text>
+										</div>
+									</div>
+								</htimepicker>
+							</div>
+						</div>
+						<div class="cacitys" @click="citck(1)" v-if="catopvalue != 3">
+							<div class="catleft">
+								<div class="ca_x" style="border-style: solid;border-color: #52C41A;border-width: 1px;">
+									<div class="ca_xs" style="background-color: #52C41A;">
+									</div>
+								</div>
+							</div>
+							<div class="adresx" style="border-style: solid;border-color: #F1F1F1;border-bottom-width: 1px;">
+								<text>{{adderssnameop.name}}</text>
+							</div>
+						</div>
+						<div class="cacitys"  v-if="catopvalue == 3 && flotsid ==1">
+							<div class="catleft">
+								<div class="ca_x" style="border-style: solid;border-color: #52C41A;border-width: 1px;">
+									<div class="ca_xs" style="background-color: #52C41A;">
+									</div>
+								</div>
+							</div>
+							<div class="adresx" style="border-style: solid;border-color: #F1F1F1;border-bottom-width: 1px;" @click="ticks" >
+								<div class="" v-if="ticketinlist.name != ''">
+									<text >{{ticketinlist.name}}</text>
+								</div>
+								<div class="ctiemns" v-if="ticketinlist.name == ''">
+									<text style="color: #cccccc;">请选择航班</text>
+								</div>
+							</div>
+						</div>
+						<div class="cacitys"  v-if="catopvalue == 3 && flotsid ==1">
+							<div class="catleft">
+								<text class="iconfont" style="color: #000000;font-size: 18px;">&#xe8a5;</text>
+							</div>
+							<div class="adresx" style="border-style: solid;border-color: #F1F1F1;border-bottom-width: 1px;flex-direction: row;">
+								<text >航班落地后</text>
+								<div class="pucstr_time">
+									<picker mode="selector" :value="endtims" :range="endtime" @change="bindChange($event)">
+										<text style="font-size: 16px;line-height: 25px;margin-left: 8px;">{{endtims}}</text>
+									</picker>
+								</div>
+								<text >分钟上车</text>
+							</div>
+						</div>
+						<div class="cacitys" @click="citck(1)" v-if="catopvalue == 3 && flotsid == 2">
+							<div class="catleft">
+								<div class="ca_x" style="border-style: solid;border-color: #52C41A;border-width: 1px;">
+									<div class="ca_xs" style="background-color: #52C41A;">
+									</div>
+								</div>
+							</div>
+							<div class="adresx" style="border-style: solid;border-color: #F1F1F1;border-bottom-width: 1px;flex-direction: row;">
+								<text>{{adderssnameop.name}}</text>
+							</div>
+						</div>
+						<div class="cacitys" @click="citck(2)" v-if="catopvalue != 3">
+							<div class="catleft">
+								<div class="ca_x" style="border-style: solid;border-color: #F98B2A;border-width: 1px;">
+									<div class="ca_xs" style="background-color: #F98B2A;">
+									</div>
+								</div>
+							</div>
+							<div class="adresx">
+								<div class="ctiemns" v-if="adderssnameend.name == ''">
+									<text style="color: #cccccc;">你要去哪儿</text>
+								</div>
+								<div v-else>
+									<text>{{adderssnameend.name}}</text>
+								</div>
+							</div>
+						</div>
+						<div class="cacitys" @click="citck(3)" v-if="catopvalue == 3">
+							<div class="catleft">
+								<div class="ca_x" style="border-style: solid;border-color: #F98B2A;border-width: 1px;">
+									<div class="ca_xs" style="background-color: #F98B2A;">
+									</div>
+								</div>
+							</div>
+							<div class="adresx" v-if="flotsid == 1">
+								<div class="ctiemns" v-if="tiendname.name == ''">
+									<text style="color: #cccccc;">你要去哪儿</text>
+								</div>
+								<div v-else>
+									<text >{{tiendname.name}}</text>
+								</div>
+							</div>
+							<div class="adresx" v-if="flotsid == 2">
+								<div class="ctiemns" v-if="tiendnames.name == ''">
+									<text style="color: #cccccc;">请输入送机机场</text>
+								</div>
+								<div v-else>
+									<text >{{tiendnames.name}}</text>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</cover-view>
+		</map>
+	</div>
+</template>
+
+<script>
+	import torok from '@/api/torowk.js'
+	import train from '@/common/gdmapcity.js'
+	import htimepicker from '@/components/h-timePicker/h-timePicker.vue'
+	export default {
+		data(){
+			return{
+				gotop:0,
+				car_fsd:false,//是否有未完成的订单
+				flightlist:{},//当前航班信息
+				show:false,
+				endtims: 10,//飞机接机延长时间
+				endtime:[10,20,30,40,50,60],
+				tiendname:{//接机地址
+					name:'',
+					adress:'',
+					location:'',
+				},
+				tiendnames:{//送机地址
+					name:'',
+					adress:'',
+					location:'',
+				},
+				timeop:'',//预约用车时间
+				sev_boolt:false,
+				windowHeight: '',
+				id_ic: false,
+				citys: [],
+				ticketinlist:{
+					name:'',
+					id:'',
+					times:'',
+					flightArrcode:'',
+					adress:'',
+					flightDeptimePlanDate:'',
+					location:''
+				},//接机航班信息
+				addfor:1,//搜索类型
+				adderssnameop:{//出发地的名称和坐标
+					name:'',
+					adress:'',
+					location:'',
+				},
+				adderssnameend:{//到达地的名称和坐标
+					name:'',
+					adress:'',
+					location:'',
+				},
+				flots:[{
+					name:'接机',
+					id:1
+				},{
+					name:'送机',
+					id:2
+				}],
+				flotsid:1,
+				include_points:[],
+				mapsit:true,//是否显示地图
+				adderssname:'',//当前坐标名称
+				teaisn:false,
+				ibtnk:1,//因公因私
+				catoplist:[{
+					name:'现在',
+					id:1
+				},{
+					name:'预约',
+					id:2
+				},{
+					name:'接送机',
+					id:3
+				}],
+				catopvalue:1,//用车类型
+				ibtlist:[{
+					name:'因公',
+					id:1
+				},{
+					name:'因私',
+					id:2
+				}],
+				scale:18,
+				longitude: 0,
+				latitude: 0,
+				markers: [],
+				latitudes: '',//移动后的坐标
+				longitudes: '',
+				
+			}
+		},
+		components:{
+			htimepicker,
+		},
+		created() {  
+			this.gettops();
+		    var domModule = weex.requireModule("dom");  
+		    domModule.addRule('fontFace', {  
+		           'fontFamily': 'iconfont',  
+		           'src': "url(\'https://at.alicdn.com/t/font_1399933_7ttzdrtmwel.ttf\')"  
+		    })  
+		},
+		onShow() {
+			uni.$on("searchcars", rets => {
+				var res = rets.data;
+				this.city_vl = res.city_vl;
+				if (res.catopvalue == 1 || res.catopvalue == 2) { //现在用车/预约用车
+					if (res.addfor == 1) {
+						if (res.city != null && res.city != '') {
+							this.adderssnameop = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						} else {
+							this.adderssnameop = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						}
+						this.longitude = res.longitude;
+						this.latitude = res.latitude;
+						this.atst(res.catopvalue); //跳转查询用车页面
+					} else {
+						if (res.city != null && res.city != '') {
+							this.adderssnameend = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						} else {
+							this.adderssnameend = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						}
+						this.atst(res.catopvalue); //跳转查询用车页面
+					}
+				} else if (res.catopvalue == 3) { //接机/送机
+					if (res.addfor == 1) {
+						if (res.city != null && res.city != '') {
+							this.adderssnameop = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						} else {
+							this.adderssnameop = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						}
+						this.longitude = res.longitude;
+						this.latitude = res.latitude;
+					} else {
+						if (res.flotsid == 1) { //接机
+							this.tiendname = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						} else {
+							this.tiendnames = {
+								name: res.name,
+								adress: res.adress,
+								location: res.location,
+								cityname: res.city
+							}
+						}
+					}
+		
+					this.atst(this.catopvalue); //跳转查询用车页面
+				}
+				// 清除监听
+				uni.$off('searchcars');
+			})
+			uni.$on("tocknos", rets => {
+				var res = rets.data;
+				this.flightlist = res.flightlist;
+				this.ticketinlist.id = res.flightNo; //航班号
+				this.ticketinlist.cityname = res.flightArr;//城市
+				this.ticketinlist.flightDeptimePlanDate = res.flightDeptimePlanDate; //航班起飞时间
+				this.ticketinlist.flightArrtimePlanDate = res.flightlist.flightArrtimePlanDate; //航班到达时间
+				this.ticketinlist.adress = res.flightArrAirport;
+				this.ticketinlist.flightArrcode = res.flightArrcode; //三字码
+				this.ticketinlist.name = res.flightArrAirport;
+				this.seatck(this.ticketinlist.adress, true)
+				this.atst(this.catopvalue); //跳转查询用车页面
+				// 清除监听
+				uni.$off('tocknos');
+			})
+		},
+		onReady(options) {
+			this.appMap = uni.createMapContext("midMap", this);
+			this.locations();
+		},
+		methods:{
+			ticks() { //选择航班
+				uni.navigateTo({
+					url: "carbusinesslist/tocknos"
+				})
+			},
+			citck(it) {
+				this.addfor = it; //用车类型
+				// if (it == 3) {
+				// 	this.citval = '';
+				// 	this.seatck('');
+				// }
+				var dats = {
+					catopvalue: this.catopvalue,
+					addfor: this.addfor,
+					flotsid: this.flotsid,
+					city_vl: this.city_vl
+				}
+				uni.navigateTo({
+					url: './carbusinesslist/searchcars?data=' + JSON.stringify(dats)
+				})
+			},
+			atst(val){
+				let sat = 0;
+				let dats = {};
+				if(val == 1 || val == 2){ //非空判断 正确就自动跳转页面
+					if(this.adderssnameop.name == "" || this.adderssnameend.name == ""){
+						return
+					}
+					if(val == 2 && this.timeop == "" ){
+						return
+					}
+					if(val == 1){ //立即叫车
+						sat = 4;
+						dats= {
+							typename:this.ibtnk,
+							opt:sat,
+							or: this.adderssnameop,
+							end:this.adderssnameend,
+						}
+					} else {//预约叫车
+						sat = 3;
+						dats= {
+							typename:this.ibtnk,
+							opt:sat,
+							times:this.timeop,//预约时间
+							or: this.adderssnameop,
+							end:this.adderssnameend,
+						}
+					}
+				} else if(val == 3){
+					if(this.flotsid == 1){//接机
+						sat = 1;
+						if( this.endtims== '' || this.tiendname.name == '' || this.ticketinlist.name == ''){
+							return
+						}
+						dats= {
+							typename:this.ibtnk,
+							opt:sat,
+							flt:this.flightlist.flightNo,//航班号
+							or:this.ticketinlist,
+							flightDate: this.ticketinlist.flightDeptimePlanDate,//起飞时间
+							airCode:this.flightlist.flightArrcode,//三字码
+							flightDelayTime:this.endtims,//飞机延长时间
+							end:this.tiendname,//目的地
+						}
+					} else { //送机
+						sat = 2;
+						if( this.timeop== '' || this.tiendnames.name == '' || this.adderssnameop.name == ''){
+							return
+						}
+						dats= {
+							typename:this.ibtnk,
+							opt:sat,
+							times:this.timeop,
+							or:this.adderssnameop,
+							end:this.tiendnames,//目的地
+						}
+					}
+				}
+				uni.setStorageSync('cartaddA_data', JSON.stringify(dats));
+				setTimeout(()=>{
+					uni.navigateTo({
+						url:'/pages-book/book/mainModules/majorFunction/carbusiness/cartaddA'
+					})
+				},500)
+				
+			},
+			bindChange(val){ //选择延迟多久接机
+				this.endtims = this.endtime[val.detail.value];
+				this.atst(this.catopvalue);//跳转查询用车页面
+			},	
+			changeTime(time){//选择预约用车时间
+				this.timeop = time;
+				this.atst(this.catopvalue);//跳转查询用车页面
+			},
+			catopck(id){ //当前用车类型
+				this.catopvalue = id;
+			},
+			gettops(){
+				let res = uni.getSystemInfoSync();
+				let hist = res.windowHeight;//获取屏幕高度
+				let widt = res.windowWidth;//获取屏幕宽度
+				this.gotop = parseInt(hist)/2 - (40 + 40 + 54);
+			},
+			d_oks(){ //恢复到当前位置
+				this.locations();
+				this.appMap.getScale({ 
+					success: function(res) {
+						if(res.scale != 18){
+							this.scale = 18;
+						}
+					}
+				});
+			},
+			locations(){
+				let _this = this;
+				uni.getLocation({
+					type: 'gcj02',
+					success: function (res) {
+						_this.longitude = res.longitude;
+						_this.latitude = res.latitude;
+						var point = new plus.maps.Point(res.longitude, res.latitude);
+						plus.maps.Map.reverseGeocode(
+							point,
+							{},
+							function(event) {
+								var address = event.address; // 转换后的地理位置
+								var point = event.coord; // 转换后的坐标信息
+								var coordType = event.coordType; // 转换后的坐标系类型
+								var reg = /.+?(省|市|自治区|自治州|县|区)/g;
+								var addressList = address.match(reg).toString().split(",");
+								 _this.city_vl = addressList[1].substring(0,addressList[1].length-1); //获取当前城市
+							},
+							function(e) {}
+						);
+						_this.markers = [{
+							latitude: res.latitude,
+							longitude: res.longitude,
+							iconPath: '@/static/img/carbus/locast.png',
+							width:20,//图标大小
+							height:20,
+						}]
+						_this.adderss(res.longitude,res.latitude);
+					}
+				});
+			},
+			isbk(id){//切换因公因私
+				this.ibtnk = id;
+			},
+			roublock(){
+				uni.navigateBack({
+				})
+			},
+			regionchange(){
+				this.getCenter();
+			},
+			getCenter(){ //视野发生移动时更改当前坐标
+				let _that = this;
+				this.appMap.getCenterLocation({ //获取当前坐标
+					type: 'gcj02',
+					success: function(res) {
+						_that.latitudes = res.latitude.toString().substring(0,9); //对经纬度保留6位小数
+						_that.longitudes = res.longitude.toString().substring(0,10);
+						_that.adderss(_that.longitudes,_that.latitudes,1);
+					}
+				});
+			},
+			async adderss(longitude, latitude,sit) { //获取当前坐标下的城市
+				let dats = {
+					location: latitude + ',' + longitude,
+					get_poi:1,
+					poi_options:"policy=3"
+				}
+				try{
+					let res = await torok.geocoder(dats);
+					if(sit != 1){
+						this.longitude = longitude;
+						this.latitude = latitude;
+					}
+					
+					let dat = res.result; //获取当前的位置和坐标
+					this.adderssnameop.name = dat.pois[0].title;//当前地址
+					this.adderssnameop.adress = dat.pois[0].address;
+					this.adderssnameop.location = longitude + ',' + latitude;
+					let str = dat.address_component.city;
+					if (str.indexOf("市") != -1 || str.indexOf("州") != -1){
+					    str = str.substring(0, str.length - 1)
+					    console.log('删除城市的最后一个字',str)
+					}
+					this.adderssnameop.cityname = str;//当前城市
+					this.city_vl = str; //获取当前城市
+				}catch(err){
+					console.log(err)
+					//TODO handle the exception
+				}
+			}
+		}
+	}
+</script>
+
+<style scoped>
+.iconfont {  
+	font-family: iconfont;  
+}
+.carA_box{
+	width: 750rpx;
+	flex: 1;
+}
+.carmap{
+	width: 750rpx;
+	flex: 1;
+}
+.cat_top{
+	margin-top: 40px;
+	width: 750rpx;
+	flex-direction: row;
+	justify-content: space-between;
+	height: 40px;
+	padding: 0 10px;
+	line-height: 40px;
+}
+.rouck{
+	width: 40px;
+	height: 40px;
+	background-color: #FFFFFF;
+	border-radius: 50%;
+	justify-content: center;
+	align-items: center;
+}
+.roucks{
+	
+}	
+.antbns{
+	width: 160px;
+	height: 40px;
+	background-color: #FFFFFF;
+	border-radius: 40px;
+	flex-direction: row;
+}
+.anlis{
+	width: 80px;
+	height: 40px;
+	border-radius: 40px;
+}
+.fontsit{
+	text-align: center;
+	line-height: 40px;
+	color: #999999;
+	font-size: 15px;
+}
+.fontsits{
+	text-align: center;
+	line-height: 40px;
+	color: #FFFFFF;
+	font-size: 15px;
+}
+.anlisk{
+	background-color: #007aff;
+}
+.cat_section{
+	width: 750rpx;
+	flex-direction:column;
+	align-items: center;
+	color: black;
+	
+}
+.cat_sec_top{
+	height: 25px;
+	padding: 0 10px;
+	background-color: #007aff;
+	border-radius: 25px;
+}
+.cat_sec_tbns{
+	margin-left: 4px;
+	margin-top: 8px;
+	justify-content: center;
+	align-items: center;
+}
+.cat_bootom{
+	width: 750rpx;
+	position: absolute;
+	left: 0;
+	bottom: 10px;
+}
+.cat_bootoms{
+	position: relative;
+}
+.cat_boos{
+	width:750rpx;
+	padding: 0 10px;
+	height:50px;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.cauls{
+	background-color: #FFFFFF;
+	border-radius: 4px;
+	font-size: 15px;
+	line-height: 50px;
+	flex-direction: row;
+}
+.cadlit{
+	padding: 0 20px;
+	border-radius: 4px;
+}
+.cadlited{
+	background-color: #007aff;
+}
+.cadfonts{
+	color: #FFFFFF;
+}
+.rouckt{
+	width: 50px;
+	height: 50px;
+	background-color: #FFFFFF;
+	border-radius: 3px;
+}
+.cat_selt{
+	width: 750rpx;
+	padding: 10px 10px 0 10px;
+}
+.cat_sels{
+	background-color: #FFFFFF;
+	border-radius:4px;
+}
+.cacitysd{
+	width: 750rpx;
+	height: 35px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.cflits{
+	padding: 0 13px;
+	font-size: 14px;
+	line-height: 25px;
+	border-radius: 25px;
+	color: #999999;
+	border-style: solid;
+	border-color: #FFFFFF;
+	border-width: 1px;
+}
+.cflitsd{
+	border-style: solid;
+	border-color: #007aff;
+	border-width: 1px;
+}
+.fontssd{
+	color: #007aff;
+}
+	
+.cacitys{
+	flex-direction: row;
+}
+.catleft{
+	width: 70px;
+	height: 70px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.ca_x{
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background-color: #ffffff;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.ca_xs{
+	width: 12px;
+	height:12px;
+	border-radius: 50%;
+}
+.adresx{
+	width: 560rpx;
+	height: 69px;
+	line-height: 69px;
+	font-size: 12px;
+	flex-direction: row;
+	align-items: center;
+	lines:1;
+	text-overflow:ellipsis;
+}
+.ctiemns{
+	color: #C0C0C0;
+}
+
+</style>

@@ -17,7 +17,8 @@
 					手机号
 				</view>
 				<view class="inp">
-					<input type="text" v-model="phone_number"  class="input_css" placeholder="输入手机号" />
+					<input v-if="phone_numbers != ''" type="text" @focus="focusfns(1)"  v-model="phone_numbers"  class="input_css" placeholder="输入手机号" />
+					<input v-else type="text" @focus="focusfns(1)"  v-model="phone_number"  class="input_css" placeholder="输入手机号" />
 				</view>
 			</view>
 			<view class="recipients" style="margin-top: 20upx;">
@@ -78,17 +79,24 @@
 	            pickerValueArray:[],
 				recipient:'',    //收件人
 				phone_number:'',  //手机号
+				phone_numbers:'',
 				labels:'',
 				detailed :'',     //详细地址
 				nameId:null,
 				isadd: true,//是否是新增
-				
+				phoneid:false,//是否第一次
 				
 	        };
 	    },
 		mounted(){
 		},
 	    methods: {
+			focusfns(va){//编辑的时候 清除第一次获取光标时候的值
+				if(va == 1 ){//手机号
+					this.phone_number = '';
+					this.phone_numbers = '';
+				}
+			},
 	        showMulLinkageTwoPicker() {
 	            this.pickerValueArray = this.mulLinkageTwoPicker
 	            this.mode = 'multiLinkageSelector'
@@ -100,12 +108,7 @@
 				this.pickerText = e.label
 	        },
 			rblcok() {
-        // #ifdef H5
-        window.history.back()
-        // #endif
-        // #ifdef MP-WEIXIN
-        uni.navigateBack();
-        // #endif
+				this.toBlock();			
 			},
 			async save() {
 				let _this = this;
@@ -171,7 +174,9 @@
 						title:"编辑地址"
 					});
 					this.isadd == false
+					_this.phone_numbers = this.utils.TuoMin(userlists.phone,1); //电话号码
 					_this.phone_number = userlists.phone; //电话号码
+					_this.phoneid = true;
 					_this.recipient = userlists.name; //收件人
 					_this.detailed = userlists.address;//详细地址
 					_this.pickerText = userlists.province+'-'+userlists.city; //城市

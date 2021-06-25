@@ -1,17 +1,40 @@
 <template>
 	<view class="container">
+		<!-- #ifdef APP-PLUS || MP-WEIXIN -->
+		<headnavigation titles="首页" :istoblock="2"></headnavigation>
+		<!-- #endif -->
+		<view class="main_tops">
+			<view class="main_les" @click="stmens(1)">
+				<view class="main_si">
+					{{corporatename.name}}
+				</view>
+				<view class="iconfont">
+					&#xe8a4;
+				</view>
+			</view>
+			<view class="iconfont" style="font-weight: 600;">
+				&#xe659;
+			</view>
+		</view>
+		<view :class="{'share-box': corporatshows}" @click="bushowsclose">
+		</view>
+		<view class="share-item" :class="{'share-show': corporatshows}">
+			<view class="stlist">
+				<view class="isswflist" @click.stop>
+					<view class="corporalist" @click="cornow(item)" v-for="(item,index) in corporatelist" :key="index">
+						<view class="itNames">{{item.name}}</view>
+						<span class="iconfont" v-if="item.customerNo == corporatename.id" style="color: #3c85fd;">&#xe620;</span>
+						<span class="iconfont" v-else style="color: #C0C0C0;">&#xe7bf;</span>
+					</view>
+				</view>
+			</view>
+		</view>
 		<view class="bo_im">
 			<bwSwiper @clickItem="swipclik" :swiperList="swlist" :autoplay="isvideo" :indicatorDots="indicatorDots">
 			</bwSwiper>
 		</view>
 		<view class="book_ci">
 			<view class="bos_onet">
-				<view class="usernames" @click="corcks">
-					<view class="userts">
-						{{corporatename.name}}
-					</view>
-					<view class="iconfont" style=" font-size: 60upx;">&#xe8a3;</view>
-				</view>
 				<view class="bos_ones">
 					<view class="bo_dvist">
 						<view v-for="(item, index) in tabBar" :key="index" class="tabbar_item" @click="us_toks(item)">
@@ -20,24 +43,50 @@
 						</view>
 					</view>
 				</view>
-				<view class="black_mu" @click="siwclick" v-if="switfal">
-					<view class="isswflist" @click.stop>
-						<view class="corporalist" @click="cornow(item)" v-for="(item,index) in corporatelist" :key="index">
-							<view class="itNames">{{item.name}}</view>
-							<span class="iconfont" v-if="item.id == corporatename.id" style="color: #3c85fd;">&#xe620;</span>
-							<span class="iconfont" style="color: #C0C0C0;">&#xe7bf;</span>
+			</view>
+			<view class="bos_one">
+				<view class="bo_dvist">
+					<view v-for="(item, index) in bodv_list" :key="item.url" class="tabbar_item" @click="us_tok(item)">
+						<image :src="item.imgNormal" mode=""></image>
+						<view class="text">{{item.text}}</view>
+						<view class="nums" v-if="item.istus == true && item.nums > 0">
+							{{item.nums}}
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="bos_one">
-			<view class="bo_dvist">
-				<view v-for="(item, index) in bodv_list" :key="item.url" class="tabbar_item" @click="us_tok(item)">
-					<image :src="item.imgNormal" mode=""></image>
-					<view class="text">{{item.text}}</view>
-					<view class="nums" v-if="item.istus == true && item.nums > 0">
-						{{item.nums}}
+			<!-- <view class="bocks" v-if="tifeixoks" @click.stop="tifecks">
+			</view>
+			<view class="tifeix" :class="tifeixoks ? 'show' : ''" @click.stop="tifecks">
+				<view class="tiPhones" v-if="setphne == false">
+					电话
+				</view>
+				<view class="tiPhoneste" v-else>
+					<view class="tilist" @click="tels(item.phone)" v-for="(item,index) in  phonels" :key="index">
+						<view class="ti_tops">
+							{{item.name}}
+						</view>
+						<view class="ti_botn">
+							{{item.phone}}
+						</view>
+					</view>
+				</view>
+			</view> -->
+			<view class="ticketing">
+				<view class="ticke">
+					<view class="tifot_l">
+						票务热线
+					</view>
+					<view class="tifot_r">
+						TEL:18859390059
+					</view>
+				</view>
+				<view class="ticke">
+					<view class="tifot_l">
+						酒店热线
+					</view>
+					<view class="tifot_r">
+						TEL:18905936655
 					</view>
 				</view>
 			</view>
@@ -63,9 +112,19 @@
 		},
 		data() {
 			return {
+				corporatshows:false,
+				phonels:[{//客服电话
+					name:'客服电话',
+					phone:'13888888888'
+				},{
+					name:'酒店客服电话',
+					phone:'13888888888'
+				}],
+				setphne:false,//是否显示
+				tifeixoks:false,//是否展示电话列表
 				swlist: [],
 				isvideo: true,
-				indicatorDots: false,
+				indicatorDots: true,
 				currentIndex: 0,
 				currentPage: 'Book',
 				bodv_list: [{
@@ -131,14 +190,25 @@
 						imgNormal: require('@/static/img/home/home_Hotel.png')
 					},
 					{
+						ul: 'Vehicleuse',
+						text: '用车业务',
+						imgNormal: require('@/static/img/home/home_vehicle.png')
+					},
+					{
 						ul: 'Internationalticket',
 						text: '国际机票',
 						imgNormal: require('@/static/img/home/home_international.png')
 					},
+					
 					{
-						ul: 'Vehicleuse',
-						text: '用车业务',
-						imgNormal: require('@/static/img/home/home_vehicle.png')
+						ul: 'bag',
+						text: '包给我',
+						imgNormal: require('@/static/img/home/home_bag.png')
+					},
+					{
+						ul: 'takeOutFood',
+						text: '外卖业务',
+						imgNormal: require('@/static/img/home/home_takeOutFood.png')
 					},
 					{
 						ul: 'visa',
@@ -156,25 +226,52 @@
 			this.search();
 		},
 		methods: {
+			stmens(item){
+				if(item == 1){
+					this.corcks()
+				}
+			},
+			bushowsclose(){
+				this.corporatshows = false;
+				this.$emit('isShows',1);
+			},
 			...mapMutations(['userTokenAi']),
+			tifecks(){//点加显示电话按钮
+				let that = this;
+				if(this.tifeixoks != that.setphne){
+					return
+				}
+				this.tifeixoks = !this.tifeixoks;
+				if(that.setphne == false){
+					that.setphne = true;
+				} else {
+					setTimeout(()=>{
+						that.setphne = false
+					},300)
+				}
+				
+			},
+			tels(ph){//拨打电话
+				uni.makePhoneCall({
+					phoneNumber: ph//电话
+				});
+			},
 			async cornow(its) { //修改当前员工所属公司
 				if (its.customerNo != this.corporatename.id) {
 					try {
-			
 						let res = await torks.changeEnterprise({
 							customerId: its.customerNo,
 							// #ifdef MP-WEIXIN
 							type: 2
 							// #endif
 						})
-			
 						if (res.code == 200) {
 							uni.showToast({
 								title: '切换成功',
 								icon: 'none',
 								duration: 1000
 							})
-							this.switfal = false;
+							this.corporatshows = false;
 							this.changs(1);
 							this.corporatename = {
 								id: its.customerNo,
@@ -189,27 +286,25 @@
 							})
 						}
 					} catch (e) {
-			
+						console.log(e)
 						//TODO handle the exception
 					}
 				} else {
-					this.switfal = false;
+					this.corporatshows = false;
 					this.changs(true);
 				}
 			},
-			siwclick() {
-				this.switfal = false;
-				this.changs(true);
-			},
 			async corcks() { //获取员工所属的公司信息
 				try {
-			
 					let res = await torks.currentUserEnterprise();
-			
 					if (res.code == 200) {
 						this.corporatelist = res.data;
-						this.switfal = true;
-						this.changs(false);
+						if(this.corporatelist.length > 0){
+							this.corporatshows = true;
+							this.changs(false);
+						} else {
+							return
+						}
 					} else {
 						uni.showToast({
 							title: res.message,
@@ -224,30 +319,44 @@
 				}
 			},
 			us_toks(item) {
-				if (item.ul == 'Internationalticket') {
+				if (item.ul == 'Internationalticket') {//国际机票
 					uni.showToast({
 						title: '疫情影响,暂未开放',
 						duration: 1000,
 						icon: 'none'
 					})
-				} else if (item.ul == 'visa') {
-					//#ifdef APP-PLUS  
-					uni.showToast({
-						title: '疫情影响,暂未开放',
-						duration: 1000,
-						icon: 'none'
-					})
-					//#endif
-			
-					// #ifdef  H5 || MP-WEIXIN
+				} else if (item.ul == 'visa') {//高端定制
 					uni.navigateTo({
 						url: './valist/valist'
 					})
-					//#endif
-				} else if (item.ul == 'Vehicleuse') { //用车业务
-					uni.navigateTo({
-						url: '/pages-book/book/mainModules/majorFunction/carbusiness/carbusiness'
+				} else if (item.ul == 'takeOutFood') {//外卖
+					uni.showToast({
+						title: '疫情影响,暂未开放',
+						duration: 1000,
+						icon: 'none'
 					})
+				} else if (item.ul == 'bag') {//包给我
+					// uni.navigateTo({
+					// 	url:'/pages-book/book/mainModules/majorFunction/bagittome/addbagittome'
+					// })
+					uni.showToast({
+						title: '疫情影响,暂未开放',
+						duration: 1000,
+						icon: 'none'
+					})
+				} else if (item.ul == 'Vehicleuse') { //用车业务
+					// #ifdef APP-PLUS
+						// this.showToasts('该用户未开通用车业务')
+						uni.navigateTo({
+							url: '/pages-book/book/mainModules/majorFunction/carbusiness/carbusinessA'
+						})
+					//#endif
+					
+					// #ifdef  H5 || MP-WEIXIN
+						uni.navigateTo({
+							url: '/pages-book/book/mainModules/majorFunction/carbusiness/carbusiness'
+						})
+					//#endif
 				} else {
 					uni.navigateTo({
 						url: '/pages-book/book/mainModules/majorFunction/select_list/select_list?type=' + item.ul
@@ -414,19 +523,63 @@
 	.container {
 		width: 100%;
 		position: relative;
-
-		.book_ci {
+		.main_tops{
 			width: calc(100% - 60upx);
-			position: absolute;
-			height: 200upx;
-			left: 30upx;
-			top: 320upx;
-			z-index: 10;
-
+			height: 90upx;
+			padding: 0 30upx;
+			background: #FFFFFF;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			color: #515151;
+			.main_les{
+				display: flex;
+				height: 90upx;
+				align-items: center;
+				.main_si{
+					max-width: 300upx;
+					overflow:hidden;
+					white-space:nowrap;
+					text-overflow:ellipsis;
+				}
+				.iconfont{
+					font-size: 48upx;
+				}
+			}
+			image{
+				width: 50upx;
+				height: 50upx;
+			}
+		}
+		.stlist{
+			width: 100%;
+			max-height: 500upx;
+			overflow: scroll;
+			.isswflist {
+				width: calc(100% - 40upx);
+				padding: 20upx;
+				min-height: 150upx;
+				z-index: 9999;
+			
+				.corporalist {
+					display: flex;
+					align-items: center;
+					font-size: 35upx;
+					padding: 0 20upx;
+					line-height: 70upx;
+			
+					.itNames {
+						width: 90%;
+					}
+				}
+			}
+		}
+		.book_ci {
+			width: 100%;
+			margin-top: 15upx;
 			.bos_onet {
 				width: 100%;
 				background: #FFFFFF;
-				border-radius: 15upx;
 				.usernames {
 					width: calc(100% - 80upx);
 					height: 90upx;
@@ -458,7 +611,7 @@
 						align-content: space-between;
 				
 						.tabbar_item {
-							width: 33%;
+							width: 25%;
 							font-size: 30upx;
 							color: #333333;
 							display: flex;
@@ -468,11 +621,12 @@
 							align-items: center;
 				
 							image {
-								width: 125upx;
-								height: 125upx;
+								width: 80upx;
+								height: 80upx;
 							}
 				
 							.text {
+								margin-top: 20upx;
 								line-height: 40upx;
 							}
 						}
@@ -492,74 +646,126 @@
 					z-index: 9999;
 				}
 				
-				.isswflist {
-					width: 80%;
-					padding: 20upx;
-					border-radius: 10upx;
-					min-height: 150upx;
-					z-index: 9999;
-					background: #ffffff;
 				
-					.corporalist {
+			}
+			.bos_one {
+				width: calc(100% - 30upx);
+				padding: 0 15upx;
+				.bo_dvist {
+					width: 100%;
+					margin-top: 15upx;
+					display: flex;
+					justify-content: space-between;
+			
+					.tabbar_item {
+						position: relative;
+						width: 23%;
+						height: 150upx;
+						border-radius: 15upx;
+						font-size: 26upx;
+						color: #333333;
+						background: #FFFFFF;
 						display: flex;
+						flex-direction: column;
 						align-items: center;
-						font-size: 35upx;
-						padding: 0 20upx;
-						line-height: 70upx;
-				
-						.itNames {
-							width: 90%;
+			
+						image {
+							width: 60upx;
+							height: 60upx;
+							margin: 20upx 0;
+						}
+			
+						.nums {
+							transform: scale(0.8);
+							right: -10upx;
+							top: -20upx;
+							position: absolute;
+							width: 50upx;
+							height: 50upx;
+							background: red;
+							border-radius: 50%;
+							text-align: center;
+							line-height: 50upx;
+							font-size: 26upx;
+							color: #FFFFFF;
 						}
 					}
 				}
 			}
-		}
-
-		.bos_one {
-			width: calc(100% - 60upx);
-			margin: 500upx 30upx 100upx 30upx;
-
-			.bo_dvist {
+			.bocks{
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0,0,0,.3);
+				z-index: 1000;
+				
+			}
+			.tifeix{
+				position: fixed;
+				right: 0;
+				width: 100upx;
+				top: 400upx;
+				transition: all 0.5s ease;
+				transform: translateX(0);
+				display: flex;
+				justify-content: flex-end;
+				z-index: 1010;
+				.tiPhones{
+					width: 100upx;
+					height: 100upx;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					box-shadow: 0upx -2upx 10upx rgba(89,125,172,.4);
+					color: red;
+					border-radius: 50%;
+					background-color: #FFFFFF;
+				}
+				.tiPhoneste{
+					width: 260upx;
+					border-top-left-radius: 20upx;
+					border-bottom-left-radius: 20upx;
+					padding:10upx 20upx;
+					box-shadow: 0upx -2upx 10upx rgba(89,125,172,.4);
+					background-color: #FFFFFF;
+					overflow: hidden;
+					.tilist{
+						font-size: 28upx;
+					}
+				}
+			}
+			.show {
+				width: 300upx;
+				transition:width 0.3s;
+			}
+			.ticketing{
 				width: 100%;
 				margin-top: 15upx;
 				display: flex;
-				flex-wrap: wrap;
-
-				.tabbar_item {
-					position: relative;
-					width: 23%;
-					margin: 1%;
-					height: 150upx;
-					border-radius: 15upx;
-					font-size: 26upx;
+				justify-content: space-between;
+				.ticke{
+					width: 48%;
+					background-color: #FFFFFF;
+					border-radius: 12upx;
+					padding: 30upx 0;
 					color: #333333;
-					background: #FFFFFF;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-
-					image {
-						width: 60upx;
-						height: 60upx;
-						margin: 20upx 0;
+					line-height: 50upx;
+					font-size: 26upx;
+					.tifot_l{
+						font-weight: 600;
 					}
-
-					.nums {
-						transform: scale(0.8);
-						right: -10upx;
-						top: -20upx;
-						position: absolute;
-						width: 50upx;
-						height: 50upx;
-						background: red;
-						border-radius: 50%;
-						text-align: center;
-						line-height: 50upx;
-						font-size: 26upx;
-						color: #FFFFFF;
+					.tifot_r{
+						color: #666666;
 					}
 				}
 			}
 		}
+
+		
 	}
 </style>

@@ -5,50 +5,39 @@
 		</loading>
 		<headnavigation titles="选择目的地"></headnavigation>
 		<view class="input-op">
-			<view class="input-lis">
+			<view class="input-lis" v-if="isShowCommentPanel">
 				<view class="iconfont" style="color: #9a9a9c;">&#xe6a2;</view>
-				<input v-model="ser_int" type="text" value="" @input="searcht($event)" class="input-css" :placeholder="placeh" />
-				
+				<input v-model="ser_int"  :focus="firstFocus"   type="text" value="" @input="searcht($event)" class="input-css" :placeholder="placeh" />
 				<view v-if="trim(ser_int)" class="iconfont" @click="sea_null" style="color: #C0C0C0;">&#xe641;</view>
-				
 			</view>
 		</view>
 		<view class="sear_list" v-if="sev_boolt">
 			<view v-if="trim(ser_int)" class="okis" @click="oksibl">确定</view>
 			<view class="se_mai" v-for="(item,index) in sec_lists" :key="index" @click="onSelect(item,0)">
-				<view style="text-indent: 30upx;" v-if="succ_type == 'Hotel' && sta == 'right'" v-html="item.label"></view>
-				<view style="text-indent: 30upx;" v-else>{{item.name}}</view>
+				<view class="se_lists" v-if="succ_type == 'Hotel'">
+					<view class="se_lists_l">
+						<view class="se_img">
+							<image :src="item.imgUrl" mode=""></image>
+						</view>
+						<view class="se_label">
+							<view class="se_liname" v-if="item.label !=null && item.label != ''" v-html="item.label">
+							</view>
+							<view class="se_liname" v-else>
+								{{item.name}}
+							</view>
+							<view class="se_titis">
+								{{item.address}}
+							</view>
+						</view>
+					</view>
+					<view class="se_lists_r">
+						{{hoty(item.type)}}
+					</view>
+				</view>
+				<view class="citylist" style="text-indent: 30upx;" v-else>{{item.name}}</view>
 			</view>
 		</view>
 		<view class="select-city">
-			<view class="citsarry" v-if="succ_type != 'Hotel'">
-				<view class="cits_ok" >
-					<view class="cits_hd" @click="del_box(0)">
-						<view class="boxs" v-if="deptCity.name !=''">
-							{{deptCity.name}}
-						</view>
-						<view class="ts_bod" v-else>
-							请选择出发城市
-						</view>
-					</view>
-					<view class="cits_hd">
-						<view class="iconfont" style="color: #007aff;">
-							&#xe61c;
-						</view>
-					</view>
-					<view class="cits_hd" @click="del_box(1)">
-						<view class="boxs" v-if="arrivCity.name !=''">
-							{{arrivCity.name}}
-						</view>
-						<view class="ts_bod" v-else>
-							请选择到达城市
-						</view>
-					</view>
-				</view>
-				<view class="citydel" v-if="deptCity.name !='' || arrivCity.name !=''">
-					重复点击即可删除
-				</view>
-			</view>
 			<view class="index" v-if="succ_type != 'Hotel' || (succ_type == 'Hotel' && sta == 'left')">
 				<view class="index-items" @click="scrollTo('#')">定位热门</view>
 				<view class="index-item" v-for="item in citys" :key="item.letter" @click="scrollTo(item.letter)">{{item.letter}}</view>
@@ -75,14 +64,27 @@
 				</view>
 			</scroll-view>
 		</view>
-		<view v-if="succ_type != 'Hotel'&& deptCity.name != '' && arrivCity.name != ''" class="btok" @click="btclick">
-			选好了
-		</view>
 		<view class="select-city" v-if="succ_type == 'Hotel' && sta == 'right'">
+			<!-- 历史搜索 -->
+			<view class="hitlist" v-if="hitorylist.length > 0">
+				<view class="hitlinames">
+					<view class="hitnaleft">
+						历史搜索
+					</view>
+					<view class="hitnaright" @click="clearhistoy">
+						清空
+					</view>
+				</view>
+				<view class="hitlists">
+					<view class="hitlistad" v-for="(item,index) in hitorylist" @click="histytobk(item)" :key="index">
+						{{item.name}}
+					</view>
+				</view>
+			</view>
 			<view class="section" v-for="(item,index) in stlist" :key="index">
 				<view class="city-title">{{item.name}}</view>
 				<view class="city-list" :class="{'ovf-clss': item.isclk}">
-					<view class="city-item" :class="{active: lisWxHotels === city}" v-for="(city, i) in item.list" :key="i" @click="onSelect(city, 0 ,[item.isclk,index,i])">
+					<view class="city-item" :class="{active: lisWxHotels === city}" v-for="(city, i) in item.list" :key="i" @click="onSelect(city, 0 ,item,[item.isclk,index,i])">
 						<text v-if="item.list.length < 7">{{city}}</text>
 						<text v-else-if="item.isclk == false && item.list.length > 6 && i != item.list.length -1">{{city}}</text>
 						<text v-else-if="item.isclk && item.list.length > 6 && i != 5">{{city}}</text>
@@ -105,6 +107,9 @@
 	export default {
 		data() {
 			return {
+				isShowCommentPanel:false,
+				sdata:0,
+				wx_Hotel:'',//酒店城市
 				lisWxHotels:'',//酒店地址
 				deptCity:{name:'',id:''},//出发城市
 				arrivCity:{name:'',id:''},//到达城市
@@ -126,6 +131,82 @@
 				copuas: [],
 				typeys:'',
 				lslt: false,
+				hitorylist:[],//历史记录
+				firstFocus:false,
+			}
+		},
+		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
+			this.sta = option.sta;//左右边
+			this.succ_type = option.type
+			let types = this.succ_type;//类型：机场、城市
+			let list = []
+			this.typeys = option.types;
+			this.sdata = option.sdata;//页面id
+			this.cits();
+			if(types == "Hotel"){//酒店
+				this.placeh = '城市名/位置/地点';
+				if(option.sta == 'left'){
+					if (option.list != ''){
+						list = option.list;
+						for (let i = 0; i < this.citys.length; i++) {
+							for (let k = 0; k < this.citys[i].list.length; k++) {
+								if(this.citys[i].list[k].name == list){
+									this.citys[i].list[k].ts = true
+								}
+							}
+						}
+						for (let i = 0; i < this.hotCitys.length; i++) {
+							if(this.hotCitys[i].name == list){
+								this.hotCitys[i].ts = true
+							}
+						}
+					}
+				} else {
+					this.wx_Hotel = option.list;
+					this.lisWxHotels = option.wx_hotels;//酒店地址
+					this.lslt = true;
+				}
+			} else if(types == "Planeticket"){ //飞机
+				this.placeh = '深圳 / shenzhen / sz';
+				if(option.list.length > 3){
+					list = JSON.parse(option.list);
+					if(list[0].name.length > 1){
+						this.deptCity = list[0];
+						this.arrivCity = list[1];
+						
+						for (let i = 0; i < this.citys.length; i++) {
+							for (let k = 0; k < this.citys[i].list.length; k++) {
+								if(option.sta == 'left' && this.citys[i].list[k].name == list[0].name || option.sta == 'right' &&this.citys[i].list[k].name == list[1].name){
+									this.citys[i].list[k].ts = true
+								}
+							}
+						}
+						for (let i = 0; i < this.hotCitys.length; i++) {
+							if(option.sta == 'left' && this.hotCitys[i].name == list[0].name ||option.sta == 'right'&& this.hotCitys[i].name == list[1].name){
+								this.hotCitys[i].ts = true
+							}
+						}
+					}
+				} 
+			} else if(types == "Train"){ //火车
+				this.placeh = '输入城市名称';
+				if(option.list.length>0){
+					list = JSON.parse(option.list);
+					this.deptCity = list[0];
+					this.arrivCity = list[1];
+					for (let i = 0; i < this.citys.length; i++) {
+						for (let k = 0; k < this.citys[i].list.length; k++) {
+							if(option.sta == 'left' && this.citys[i].list[k].name == list[0].name || option.sta == 'right' && this.citys[i].list[k].name == list[1].name){
+								this.citys[i].list[k].ts = true
+							}
+						}
+					}
+					for (let i = 0; i < this.hotCitys.length; i++) {
+						if(option.sta == 'left' && this.hotCitys[i].name == list[0].name || option.sta == 'right' && this.hotCitys[i].name == list[1].name){
+							this.hotCitys[i].ts = true
+						}
+					}
+				}
 			}
 		},
 		mounted() {
@@ -133,15 +214,57 @@
 			if(this.lslt){
 				this.st_right_list();//获取酒店详情
 			}
-		},
-		computed:{
-			 ...mapState(['wx_Hotel'])
+			let sut = uni.getStorageSync("majorhitorylist" + uni.getStorageSync('appWxId'));//历史记录
+			this.hitorylist = [];
+			if (sut) {
+				if(this.succ_type == 'Hotel' && this.sta == 'right'){//酒店的搜索历史记录 根据选择的城市过滤出来
+					let dat = sut.planethitorylist;//酒店详情搜索历史数据
+					let hitory = [];
+					for(let k in dat){
+						if(dat[k].city == this.wx_Hotel){//去当前城市下的历史记录
+							hitory.push(dat[k])
+						}
+					}
+					this.hitorylist = hitory;
+				}
+			} else {
+				this.hitorylist = [];
+			}
 		},
 		methods: {
-			oksibl(){
-				this.$store.commit("wx_hotels_Ai", this.ser_int);
-				uni.navigateBack({
-				})
+			clearhistoy(){//清除历史记录
+				this.hitorylist = [];
+				uni.removeStorageSync("majorhitorylist"+ uni.getStorageSync('appWxId'));//清空缓存
+			},
+			 /**
+			 * 1:酒店
+			 * 2：行政区
+			 * 3：地铁站
+			 * 4：商圈
+			 * 5：机场/火车站
+			 * 6：地标
+			 */
+			hoty(ty){
+				if(ty == 1){
+					return '酒店'
+				} else if(ty == 2){
+					return '行政区'
+				} else if(ty == 3){
+					return '地铁站'
+				} else if(ty == 4){
+					return '商圈'
+				} else if(ty == 5){
+					return '机场/火车站'
+				} else if(ty == 6){
+					return '地标'
+				} else if(ty == 0){
+					return '市县级'
+				}
+			},
+			oksibl(){//确定搜索框的值
+				this.listshitoy('keyword',0,this.ser_int);//选择输入框的值默认当前关键字
+				uni.$emit('wx_Hotel_Ais',{type:'keyword',id:0,data:this.ser_int,ts:this.sdata});
+				this.toBlock();
 			},
 			gleklist(num){
 				if(num >= 0){
@@ -165,43 +288,59 @@
 			async st_right_list(){//回显酒店信息
 				let that = this;
 				try{
-					const res = await tork.getCityDetail({'cityCode': that.wx_Hotel.name});
+					const res = await tork.getCityDetail({'cityCode': that.wx_Hotel});
 					if(res.code == 200){
-						that.stlist.push({
-							name: '行政区',
-							id: 1,
-							isclk: false,//打开还是关闭
-							oken: false,//是否超过6个
-							list:res.data.cityArea//值
-						})
-						that.stlist.push({
-							name: '机场车站',
-							id: 2,
-							isclk: false,//打开还是关闭
-							oken: false,//是否超过6个
-							list:res.data.cityAirRailWay//值
-						})
-						that.stlist.push({
-							name: '商圈',
-							id: 3,
-							isclk: false,//打开还是关闭
-							oken: false,//是否超过6个
-							list:res.data.cityBusinessSectionInfo//值
-						})
-						that.stlist.push({
-							name: '地铁',
-							id: 3,
-							isclk: false,//打开还是关闭
-							oken: false,//是否超过6个
-							list:res.data.citySubWay//值
-						})
-						that.stlist.push({
-							name: '品牌',
-							id: 3,
-							isclk: false,//打开还是关闭
-							oken: false,//是否超过6个
-							list:that.hotelb(res.data.hotelBrands)//值
-						})
+						if(res.data.cityArea != null){
+							that.stlist.push({
+								name: '行政区',
+								type:'position',
+								id: 1,
+								isclk: false,//打开还是关闭
+								oken: false,//是否超过6个
+								list:res.data.cityArea//值
+							})
+						}
+						if(res.data.cityAirRailWay != null){
+							that.stlist.push({
+								type:'position',
+								name: '机场车站',
+								id: 2,
+								isclk: false,//打开还是关闭
+								oken: false,//是否超过6个
+								list:res.data.cityAirRailWay//值
+							})
+						}
+						if(res.data.cityBusinessSectionInfo != null){
+							that.stlist.push({
+								name: '商圈',
+								type:'position',
+								id: 3,
+								isclk: false,//打开还是关闭
+								oken: false,//是否超过6个
+								list:res.data.cityBusinessSectionInfo//值
+							})
+						}
+						if(res.data.citySubWay != null){
+							that.stlist.push({
+								name: '地铁',
+								type:'position',
+								id: 4,
+								isclk: false,//打开还是关闭
+								oken: false,//是否超过6个
+								list:res.data.citySubWay//值
+							})
+						}
+						if(res.data.hotelBrands != null){
+							that.stlist.push({
+								type:'brand',
+								name: '品牌',
+								id: 5,
+								isclk: false,//打开还是关闭
+								oken: false,//是否超过6个
+								list:that.hotelb(res.data.hotelBrands)//值
+							})
+						}
+						
 						// 
 						that.gleklist(-1);
 					}
@@ -286,28 +425,6 @@
 				}
 				this.citys = ct
 			},
-			del_box(it){//本地删除选择城市
-				let names;
-				if(it == 0){
-					names = this.deptCity.name;
-					this.deptCity = {name:'',id:''};
-				} else {
-					names = this.arrivCity.name;
-					this.arrivCity = {name:'',id:''};
-				}
-				for (let i = 0; i < this.citys.length; i++) {
-					for (let k = 0; k < this.citys[i].list.length; k++) {
-						if(this.citys[i].list[k].name == names){
-							this.citys[i].list[k].ts = false
-						}
-					}
-				}
-				for (let i = 0; i < this.hotCitys.length; i++) {
-					if(this.hotCitys[i].name == names){
-						this.hotCitys[i].ts = false
-					}
-				}
-			},
 			shou_clik(va, num , ns){ //关闭打开 、上面还是下面 、 下标
 				let _this = this;
 				if(_this.stlist[num].list.length < 7){
@@ -334,9 +451,15 @@
 				}
 			},
 			getSystemInfo() {
+				let that = this;
+				that.firstFocus = false; // 每次都要初始化 focus 属性
+				that.isShowCommentPanel = true;
+				setTimeout(() => {
+					that.firstFocus = true; // this.secondFocus 是第二个文本框的 focus 属性。
+				}, 100)
 				uni.getSystemInfo().then(res => {
 					let [error, data] = res
-					this.windowHeight = `${data.windowHeight}px`
+					that.windowHeight = `${data.windowHeight}px`
 				})
 			},
 			scrollTo(letter) {
@@ -348,99 +471,136 @@
 					_this.id_ic = false;
 				},1000)
 			},
-			btclick(){ //提交选择的城市
-				let cus = this.succ_type
-				if(this.typeys == 'flig'){ //判断如果航班动态
-					if(cus == "Planeticket"){
-						this.$store.commit("vx_city_le_add", [this.deptCity,this.arrivCity])
-						uni.navigateBack({
-						})
-					}
-				} else {
-					if(cus == "Planeticket"){
-						this.$store.commit("vx_city_le_add", [this.deptCity,this.arrivCity])
-					} else if(cus == "Train"){
-						this.$store.commit("tr_city_left_add", [this.deptCity,this.arrivCity])
-					}
-					uni.navigateBack({
-						data: 'sta=left&type=' + cus,
-					})
-				}
-			},
-			onSelect(city,opname,arr) { //选中城市后页面返回
-				// console.log(city);
+			onSelect(city,opname,item,arr) { //选中城市后页面返回
 				let _this = this
 				_this.sev_boolt = false;
 				if(_this.succ_type == 'Hotel'){
 					if(_this.sta == 'left'){
-						_this.htocity = city;
-						this.$store.commit("wx_Hotel_Ai", city)
-						this.$store.commit("wx_hotels_Ai", '')
-						uni.navigateBack({
-							data: 'sta=left&type=' + _this.succ_type,
-						})
+						_this.on_bloks(city,item,opname);//酒店城市选择
 					} else if(_this.sta == 'right'){
 						if(arr == '' || arr == undefined){ //判断是否点击的酒店地址隐藏
-							_this.on_blok(city,opname)
+							_this.on_blok(city,item,opname)
 						} else {
 							if(!_this.shou_clik(arr[0],arr[1],arr[2])){
-								_this.on_blok(city,opname);
+								_this.on_blok(city,item,opname);
 							}
 						}
 					}
 				} else {
-					if(this.deptCity.name == '' || this.arrivCity.name == ''){ //选择城市
-						if(this.deptCity.name == ''){
-							if(this.arrivCity.name !== city.name){
-								for (let i = 0; i < this.citys.length; i++) {
-									for (let k = 0; k < this.citys[i].list.length; k++) {
-										if(this.citys[i].list[k].name == city.name){
-											this.citys[i].list[k].ts = true
-										}
-									}
-								}
-								for (let i = 0; i < this.hotCitys.length; i++) {
-									if(this.hotCitys[i].name == city.name){
-										this.hotCitys[i].ts = true
-									}
-								}
-								_this.deptCity = {
-									name:city.name,
-									id:city.id
-								}
-							}
-						} else {
-							if(this.deptCity.name !== city.name){
-								for (let i = 0; i < this.citys.length; i++) {
-									for (let k = 0; k < this.citys[i].list.length; k++) {
-										if(this.citys[i].list[k].name == city.name){
-											this.citys[i].list[k].ts = true
-										}
-									}
-								}
-								for (let i = 0; i < this.hotCitys.length; i++) {
-									if(this.hotCitys[i].name == city.name){
-										this.hotCitys[i].ts = true
-									}
-								}
-								_this.arrivCity = {
-									name:city.name,
-									id:city.id
-								}
-							}
+					if(_this.sta == 'left'){//判断是出发还是到达
+						_this.deptCity = {
+							name:city.name,
+							id:city.id
+						}
+					} else {
+						_this.arrivCity = {
+							name:city.name,
+							id:city.id
 						}
 					}
+					if(_this.succ_type == "Planeticket"){//修改值
+						uni.$emit('Busirticket_add',{name:'Planeticket',data:[_this.deptCity,_this.arrivCity]});
+					} else if(_this.succ_type == "Train"){
+						uni.$emit('Busirticket_add',{name:'Train',data:[_this.deptCity,_this.arrivCity]});
+					}
+					this.toBlock();
 				} 
 			},
-			on_blok(city,opname){
-				if(this.ser_int != '' && this.sta == 'right' && this.succ_type == 'Hotel'){
-					this.$store.commit("wx_hotels_Ai", city.name)
-				} else {
-					this.$store.commit("wx_hotels_Ai", city)
+			histytobk(item){//酒店历史搜索选择
+				uni.$emit('wx_Hotel_Ais',{type:item.type,id:item.id,data:item.name,ts:this.sdata});
+				this.toBlock();
+			},
+			on_blok(city,item,opname){//酒店选择
+				if(this.ser_int != '' && this.sta == 'right' && this.succ_type == 'Hotel'){//选择的搜索内容
+					if(city.type == 1){//酒店
+						this.listshitoy('keyword',0,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'keyword',id:0,data:city.name,ts:this.sdata});
+					} else if(city.type== 2){//行政区
+						this.listshitoy('position',1,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'position',id:1,data:city.name,ts:this.sdata});
+					} else if(city.type== 3){//地铁站
+						this.listshitoy('position',4,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'position',id:4,data:city.name,ts:this.sdata});
+					} else if(city.type== 4){//商圈
+						this.listshitoy('position',3,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'position',id:3,data:city.name,ts:this.sdata});
+					} else if(city.type== 5){//机场/火车站
+						this.listshitoy('position',2,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'position',id:2,data:city.name,ts:this.sdata});
+					} else if(city.type== 6){//地标
+						this.listshitoy('keyword',city.location.lng +',' +city.location.lat,city.name);
+						uni.$emit('wx_Hotel_Ais',{type:'keyword',id:city.location.lng +',' +city.location.lat,data:city.name,ts:this.sdata});
+					}
+				} else {//选择下面
+					this.listshitoy(item.type,item.id,city);
+					uni.$emit('wx_Hotel_Ais',{type:item.type,id:item.id,data:city,ts:this.sdata});
 				}
-				uni.navigateBack({
-					data: 'sta=right&type=' + this.succ_type
-				})
+				this.toBlock();
+			},
+			on_bloks(city){//酒店城市选择
+				if(this.ser_int != '' && this.sta == 'left' && this.succ_type == 'Hotel'){//选择的搜索内容
+					if(city.type == 0){//市县级
+						uni.$emit('Busirticket_add',{name:'Hotel',data:{
+							type:'city',
+							city:{
+								id:city.id,
+								name:city.name
+							}
+						}})
+					} else if(city.type== 2){//行政区
+						uni.$emit('Busirticket_add',{name:'Hotel',data:{
+							type:'position',
+							city:{
+								id:city.id,
+								name:city.city
+							},
+							id:1,
+							data:city.name//行政区名称
+						}})
+					}
+				} else {//选择下面
+					uni.$emit('Busirticket_add',{name:'Hotel',data:{
+						type:'city',
+						city:{
+							id:city.id,
+							name:city.name
+						}
+					}})
+					
+				}
+				this.toBlock();
+			},
+			listshitoy(type,id,value) { //插入历史城市
+				let list;
+				if (this.sta == 'right' && this.succ_type == 'Hotel') {
+					list = uni.getStorageSync("majorhitorylist" + uni.getStorageSync('appWxId'));
+					if (list.planethitorylist && list.planethitorylist.length > 0) {//判断酒店搜索是否有历史记录
+						for (let k in list.planethitorylist) {
+							if (list.planethitorylist[k].name == value && this.wx_Hotel == list.planethitorylist[k].city) {//相同城市 相同地址 则删除
+								list.planethitorylist.splice(k, 1);
+							}
+						}
+						if (list.planethitorylist.length > 9) {
+							list.planethitorylist.splice(9, 1);
+						}
+						list.planethitorylist.unshift({
+							city:this.wx_Hotel,//城市
+							type: type,//值类型
+							id: id,//值id   地标为经纬度
+							name: value,//名称
+						})
+					} else {
+						list = {};
+						list['planethitorylist'] = [{
+							city:this.wx_Hotel,//城市
+							type: type,//值类型
+							id: id,//值id   地标为经纬度
+							name: value,//名称
+						}]
+					}
+					uni.setStorageSync("majorhitorylist" + uni.getStorageSync('appWxId'), list);
+				}
+				
 			},
 			trim(ev){//判断是否有值
 				if(ev.trim().length>0){
@@ -458,22 +618,17 @@
 					_this.sev_boolt = true
 					if(this.succ_type == 'Hotel' || this.succ_type == 'Train'){
 						if(this.succ_type == 'Hotel'){
-							if(this.sta == 'right' && this.succ_type == 'Hotel'){//搜索酒店
+							if(this.sta == 'right' && this.succ_type == 'Hotel'){//搜索酒店关键字
 								try{
 									let res = await tork.getCityNames({
-										cityName: _this.wx_Hotel.name,
+										cityName: _this.wx_Hotel,
 										keyword: va
 									})
 									if(res.code == 200){
 										let dat = res.data;
 										_this.sec_lists = [];
 										for (let i in dat) {//赋值到页面
-											_this.sec_lists.push({
-												id:dat[i].id,
-												name:dat[i].name,
-												label:dat[i].label,
-												ts:false
-											})
+											_this.sec_lists.push(dat[i])
 										}
 									}
 								}catch(e){
@@ -481,22 +636,26 @@
 									
 								}
 							} else {
-								dat = hotel.addressTrainAll;
-								console.log(dat)
-								for (let i in dat) {
-									if(dat[i].name.indexOf(va) != -1){
-										this.sec_lists.push({
-											id:dat[i].code,
-											name:dat[i].name,
-											ts:false
-										})
+								try{
+									let res = await tork.getCityName({
+										cityName: va,
+									})
+									if(res.code == 200){
+										let dat = res.data;
+										_this.sec_lists = [];
+										for (let i in dat) {//赋值到页面
+											_this.sec_lists.push(dat[i])
+										}
 									}
+								}catch(e){
+									console.log(e)
+									
 								}
 							}
 						} else {
 							dat = train.addressTrainAll;
 							for (let i in dat) {
-								if(dat[i].name.indexOf(va) != -1 || dat[i].Abbreviation.indexOf(va) != -1 || dat[i].code.indexOf(va) != -1 ){
+								if(dat[i].name.indexOf(va) != -1 || dat[i].abbreviation.indexOf(va) != -1 || dat[i].code.indexOf(va) != -1 ){
 									this.sec_lists.push({
 										id:dat[i].code,
 										name:dat[i].name,
@@ -508,7 +667,6 @@
 						
 					} else {
 						dat = airports.addressAirportAll;
-						// console.log(dat)
 						for (let i in dat) {
 							if(dat[i].airportCName.indexOf(va) != -1 || dat[i].airportCode.indexOf(va) != -1 || dat[i].cityCName.indexOf(va) != -1 || dat[i].cityFirstSpell.indexOf(va) != -1 || dat[i].citySpell.indexOf(va) != -1 ){
 								this.sec_lists.push({
@@ -527,79 +685,6 @@
 				this.ser_int = '';
 				this.sev_boolt = false;
 			},
-		},
-		//监听获取主页传过来的城市
-		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			this.sta = option.sta;//左右边
-			this.succ_type = option.type
-			let types = this.succ_type;//类型：机场、城市
-			let list = []
-			this.typeys = option.types;
-			this.cits();
-			if(types == "Hotel"){//酒店
-				this.placeh = '城市名/位置/地点';
-				if(option.sta == 'left'){
-					if (option.list != ''){
-						list = option.list;
-						for (let i = 0; i < this.citys.length; i++) {
-							for (let k = 0; k < this.citys[i].list.length; k++) {
-								if(this.citys[i].list[k].name == list){
-									this.citys[i].list[k].ts = true
-								}
-							}
-						}
-						for (let i = 0; i < this.hotCitys.length; i++) {
-							if(this.hotCitys[i].name == list){
-								this.hotCitys[i].ts = true
-							}
-						}
-					}
-				} else {
-					this.lisWxHotels = option.wx_hotels;//酒店地址
-					this.lslt = true;
-				}
-			} else if(types == "Planeticket"){ //飞机
-				this.placeh = '深圳 / shenzhen / sz';
-				if(option.list.length > 3){
-					list = JSON.parse(option.list);
-					if(list[0].name.length > 1){
-						this.deptCity = list[0];
-						this.arrivCity = list[1];
-						
-						for (let i = 0; i < this.citys.length; i++) {
-							for (let k = 0; k < this.citys[i].list.length; k++) {
-								if(this.citys[i].list[k].name == list[0].name || this.citys[i].list[k].name == list[1].name){
-									this.citys[i].list[k].ts = true
-								}
-							}
-						}
-						for (let i = 0; i < this.hotCitys.length; i++) {
-							if(this.hotCitys[i].name == list[0].name || this.hotCitys[i].name == list[1].name){
-								this.hotCitys[i].ts = true
-							}
-						}
-					}
-				} 
-			} else if(types == "Train"){ //火车
-				this.placeh = '输入城市名称';
-				if(option.list.length>0){
-					list = JSON.parse(option.list);
-					this.deptCity = list[0];
-					this.arrivCity = list[1];
-					for (let i = 0; i < this.citys.length; i++) {
-						for (let k = 0; k < this.citys[i].list.length; k++) {
-							if(this.citys[i].list[k].name == list[0].name || this.citys[i].list[k].name == list[1].name){
-								this.citys[i].list[k].ts = true
-							}
-						}
-					}
-					for (let i = 0; i < this.hotCitys.length; i++) {
-						if(this.hotCitys[i].name == list[0].name || this.hotCitys[i].name == list[1].name){
-							this.hotCitys[i].ts = true
-						}
-					}
-				}
-			}
 		}
 	}
 </script>
@@ -623,7 +708,7 @@
 			.input-lis {
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
+				// justify-content: space-between;
 				position: relative;
 				padding: 0 15upx;
 				width: calc(100% - 40upx);
@@ -634,6 +719,7 @@
 					width: 70%;
 					font-size: 30upx;
 					height: 60upx;
+					margin-left: 20upx;
 				}
 				
 			}
@@ -642,9 +728,9 @@
 		.sear_list{
 			position: absolute;
 			left: 0;
-			top: 195upx;
+			top: 185upx;
 			/*  #ifdef  APP-PLUS || MP-WEIXIN */ 
-			top: 245upx;
+			top: 235upx;
 			/*  #endif  */
 			background: #FFFFFF;
 			z-index: 999;
@@ -665,7 +751,6 @@
 			}
 			.se_mai{
 				font-size: 35upx;
-				line-height: 80upx;
 				border-bottom: 2upx solid #e1e1e1;
 				.se_li{
 					display: flex;
@@ -677,6 +762,64 @@
 				.se_lu{
 					font-size: 25upx;
 					color: #C8C7CC;
+				}
+				.se_lists{
+					width:calc(100% - 80upx);
+					padding:  0 40upx;
+					display: flex;
+					align-content: center;
+					justify-content: space-between;
+					font-size: 30upx;
+					color: #333333;
+					.se_lists_l{
+						display: flex;
+						align-items: center;
+						width: 80%;
+						.se_img{
+							width: 40upx;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							image{
+								width: 40upx;
+								height: 40upx;
+							}
+						}
+						.se_label{
+							display: flex;
+							 flex-direction: column;
+							 justify-content: center;
+							 line-height: 50upx;
+							 text-indent: 20upx;
+							.se_liname{
+								width: calc(100%- 40upx);
+								overflow: hidden;
+								text-overflow: ellipsis; //文本溢出显示省略号
+								white-space: nowrap; //文本不会换行
+							}
+							.se_titis{
+								line-height: 40upx;
+								font-size: 22upx;
+								color: #999999;
+								width: calc(100%- 40upx);
+								overflow: hidden;
+								text-overflow: ellipsis; //文本溢出显示省略号
+								white-space: nowrap; //文本不会换行
+							}
+						}
+						
+						
+					}
+					.se_lists_r{
+						display: flex;
+						align-items: center;
+						font-size: 28upx;
+						color: #C0C0C0;
+					}
+				}
+				.citylist{
+					color: #333333;
+					line-height: 80upx;
 				}
 			}
 		}
@@ -694,6 +837,40 @@
 			border-radius: 90upx;
 		}
 		.select-city {
+			.hitlist{
+				padding: 30upx 30upx;
+				.hitlinames{
+					width: 100%;
+					line-height: 40upx;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					color: #949494;
+					font-size: 28upx;
+					.hitnaleft{
+						
+					}
+					.hitnaright{
+						color: #007AFF;
+					}
+				}
+				.hitlists{
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
+					.hitlistad{
+						color: #333333;
+						font-size: 26upx;
+						padding: 0 20upx;
+						line-height: 50upx;
+						background-color: #FFFFFF;
+						border-radius: 50upx;
+						margin-right: 10upx;
+						margin-top: 20upx;
+					}
+				}
+				
+			}
 			.citsarry{
 				position: relative;
 				width: 100%;

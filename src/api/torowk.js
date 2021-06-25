@@ -92,6 +92,9 @@ export default {
 	apprvTask: (params) => { //进行审批操作
 		return fly.post('/tms/api/apprv/apprvTask', params);
 	},
+	cancelApplication: (params) => { //取消已审批的申请单
+		return fly.get('/tms/api/apprv/cancelApplication', params);
+	},
 	sortHotelList: (params) => { //酒店查询
 		return fly.post('/tms/api/hotel/sortHotelList', params);
 	},
@@ -103,6 +106,9 @@ export default {
 	},
 	getCityNames: (params) => { //酒店名称查询
 		return fly.get('/tms/api/hotel/getCityNames', params);
+	},
+	getCityName: (params) => { //酒店城市搜索
+		return fly.get('/tms/api/hotel/search/getCityName', params);
 	},
 	searchHotelPicture: (params) => { //酒店图片
 		return fly.post('/tms/api/hotel/searchHotelPicture', params);
@@ -130,6 +136,9 @@ export default {
 	},
 	toHomeInnsBook: (params) => { //酒店价格校验 如家
 		return fly.post('/tms/api/hotel/toHomeInnsBook', params);
+	},
+	toMeituanBook: (params) => { //酒店价格校验 美团
+		return fly.post('/tms/api/hotel/toMeituanBook', params);
 	},
 	toOwnBook: (params) => { //酒店价格校验 腾邦
 		return fly.post('/tms/api/hotel/toOwnBook', params);
@@ -194,4 +203,7 @@ export default {
 	placesuggestion: (params) => { //关键字提示搜索
 		return fly.get('/tms/api/use/car/map/place/v1/suggestion', params);
 	},
+	reasonList: (params) => { //获取出差事由
+		return fly.get('/tms/api/traverRule/reasonList', params);
+	}
 }

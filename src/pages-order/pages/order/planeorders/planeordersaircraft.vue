@@ -62,7 +62,7 @@
 		<view class="black_mu" @click="isshow" v-if="switfals">
 			<view class="isswflist" @click.stop="" :class="switfal ? 'show' : ''">
 				<view class="isstop">
-					<view class="">
+					<view  >
 						{{sittext}}
 					</view>
 					<view @click="isshow" class="iconfont" style="color: #C0C0C0;font-size: 50upx;">
@@ -77,31 +77,32 @@
 			</view>
 		</view>
 		<view class="navstop" v-if="userslist.tr">
-			<view class="">
-				订单号：{{codes}}
-			</view>
-			<view class="cits_bls">
-				<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.amount!= 0 && insuranceInfos != null">
-					<!-- ￥{{userslist.tr.amount + (item.pretium * userlist.length)}} -->
-					￥{{userslist.tr.amount}}
+			<view style="margin-left:50upx;">
+				<view style="font-size:44upx;font-weight:bold;" v-if="orderDetailList.length == 1">{{rest(orderDetailList[0].mainDetail.orderStatus)}}</view>
+				<view style="font-size:24upx;" v-if="orderDetailList.length == 2">去程:{{rest(orderDetailList[0].mainDetail.orderStatus)}}/回程:{{rest(orderDetailList[1].mainDetail.orderStatus)}}</view>
+				<view style="font-size:24upx;margin:10upx 0;" v-if="userslist.trExtend.travelNo">出差单号：{{userslist.trExtend.travelNo}}</view>
+				<view style="margin:10upx 0;font-size:24upx;">
+					预订单号：{{codes}}
 				</view>
-				<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.amount!= 0 && insuranceInfos == null">
-					￥{{userslist.tr.amount}}
-					<!-- ￥{{userslist.tr.amount + (userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].tips * userlist.length)}} -->
-				</view>
-				<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '2' && userslist.tr.amount!= 0 && insuranceInfos != null">
-					<!-- ￥{{userslist.tr.amount + (item.pretium * userlist.length)}} -->
-					￥{{userslist.tr.amount}}
-				</view>
-				<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '2' && userslist.tr.amount!= 0 && insuranceInfos == null">
-					￥{{userslist.tr.amount}}
-					<!-- ￥{{userslist.tr.amount + (userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].tips * userlist.length)}} -->
-				</view>
-				<view class="cits_sgs" @click="clikst">
-					明细>
-				</view>
-				<view class="cits_cls" @click="toaddls">
-					去购票
+				<view class="cits_bls">
+					<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.amount!= 0 && insuranceInfos != null">
+						￥{{userslist.tr.amount}}
+					</view>
+					<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.amount!= 0 && insuranceInfos == null">
+						￥{{userslist.tr.amount}}
+					</view>
+					<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '2' && userslist.tr.amount!= 0 && insuranceInfos != null">
+						￥{{userslist.tr.amount}}
+					</view>
+					<view class="cits_sgs" v-if="userslist.tr.orderDetailList.length == '2' && userslist.tr.amount!= 0 && insuranceInfos == null">
+						￥{{userslist.tr.amount}}
+					</view>
+					<view class="cits_sgs" @click="clikst">
+						明细>
+					</view>
+					<view class="cits_cls" @click="toaddls">
+						去购票
+					</view>
 				</view>
 			</view>
 			<view class="mask" v-if="companyi_click" @click="companym_click">
@@ -119,9 +120,6 @@
 							<view class="corssize">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].salePrice - userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].tips}}
 							</view>
-							<!-- <view class="">
-								x{{userlist.length}}人
-							</view> -->
 						</view>
 						<view class="scse_r" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.orderDetailList[0].voyages.length == '2'">
 							<view class="corssize">
@@ -134,7 +132,7 @@
 								去程￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].salePrice - userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].tips}}
 								返程￥{{userslist.tr.orderDetailList[1].passengers[0].fareInfos[0].salePrice - userslist.tr.orderDetailList[1].passengers[0].fareInfos[0].tips}}
 							</view>
-							<view class="">
+							<view  >
 								<!-- x{{userlist.length}}人 -->
 							</view>
 						</view>
@@ -147,7 +145,7 @@
 							<view class="corssize">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].taxFee}}/
 							</view>
-							<view class="" style="color: #F48F00;">
+							<view   style="color: #F48F00;">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].fuelFee}}
 							</view>
 						</view>
@@ -155,7 +153,7 @@
 							<view class="corssize">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].taxFee + userslist.tr.orderDetailList[1].passengers[0].fareInfos[0].fuelFee}}/
 							</view>
-							<view class="" style="color: #F48F00;">
+							<view   style="color: #F48F00;">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].taxFee + userslist.tr.orderDetailList[1].passengers[0].fareInfos[0].fuelFee}}
 							</view>
 						</view>
@@ -176,7 +174,7 @@
 							 :key="index">
 								￥{{item.pretium}}
 							</view>
-							<view class="">
+							<view  >
 							</view>
 						</view>
 					</view>
@@ -188,7 +186,7 @@
 							<view class="corssize">
 								￥{{userslist.tr.orderDetailList[0].passengers[0].fareInfos[0].tips}}
 							</view>
-							<view class="">
+							<view  >
 							</view>
 						</view>
 					</view>
@@ -200,7 +198,7 @@
 							<view class="corssize">
 								{{userlist.length}}/人
 							</view>
-							<view class="">
+							<view  >
 							</view>
 						</view>
 					</view>
@@ -230,66 +228,56 @@
 				</view>
 			</view>
 			<view class="lisst">
-				<view class="citst" style="margin-top: 30upx;" v-for="(item,index) in orderDetailListy" :key="index">
+				<view class="citst" style="margin-top: 20upx;" v-for="(item,index) in orderDetailListy" :key="index">
 					<view class="cits_t">
-						<view style="color: #FF3404;display: flex;">
-							<view style="flex: 1;">订单状态:{{rest(item.mainDetail.orderStatus)}}</view>
-							<view v-if="typename ==  2">支付状态:{{pustatus(payStatus)}}</view>
-							<!-- <view style="color: #007aff;" @click="flights">航班动态</view> -->
-						</view>
-						<view class="cits_sa">
-							<view class="no_ts" style="display: flex;">
-								<view v-if="index == 0" style="color: #007aff;border: #007aff 1upx solid;width: 40upx;height: 40upx;margin-top: 10upx;text-align: center;line-height: 40upx;">
-									往
-								</view>
-								<view v-if="index == 1" style="color: #007aff;border: #007aff 1upx solid;width: 40upx;height: 40upx;margin-top: 10upx;text-align: center;line-height: 40upx;">
-									返
-								</view>
-								<image :src="item.voyages[0].ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
-								{{company(item.voyages[0].airline)}}{{item.voyages[0].flightNo}}
-							</view>
-							<view class="no_t" style="text-align: right;">
-								{{yeada(item.voyages[0].departTime,1)}}
-							</view>
+						<view class="no_t">
+							<image :src="item.voyages[0].ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
+							<view>{{company(item.voyages[0].airline)}}{{item.voyages[0].flightNo}}</view>
 						</view>
 						<view class="citys">
 							<view class="citys_l">
 								<view class="scis_t">
+									{{yeada(item.voyages[0].departTime,1)}}
+								</view>
+								<view class="scis_o">
 									{{yeada(item.voyages[0].departTime,0)}}
 								</view>
-								<view class="scis_o">
+								<view class="scis_b">
 									{{citys(item.voyages[0].depart)}}{{item.voyages[0].departTerminal}}
 								</view>
-								<view class="scis_b">
-								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
+								<view class="scis_t" v-if="index == 0">
+									去程
+								</view>
+								<view class="scis_t" v-if="index == 1">
+									回程
 								</view>
 								<view class="scis_s">
-									{{times(timeList,index)}}
-									<view class="sci_l">
-									</view>
-									<view class="sci_r">
-									</view>
+									<view>{{times(timeList,index)}}</view>
+									<image src="@/static/img/home/home_bj.png"></image>
 								</view>
-								<view class="scis_b" v-if="item.voyages[0].discount!='1'">
-									{{companys(item.voyages[0].serviceLevel)}}{{item.voyages[0].discount}}折
-								</view>
-								<view class="scis_b" v-else>
-									全价
+								<view class="scis_b" style="font-size:24upx;">
+									{{servicename(item.voyages[0].serviceLevel)}}
+									<span v-if="item.voyages[0].discount!='1'">{{ item.voyages[0].discount }}折</span>
+									<span v-else>全价</span>
 								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
-									{{yeada(item.voyages[0].arriveTime,0)}}
+								<view class="scis_t" style="margin-left:10upx;">
+									{{yeada(item.voyages[0].arriveTime,1)}}
 								</view>
 								<view class="scis_o">
+									{{yeada(item.voyages[0].arriveTime,0)}}
+								</view>
+								<view class="scis_b">
 									{{citys(item.voyages[0].arrive)}}{{item.voyages[0].arriveTerminal}}
 								</view>
 							</view>
 						</view>
 					</view>
+
+
 					<view class="cits_b">
 						<view class="cits_bl">
 							<view class="cits_sg" v-if="userslist.tr.orderDetailList.length == '1' && userslist.tr.orderDetailList[0].voyages.length != '2'">
@@ -311,6 +299,8 @@
 							</view>
 						</view>
 					</view>
+
+					<!-- 又能操作的票并且 -->
 					<view class="Check" v-if="item.stkus && item.mainDetail.orderStatus == '5'">
 						<view class="updatas" @click="updatas(1,item,index)" v-if="rotes('tms:dps:change')">
 							单程改签
@@ -321,76 +311,79 @@
 					</view>
 				</view>
 				<!-- 返回 -->
-
-				<view class="btuserlist">
-					<view class="btuse" v-if="userlist.length > 0">
-						乘机人{{userlist.length}}
-						<view class="btul" v-for="(item,index) in userlist" :key="index">
-							<view class="user_t">
-								<view class="user_l">
-									{{item.it.name}}
-								</view>
-								<view class="user_o" style="margin-left: 88upx;">
-									成人票
-								</view>
-								<view style=" color: #007aff;" v-if="item.icke == 1 || item.icke == 3">
-									往:{{item.itd.statusname}}
-								</view>
-								<view style=" color: #007aff;" v-if="item.icke == 3">
-									,&nbsp;返:{{item.isd.statusname}}
-								</view>
-							</view>
-							<view class="user_t" v-if="item.icke == 1 || item.icke == 3">
-								<view class="user_l">
-									往程票号
-								</view>
-								<view class="user_o">
-									{{item.it.ticketNoJoinStr}}
-								</view>
-							</view>
-							<view class="user_t" v-if="item.icke == 3">
-								<view class="user_l">
-									返程票号
-								</view>
-								<view class="user_o">
-									{{item.its.ticketNoJoinStr}}
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									{{catype(item.it.cardType)}}
-								</view>
-								<view class="user_o">
-									{{item.it.cardNo}}
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									手机号
-								</view>
-								<view class="user_o">
-									{{item.it.phone}}
-								</view>
-							</view>
+			</view>
+		</view>
+		<view class="btuserlist">
+			<view class="btuse" v-if="userlist.length > 0">
+				<view style="font-size:34upx;color:#333333;font-weight:bold;">乘机人</view>
+				<view class="btul" v-for="(item,index) in userlist" :key="index">
+					<view class="user_t">
+						<view class="user_l" style="flex:1;">
+							{{item.it.name}}
+						</view>
+						<view class="user_o" style="flex:0.5;">
+							<view style="align-items: center;border-radius: 5px;height: 17px;border: 1px solid #c0c0c0;font-size: 10px;padding: 0 4px;display: flex;">成人票</view>
+						</view>
+						<view style="color: #007aff;flex:2;text-align: right;" v-if="item.icke == 1 || item.icke == 3">
+							去程:{{item.itd.statusname}}
+						</view>
+						<view style=" color: #007aff;" v-if="item.icke == 3">
+							,&nbsp;回程:{{item.isd.statusname}}
 						</view>
 					</view>
-					<view class="liass">
-						<view class="liass_l">
-							联系信息
+					<view class="user_t" v-if="(item.icke == 1 || item.icke == 3 ) && item.it.ticketNoJoinStr != ''">
+						<view class="user_l">
+							去程票号
 						</view>
-						<view class="liass_r">
-							{{userslist.tr.accountInfo.contact}}　{{userslist.tr.accountInfo.phone}}
+						<view class="user_o">
+							{{item.it.ticketNoJoinStr.split(',')[0]}}
 						</view>
 					</view>
-					<view class="liass" v-if="apprvTaskReason != ''&& apprvTaskReason != null">
-						<view class="liass_l">
-							出差事由
+					<view class="user_t" v-if="item.icke == 3 && item.its.ticketNoJoinStr != ''">
+						<view class="user_l">
+							回程票号
 						</view>
-						<view class="liass_r">
-							{{apprvTaskReason}}
+						<view class="user_o">
+							{{item.its.ticketNoJoinStr.split(',')[0]}}
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							{{catype(item.it.cardType)}}
+						</view>
+						<view class="user_o">
+							{{utils.TuoMin(item.it.cardNo,item.it.cardType)}}
+						</view>
+					</view>
+					<view class="user_t" v-if="item.it.phone">
+						<view class="user_l">
+							手机号
+						</view>
+						<view class="user_o">
+							{{utils.TuoMin(item.it.phone,1)}}
 						</view>
 					</view>
 				</view>
+			</view>
+		</view>
+		<view class="btuserlist">
+			<view class="liass" v-if="userslist.tr">
+				<view class="liass_l">
+					联系信息
+				</view>
+				<view class="liass_r">
+					{{userslist.tr.accountInfo.contact}}　{{utils.TuoMin(userslist.tr.accountInfo.phone,1)}}
+				</view>
+				<view class="iconfont">&#xe8a3;</view>
+			</view>
+			<view class="liass" v-if="apprvTaskReason != ''&& apprvTaskReason != null">
+				<view class="liass_l">
+					出差事由
+				</view>
+				<view class="liass_r">
+					{{apprvTaskReason}}
+				</view>
+				<view class="iconfont">&#xe8a3;</view>
 			</view>
 		</view>
 		<view class="btnfixd">
@@ -433,6 +426,7 @@
 	export default {
 		data() {
 			return {
+				insOrders:false,//是否购买保险 true为有 false没有
 				timeList: [],
 				orderDetailListy: [],
 				usersli: false, //是否可以退票和改签
@@ -481,7 +475,7 @@
 					name: '待支付',
 					id: 3
 				}, {
-					name: '出票中..',
+					name: '出票中',
 					id: 4
 				}, {
 					name: '已出票',
@@ -504,8 +498,6 @@
 				}],
 				codes: 0,
 				bao: 0,
-
-
 				userslist: {},
 				hang: [],
 				trklist: [], //经停站
@@ -524,13 +516,14 @@
 				tlement: 0, //1日结2月结
 				ltes: 0,
 				RuleMa: '', //
-				RuleMas: false, //飞机退票是否需要审核
+				RuleMas: true, //飞机退票是否需要审核
 				tui: '2',
 				isclasa: 'false',
 				recordNos: 0,
 				amounts: 0,
 				fromSource: '', //官方票价
-				payStatus: 0
+				payStatus: 0,
+				apprvReasonId:0,//出差事由id
 			}
 		},
 		onLoad(item) {
@@ -555,9 +548,11 @@
 					}
 				}
 			}
-			console.log(this.orderDetailListy)
 		},
 		methods: {
+			servicename(va){
+				return this.utils.cabinNames(va)
+			},
 			payok() {
 				this.slet('wx');
 			},
@@ -573,11 +568,7 @@
 				return item
 			},
 			citys(its) { //回显城市
-				for (let j = 0; j < this.address.length; j++) { //循环城市
-					if (this.address[j].airportCode == its) {
-						return this.address[j].cityCName
-					}
-				}
+				return this.utils.airportCName(its);
 			},
 			baoxian(i) {
 				this.bao = i + this.bao;
@@ -669,11 +660,7 @@
 			},
 
 			aduser(it, index) { //选择人员
-				if (this.usersnamelist[index].istrue) {
-					this.usersnamelist[index].istrue = false;
-				} else {
-					this.usersnamelist[index].istrue = true;
-				}
+				this.usersnamelist[index].istrue = !this.usersnamelist[index].istrue;
 				this.usersnamelist = [...this.usersnamelist];
 			},
 			updataslist(num) { //往返改签或者退票
@@ -695,7 +682,9 @@
 				}
 				for (let i = 0; i < list.passengers.length; i++) { //循环插入所有用户信息
 					if (list.passengers[i].voyages[0].status == 1 && list.passengers[i].voyages[1].status == 1) {
+						
 						this.usersnamelist.push({
+							passengerBirth:item.passengers[i].passengerBirth,
 							ageType: list.passengers[i].ageType, //乘客类型
 							phone: list.passengers[i].phone,
 							city: {
@@ -729,13 +718,13 @@
 				this.odllegList = [];
 				this.isnum = num;
 				this.usersnamelist = [];
-				console.log(item, this.isttype)
+				if (index == 0) {
+					this.tuipiao = 1;
+				} else {
+					this.tuipiao = 2;
+				}
 				if (this.isttype == 1) {
-					if (index == 0) {
-						this.tuipiao = 1;
-					} else {
-						this.tuipiao = 2;
-					}
+					
 					this.odllegList.push({
 						flightNo: item.voyages[0].flightNo,
 						cabin: item.voyages[0].cabin,
@@ -747,6 +736,7 @@
 					for (let i = 0; i < item.passengers.length; i++) { //循环插入所有用户信息
 						if (item.passengers[i].voyages[0].status == 1) {
 							this.usersnamelist.push({
+								passengerBirth:item.passengers[i].passengerBirth,
 								ageType: item.passengers[i].ageType, //乘客类型
 								phone: item.passengers[i].phone,
 								city: { //出发城市
@@ -766,13 +756,7 @@
 							})
 						}
 					}
-					console.log(item)
 				} else {
-					if (index == 0) {
-						this.tuipiao = 1;
-					} else {
-						this.tuipiao = 2;
-					}
 					this.odllegList.push({
 						flightNo: item.voyages[0].flightNo,
 						cabin: item.voyages[0].cabin,
@@ -814,33 +798,6 @@
 					return time
 				}
 			},
-			async getRuleMainSetting() { //查询当前用户改签是否需要审核
-				try {
-					let res = await order.RuleMainSetting();
-					this.RuleMa = res.data.examinePattern;
-					let stw = this.RuleMa.split(',');
-					for (let i in stw) {
-						/**
-						 * 审批模式，多选用,隔开。1=按成本中心设置审批流程，2=按员工设置审批流程，5=火车票改签需要审批，6火车票退票需要审批，7=酒店取消需要审批
-						 */
-						if (stw[i] == 10) {
-							let res = await order.judgeApprv({
-								passengerNos: userlistnos
-							}); //判断当前出行人是否都免审
-							if (res.code == 200) {
-								if (res.data == false) { //判断是否需要审核
-									this.RuleMas = false;
-								}
-							} else {
-								this.showToasts(res.data.message);
-							}
-						}
-						this.RuleMas = true;
-					}
-				} catch (e) {
-					console.log(e)
-				}
-			},
 			async ic_ok() { //确定当前
 				let isnum = this.isnum; //改签还是退票
 				let userlist = [];
@@ -850,7 +807,6 @@
 				let citys = "";
 				let detime = "";
 				let detimes = "";
-				console.log(this.usersnamelist)
 				for (let i in this.usersnamelist) {
 					if (this.usersnamelist[i].istrue) {
 						city = this.usersnamelist[i].city;
@@ -862,6 +818,7 @@
 							detimes = this.usersnamelist[i].departTimes;
 						}
 						userlist.push({
+							passengerBirth:this.usersnamelist[i].passengerBirth,
 							phone: this.usersnamelist[i].phone,
 							certNo: this.usersnamelist[i].cardNo, //证件号码
 							ageType: this.usersnamelist[i].ageType, //乘客类型		ADT成人
@@ -888,10 +845,20 @@
 						travelNo: this.userslist.trExtend.travelNo,
 						names: names
 					});
-					let dat = res.data; //获取改签人信息
-					for (let i in dat) {
-						userlistnos.push(dat[i].passengerNo)
+					if(res.code == 200){
+						let dat = res.data; //获取改签人信息
+						if(dat.length != names.length){
+							this.showToasts('获取出行人信息失败!');
+							return
+						}
+						for (let i in dat) {
+							userlistnos.push(dat[i].passengerNo)
+						}
+					} else {
+						this.showToasts(res.message)
+						return
 					}
+					
 				}
 				try {
 					let res = await order.RuleMainSetting();
@@ -905,7 +872,6 @@
 							let res = await order.judgeApprv({
 								passengerNos: userlistnos
 							}); //判断当前出行人是否都免审
-							console.log(res)
 							if (res.code == 200) {
 								if (res.data == true) { //判断是否需要审核
 									this.RuleMas = true;
@@ -915,14 +881,12 @@
 							} else {
 								this.showToasts(res.data.message);
 							}
-						} else {
-							this.RuleMas = true;
 						}
 					}
 				} catch (e) {
 					console.log(e)
 				}
-				this.shos = false; //单程
+				this.shos = false;
 				if (isnum == 1) { //改签
 					let none = ''; //往返
 					if (this.sione) { //单程
@@ -931,9 +895,11 @@
 						none = 'returns'
 					}
 					let dat = {
+						insOrders:this.insOrders,//是否购买保险
 						tradeNo: this.userslist.tr.transationOrderNo, //交易单号
 						none: none,
 						type: "Planeticket",
+						isto:1,
 						passengerNos: passengerNos, //用户编号
 						userlistnos: userlistnos, //用户信息
 						saleOrderNo: this.saleOrderNo, //航班出差单号
@@ -945,6 +911,7 @@
 						butalist: userlist, //出行人员
 						isblcks: 4, //4改签
 						isbtd: nu, //1因公2因私
+						apprvReasonId:this.apprvReasonId
 					}
 					uni.setStorageSync("ticketinquiry_data", JSON.stringify(dat));
 					uni.navigateTo({
@@ -957,113 +924,29 @@
 					} else { //往返
 						none = 'returns'
 					}
-					console.log(nu, this.RuleMas)
-					if (nu == 2) { //判断是否因私或者因公    因私不需要审核
-						let dat = {
-							transactionOrderNo: this.userslist.tr.transationOrderNo,
-							saleOrderNo: this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-							userslist: this.userslist,
-							userlist: userlist,
-							none: none,
-							tuipiao: this.tuipiao,
-							RuleMas: this.RuleMas,
-							fromSource: this.fromSource
-						}
+					let dat = {
+						transactionOrderNo: this.userslist.tr.transationOrderNo,
+						saleOrderNo: this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
+						userslist: this.userslist,
+						userlist: userlist,
+						none: none,
+						tuipiao: this.tuipiao,
+						RuleMas: this.RuleMas,
+						fromSource: this.fromSource,
+						isbtd: nu, //1因公2因私
+					}
+					if (nu == 2 || nu == 1 && this.RuleMas == true) { //判断是否因私或者因公    因私不需要审核
 						uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
-						// sessionStorage.setItem("predetermine_datas", JSON.stringify(dat));
-						uni.navigateTo({
-							url: './retirement'
-						})
-					} else if (nu == 1 && this.RuleMas == true) { //因公但是不需要审核
-						let dat = {
-							transactionOrderNo: this.userslist.tr.transationOrderNo,
-							saleOrderNo: this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-							userslist: this.userslist,
-							userlist: userlist,
-							none: none,
-							tuipiao: this.tuipiao,
-							RuleMas: this.RuleMas,
-							fromSource: this.fromSource
-						}
-						uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
-						// sessionStorage.setItem("predetermine_datas", JSON.stringify(dat));
 						uni.navigateTo({
 							url: './retirement'
 						})
 					} else {
-						try {
-							console.log(this.RuleMas)
-							let res = await order.RuleMainSetting();
-							this.RuleMa = res.data.examinePattern;
-							let stw = this.RuleMa.split(',');
-							for (let i in stw) {
-								/**
-								 * 审批模式，多选用,隔开。1=按成本中心设置审批流程，2=按员工设置审批流程，5=火车票改签需要审批，6火车票退票需要审批，7=酒店取消需要审批
-								 */
-								if (stw[i] == 10) {
-									this.RuleMas = false;
-									let res = await order.judgeApprv({
-										passengerNos: userlistnos
-									}); //判断当前出行人是否都免审
-									if (res.code == 200) {
-										if (res.data == false) { //判断是否需要审核
-											console.log(this.RuleMas)
-											let dat = {
-												transactionOrderNo: this.userslist.tr.transationOrderNo,
-												saleOrderNo: this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-												passengerNo: passengerNos,
-												linkType: '1',
-												userslist: this.userslist,
-												userlist: userlist,
-												none: none,
-												tuipiao: this.tuipiao,
-												RuleMas: this.RuleMas,
-												fromSource: this.fromSource
-												// transactionOrderNo:this.userslist.tr.transationOrderNo,
-												// saleOrderNo:this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-												// passengerNo: passengerNos,
-												// linkType: '1',
-												// userlist: userlist,
-											}
-											uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
-											// sessionStorage.setItem("predetermine_datas", JSON.stringify(dat));
-											uni.navigateTo({
-												url: './retirement'
-											})
-										} else {
-											let dat = {
-												transactionOrderNo: this.userslist.tr.transationOrderNo,
-												saleOrderNo: this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-												passengerNo: passengerNos,
-												linkType: '1',
-												userslist: this.userslist,
-												userlist: userlist,
-												none: none,
-												tuipiao: this.tuipiao,
-												RuleMas: this.RuleMas,
-												fromSource: this.fromSource
-												// transactionOrderNo:this.userslist.tr.transationOrderNo,
-												// saleOrderNo:this.userslist.tr.orderDetailList[0].mainDetail.saleOrderNo,
-												// linkType: '1',
-												// passengerNo: passengerNos,
-												// RuleMas:this.RuleMas
-											}
-											uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
-											// sessionStorage.setItem("predetermine_datas", JSON.stringify(dat));
-											uni.navigateTo({
-												url: './retirement'
-											})
-										}
-									} else {
-										this.showToasts(res.data.message);
-									}
-								} else {
-									this.RuleMas = true;
-								}
-							}
-						} catch (e) {
-							console.log(e)
-						}
+						dat['passengerNo'] = passengerNos;
+						dat['linkType'] ='1';
+						uni.setStorageSync("predetermine_datas", JSON.stringify(dat));
+						uni.navigateTo({
+							url: './retirement'
+						})
 					}
 				}
 			},
@@ -1100,7 +983,6 @@
 				}
 			},
 			async ctlist(item) { //点击查看说明
-				console.log(item)
 				try {
 					let data = {
 						airlineCode: item.voyages[0].airline, //航司编码
@@ -1143,7 +1025,7 @@
 						week = 7
 					}
 					let ts = item.substring(5, 10).split('-');
-					return ts[0] + '月' + ts[1] + '日' + ' 周' + this.weeks[week - 1]
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week - 1]
 				}
 			},
 			busdate(num, num1) { //总时长
@@ -1187,18 +1069,26 @@
 								that.slet('wx')
 							}, 1000)
 						} else {
-
-							// if(this.isclsks == 'false'){
 							if (this.isclsks == 'false' && this.isclasa == 'true' && this.tui != '1') {
 								this.showToasts('预订成功！')
 							}
 							that.ltes = 0;
-							that.apprvTaskReason = rea.data.apprvTaskReason; //出差事由
+							
+							if(rea.data.applyReason != null){
+								that.apprvTaskReason = rea.data.applyReason; //出差事由
+							}
 							that.accountInfo = rea.data.tr.accountInfo; //联系信息
 							that.orderDetailList = rea.data.tr.orderDetailList; //航班乘客信息
 							that.userslist = rea.data;
 							that.fromSource = rea.data.tr.orderDetailList[0].mainDetail.fromSource;
 							that.insuranceInfos = that.userslist.tr.orderDetailList[0].passengers[0].insuranceInfos; //获取保险信息
+							
+							
+							if(that.insuranceInfos != null){
+								if(that.insuranceInfos.length > 0){
+									that.insOrders = true;// 有保险信息 赋值为true
+								}
+							}
 							that.tiltext = '机票订单详情';
 							that.timeList = rea.data.timeList; //航行时间
 							that.hang = ret.data.airlineDds; //航空公司名
@@ -1210,6 +1100,8 @@
 							that.payStatus = that.userslist.tr.orderDetailList[0].mainDetail.payStatus; //支付状态  1:未支付(默认); 2:部分支付; 3:已支付; 4:部分退款; 5:已退款;6:退款中
 							that.recordNos = that.codes;
 							that.amounts = that.userslist.tr.amount;
+							that.orderDetailListy = [];
+							that.userlist = [];
 							if (that.orderStatus == 3 && that.payStatus == 1) { //待提交，未支付   判断取消
 								this.isclose = true
 							} else if (that.orderStatus == 9) {
@@ -1241,8 +1133,8 @@
 								for (let i = 0; i < usenaslist.length; i++) {
 									that.userlist.push({
 										icke: 3,
-										it: that.userslist.tr.orderDetailList[0].passengers[i],
-										its: that.userslist.tr.orderDetailList[1].passengers[i],
+										it: that.userslist.tr.orderDetailList[0].passengers[i],//第一段航程的信息
+										its: that.userslist.tr.orderDetailList[1].passengers[i],//第二段航程的信息
 										itd: that.userslist.tr.orderDetailList[0].passengers[i].voyages[0], //去
 										isd: that.userslist.tr.orderDetailList[1].passengers[i].voyages[0], //回
 									})
@@ -1303,7 +1195,6 @@
 									that.usersli = true;
 								}
 							}
-							console.log(that.orderDetailListy)
 							for (let k in that.userlist) {
 								if (that.userlist[k].icke == 1) {
 									that.userlist[k].itd['statusname'] = that.userstatus(that.userlist[k].itd.status);
@@ -1313,7 +1204,6 @@
 									that.userlist[k].isd['statusname'] = that.userstatus(that.userlist[k].isd.status);
 								}
 							}
-							// }
 						}
 					} else {
 						that.showToasts(rea.massage);
@@ -1356,12 +1246,7 @@
 				}
 			},
 			rblcok() {
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			}
 		}
 	}
@@ -1378,7 +1263,7 @@
 			height: 90upx;
 			display: flex;
 			align-items: center;
-			background: #109DED;
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
 			justify-content: space-between;
 
 			.ongbutns {
@@ -1731,12 +1616,10 @@
 				}
 			}
 		}
-
 		.show {
 			-webkit-transform: translateY(0);
 			transform: translateY(0);
 		}
-
 		.cancellation {
 			position: fixed;
 			bottom: 0;
@@ -1748,18 +1631,15 @@
 			text-align: center;
 			font-size: 30upx;
 		}
-
 		.navstop {
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
-
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
 			.cits_bls {
 				display: flex;
-
+				justify-content: space-between;
 				.cits_cls {
 					width: 150upx;
 					height: 60upx;
@@ -1768,13 +1648,12 @@
 					background: #FFFFFF;
 					color: #49a8e2;
 					border-radius: 5upx;
+					margin-right: 20upx;
 				}
-
 				.cits_sgs {
 					flex: 1;
 				}
 			}
-
 			.costlists {
 				position: fixed;
 				bottom: 0;
@@ -1789,128 +1668,115 @@
 				color: $uni-color-primary;
 				background: #ffffff;
 				font-size: 30upx;
-
 				.costl_t {
 					width: 100%;
 					height: 90upx;
 					text-align: center;
 				}
-
 				.costlist_s {
 					width: calc(100% - 20upx);
 					border-top: 2upx solid #C8C7CC;
 					border-bottom: 2upx solid #C8C7CC;
 					padding-left: 20upx;
-
 					.cost_li {
 						width: 100%;
 						height: 90upx;
 						display: flex;
-
 						.scse_l {
 							flex: 1;
 						}
-
 						.scse_r {
 							flex: 1;
 							padding-right: 20upx;
 							display: flex;
 							justify-content: flex-end;
-
 							.corssize {
 								color: #FF9000;
 							}
 						}
 					}
-
 					.costs {
 						border-bottom: 2upx solid #D0DEE5;
 					}
 				}
 			}
-
 			.show {
 				-webkit-transform: translateY(0);
 				transform: translateY(0);
 			}
-
 			.lisst {
-				position: absolute;
 				left: 0;
 				top: 150upx;
-				width: calc(100% - 40upx);
-				padding: 0 20upx;
-
+				// width: calc(100% - 40upx);
+				// padding: 0 20upx;
 				.citst {
 					width: 100%;
-
-					.cits_t {
+					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
+						background: #FFFFFF;
 						border-top-left-radius: 15upx;
 						border-top-right-radius: 15upx;
 						color: #333333;
-
-						.cits_sa {
+						.no_t{
+							width: 100%;
+							height: 60upx;
+							line-height: 60upx;
 							display: flex;
-
-							.no_t {
-								flex: 2;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
-							}
-
-							.no_ts {
-								flex: 5;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
+							image{
+								margin: 0 10upx;
 							}
 						}
-
-						.citys {
+						.citys{
 							width: 100%;
 							display: flex;
-
-							.citys_l {
+							.citys_l{
 								flex: 1;
 								text-align: center;
 								display: flex;
 								flex-direction: column;
 								justify-content: center;
 								align-items: center;
-
-								.scis_t {
+								.scis_t{
 									line-height: 60upx;
-									font-size: 55upx;
-									;
+									font-size: 24upx;
+									color:#666666;
 								}
-
-								.scis_o {
+								.scis_o{
 									line-height: 80upx;
-									font-size: 35upx;
-									;
+									font-size: 54upx;
+									font-weight: bold;
+									color:#333333;
 								}
-
-								.scis_b {
+								.scis_b{
 									line-height: 60upx;
 									font-size: 28upx;
-									color: #C8C7CC;
+									color: #666666;
+									// width: 140upx;
+									text-align: center;
 								}
-
-								.scis_s {
+								.scis_s{
 									position: relative;
-									margin: 0 auto;
+									margin: 5upx auto;
 									border-radius: 35upx;
 									width: 130upx;
-									line-height: 35upx;
+									display: flex;
+									justify-content: center;
+									align-items: center;
 									height: 35upx;
 									color: $uni-color-primary;
-									border: 2upx solid $uni-color-primary;
-
-									.sci_l {
+									view{
+										position: absolute;
+										font-size: 20upx;
+										color: #666666;
+										z-index: 1;
+									}
+									image{
+										position: absolute;
+										width: 200upx;
+										height: 40upx;
+									}
+									.sci_l{
 										position: absolute;
 										width: 30upx;
 										height: 2upx;
@@ -1918,8 +1784,7 @@
 										top: 16upx;
 										right: 130upx;
 									}
-
-									.sci_r {
+									.sci_r{
 										position: absolute;
 										width: 30upx;
 										height: 2upx;
@@ -1931,22 +1796,18 @@
 							}
 						}
 					}
-
 					.cits_b {
 						width: calc(100% - 80upx);
 						color: $uni-color-primary;
 						padding: 0 40upx;
 						height: 90upx;
 						background: #FFFFFF;
-						// border-bottom-left-radius: 15upx;
-						// border-bottom-right-radius: 15upx;
 						display: flex;
 						align-items: center;
 						justify-content: space-between;
-
+						border-top: 1upx solid #f1f1f1;
 						.cits_bl {
 							display: flex;
-
 							.cits_cl {
 								width: 130upx;
 								height: 45upx;
@@ -1956,7 +1817,6 @@
 								color: #72b2de;
 								border-radius: 45upx;
 							}
-
 							.cits_sg {
 								flex: 1;
 								color: #8a8a8a;
@@ -1964,97 +1824,102 @@
 							}
 						}
 					}
-
 					.Check {
-						line-height: 100upx;
+						width: calc(100% - 40upx);
+						padding: 0 20upx 20upx 20upx;
+						line-height: 90upx;
 						text-align: center;
 						display: flex;
-
+						background: #FFFFFF;
+						border-bottom-left-radius: 7px;
+    					border-bottom-right-radius: 7px;
 						.updatas {
 							width: 50%;
-							height: 100upx;
+							height: 90upx;
 							color: #FFFFFF;
-							background: #F48F00;
-							border-bottom-left-radius: 15upx;
+							background: #ffcf4f;
+							margin-right: 15upx;
+							border-radius: 5upx;
 						}
-
 						.deletes {
 							width: 50%;
-							height: 100upx;
+							height: 90upx;
 							color: #FFFFFF;
-							background: red;
-							border-bottom-right-radius: 15upx;
+							border-radius: 5upx;
+							background: #e289ff;
 						}
 					}
 				}
+			}
+		}
+		.btuserlist {
+			width: calc(100% - 40upx);
+			margin: 20upx;
+			margin-top: 20upx;
+			// margin-bottom: 300upx;
+			border-radius: 15upx;
+			background: #FFFFFF;
 
-				.btuserlist {
-					width: 100%;
-					margin-top: 20upx;
-					// margin-bottom: 300upx;
-					border-radius: 15upx;
-					background: #FFFFFF;
+			.btuse {
+				color: #C8C7CC;
+				font-size: 35upx;
+				width: calc(100% - 40upx);
+				padding: 20upx;
 
-					.btuse {
-						color: #C8C7CC;
-						font-size: 35upx;
-						width: calc(100% - 40upx);
-						padding: 20upx;
-
-						.btul {
-							margin-top: 10upx;
-							color: #333333;
-
-							.user_t {
-								display: flex;
-								width: 100%;
-								height: 50upx;
-								line-height: 50upx;
-								font-size: 28upx;
-
-								.user_l {
-									flex: 3;
-								}
-
-								.user_o {
-									flex: 5;
-								}
-
-								.user_r {
-									flex: 4;
-									justify-content: flex-end;
-									display: flex;
-								}
-							}
-						}
-					}
-
-					.liass {
-						width: calc(100% - 40upx);
-						padding: 0 20upx;
+				.btul {
+					margin-top: 10upx;
+					color: #333333;
+					margin-bottom: 30upx;
+					.user_t {
 						display: flex;
-						color: #C8C7CC;
-						line-height: 80upx;
+						width: 100%;
+						height: 50upx;
+						line-height: 50upx;
+						font-size: 28upx;
 
-						// border-top: 2upx solid #E5E5E5;
-						.liass_l {
-							font-size: 35upx;
-							flex: 1;
+						.user_l {
+							flex: 2;
 						}
 
-						.liass_r {
-							color: #333333;
-							// text-align: right;
-							flex: 1.7;
+						.user_o {
+							flex: 5;
 						}
 
-						.liass_p {
-							// text-align: right;
-							// flex: 1;
-							font-size: 35upx;
-							color: #FF9000;
+						.user_r {
+							flex: 4;
+							justify-content: flex-end;
+							display: flex;
 						}
 					}
+				}
+			}
+
+			.liass {
+				width: calc(100% - 40upx);
+				padding: 0 20upx;
+				display: flex;
+				color: #C8C7CC;
+				line-height: 90upx;
+
+				// border-top: 2upx solid #E5E5E5;
+				.liass_l {
+					font-size: 35upx;
+					flex: 1;
+					color: #333333;
+					font-weight: bold;
+				}
+
+				.liass_r {
+					color: #333333;
+					// text-align: right;
+					flex: 1.7;
+				}
+
+				.liass_p {
+					// text-align: right;
+					// flex: 1;
+					font-size: 35upx;
+					color: #FF9000;
 				}
 			}
 		}

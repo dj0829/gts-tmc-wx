@@ -189,10 +189,10 @@
 		},
 		methods: {
 			upxtopx:function(size){
-				// #ifdef MP-WEIXIN
+				// #ifdef APP-PLUS || MP-WEIXIN
 				return uni.upx2px(size)+'px'
 				// #endif
-				// #ifndef MP-WEIXIN
+				// #ifndef APP-PLUS || MP-WEIXIN
 				return size+'upx';
 				// #endif
 			},

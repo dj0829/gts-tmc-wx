@@ -116,19 +116,7 @@
 				}
 			},
 			pas_click() { //返回
-				let _this = this
-				// #ifdef  APP-PLUS
-				uni.navigateBack({
-				})
-				// #endif
-				// #ifdef  H5 || MP-WEIXIN
-				uni.navigateTo({
-					url: '../information',
-					success(){
-						let page = getCurrentPages().pop();  //跳转页面成功之后
-					}
-				})
-				// #endif
+				this.toBlock();
 			},
 			search(ev) { //监听input里面的手机号的值
 				let _this = this;

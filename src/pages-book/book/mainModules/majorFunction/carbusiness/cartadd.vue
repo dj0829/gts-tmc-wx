@@ -11,7 +11,7 @@
 			<view class="smtis">
 			</view>
 		</view> -->
-		<map id="midMap" :polyline="polyline" :include-points="include_points" class="carmap" :latitude="latitude" :longitude="longitude"
+		<map id="midMap" :show-location="true" :polyline="polyline" :include-points="include_points" class="carmap" :latitude="latitude" :longitude="longitude"
 		 :scale="scale" :style=" {width: '100%',height: screenHeights + 'px'}" :markers="markers">
 			<cover-view class="cat_top">
 				<cover-view class="rouck" @click="routblock"><cover-image class='imgs' src='/static/img/carbus/carbusingimg/leftj.png'></cover-image></cover-view>
@@ -25,14 +25,14 @@
 			<cover-view class="staleve" :class="{'staDis':staleve}">
 				<cover-view class="stalist" @click.stop>
 					<cover-view class="stalists">
-						<cover-view class="statop" v-for="(item, index) in platformlist" :key="index" v-if="(notbooking && item.list.va == 4) || (!notbooking && item.list.va != 4)">
+						<cover-view class="statop" v-for="(item, index) in platformlist" :key="index" v-if="(notbooking && item.list[0].va == 4) || (!notbooking && item.list[0].va != 4 && item.ishow == true)">
 							<cover-view class="reds">
 								<cover-view class="ts_text">{{ item.name }}</cover-view>
 							</cover-view>
-							<cover-view class="setlist" v-for="(items, ins) in item.list" :key="ins">
+							<cover-view class="setlist" v-for="(items, ins) in item.list" :key="ins" v-if="items.va != 1">
 								<cover-view class="setbod">
 									<cover-view class="styul">
-										<cover-view class="styli_top">{{ items.name }}</cover-view>
+										<cover-view class="styli_top" v-if="items.va == 4 || items.va == 5">{{ items.name }}</cover-view>
 										<cover-view class="stulis">
 											<cover-view class="styli_left">超规人员:</cover-view>
 											<cover-view class="styli_right">{{ items.list }}</cover-view>
@@ -114,58 +114,6 @@
 				</cover-view>
 				<cover-view class="carbtns" @click="btnopen">{{ btntitl }}</cover-view>
 			</cover-view>
-			<cover-view class="pass_page" v-if="isuserlist">
-				<cover-view class="Navigation">
-					<cover-view @click="isusercbk" class="iconfont" style="color: #FFFFFF;margin-left: 20upx;">&#xe61e;</cover-view>
-					<cover-view class="ongbutn">选择出行人</cover-view>
-					<cover-view class="smtis"></cover-view>
-				</cover-view>
-				<cover-view class="pa-top">
-					<input v-model="ser_int" type="text" value="" @input="search($event)" class="input-css" placeholder="搜索" />
-					<cover-view v-if="trim(ser_int)" class="iconfont" @click="sea_null(ser_int)" style="color: #999999;">&#xe608;</cover-view>
-				</cover-view>
-				<cover-view class="sev_bool" v-if="sev_bool">
-					<cover-view class="sev_bools" v-for="(item, index) in searchlists" @click="seoklist(item)" :key="index">
-						<p>{{ item.userName }}</p>
-						<p style="color: #007aff;font-size: 28upx;">{{ item.deptName }}</p>
-					</cover-view>
-				</cover-view>
-				<cover-view class="pa_bot">
-					<cover-view class="coll_lists">
-						<cover-view class="mix-tree-list">
-							<block v-for="(item, index) in treeList" :key="index">
-								<cover-view class="mix-tree-item" :style="[
-										{
-											paddingLeft: item.rank * 15 + 'px',
-											zIndex: item.rank * -1 + 50
-										}
-									]"
-								 :class="{
-										border: treeParams.border === true,
-										show: item.show,
-										last: item.lastRank,
-										showchild: item.showChild,
-										colors: !item.lastRank && item.showChild,
-										rtlock: item.id == shetid
-									}"
-								 @click.stop="treeItemTap(item, index)">
-									<cover-view v-if="!item.ischecds" class="tsd">
-										<cover-view class="iconfont" style="color: #007aff;" v-if="!item.lastRank && item.showChild">&#xe8a0;</cover-view>
-										<cover-view class="iconfont" v-if="!item.lastRank && !item.showChild">&#xe636;</cover-view>
-										<cover-view class="" style="width: 40upx;" v-if="item.lastRank"></cover-view>
-										{{ item.name }}
-										<cover-view class="" v-if="item.rank == 0 && item.userCount > 0">({{ item.userCount }})</cover-view>
-									</cover-view>
-									<cover-view v-if="item.ischecds" class="tsd">
-										<cover-view class="iconfont" :style="{ color: '#f1f1f1' }">{{ isoktl }}</cover-view>
-										<cover-view style="margin-left: 20upx;">{{ item.name }}</cover-view>
-									</cover-view>
-								</cover-view>
-							</block>
-						</cover-view>
-					</cover-view>
-				</cover-view>
-			</cover-view>
 			<cover-view :class="{'share-box': shos}" @click="shosclose">
 			</cover-view>
 			<cover-view class="share-item" :class="{'share-show': shos}">
@@ -182,7 +130,6 @@
 
 <script>
 	let appMap = null;
-	let gdkey = 'f34355ae385ced7460e7b1aa59934074';
 	import totok from '@/api/torowk.js';
 	export default {
 		data() {
@@ -227,7 +174,6 @@
 				markers: [],
 				searchlists: [],
 				sev_bool: false,
-				isuserlist: false, //是否显示用户列表
 				treeList: [], //归属部门列表
 				shetid: 0,
 				is_no: 1, //点击的左边还是右边
@@ -242,6 +188,7 @@
 				dataWG: '请选择违规原因',
 				startAddress: '', //接机机场详细地址
 				city_code: '',
+				isarsrl:false,//是否免审
 			};
 		},
 		onReady(options) {
@@ -263,6 +210,7 @@
 		},
 		onLoad(dts) {
 			try{
+				let that = this;
 				let dt = JSON.parse(dts.data);
 				this.datas = dt;
 				this.dtlist = dt;
@@ -271,49 +219,32 @@
 				
 				let ors = dt.or.location.split(','); //出发经纬度
 				let ends = dt.end.location.split(','); //到达点经纬度
-				let ds = 0;
-				let dtp = 0;
-				let dsr = 0;
-				let dtr = 0;
-				let latitudes = '';
-				let longitudets = '';
-				let latitudets = '';
-				let longitudes = '';
-				if (ors[1] > ends[1]) {
-					//以上下 来决定哪个为中心点
-					ds = this.sub(ors[1], ends[1]); //两个相差多远
-					dtp = this.accad(ds, 2); //相差2分之1的距离
-					this.latitude = this.add(ends[1], dtp); //中心点多偏移 2分之1的距离
-					latitudets = this.add(ors[1], this.accad(ds, 6)); //缩放时，最远的点多加2分之1的距离
-				} else {
-					ds = this.sub(ends[1], ors[1]);
-					dtp = this.accad(ds, 2);
-					this.latitude = this.add(ors[1], dtp);
+				let lodats = [{
+					longitude:ends[0],
+					latitude:ends[1]
+					
+				},{
+					longitude:ors[0],
+					latitude:ors[1]
+				}]
 				
-					latitudes = this.add(ends[1], this.accad(ds, 6));
-				}
-				if (ors[0] > ends[0]) {
-					//以左右 来决定哪个为中心点
-					dsr = this.sub(ors[0], ends[0]); //两个相差多远
-					dtr = this.accad(dsr, 2); //以最中间为中心点
-					this.longitude = this.add(ends[0], dtr); //中心点多偏移 2分之1的距离
-					longitudets = this.add(ors[0], this.accad(dsr, 6));
-				} else {
-					dsr = this.sub(ends[0], ors[0]);
-					dtr = this.accad(dsr, 2);
-					this.longitude = this.add(ors[0], dtr);
-					longitudes = this.add(ends[0], this.accad(dsr, 6));
-				}
-				this.include_points = [{
-						//根据两个点缩放地图的大小
-						latitude: latitudes == '' ? ends[1] : latitudes,
-						longitude: longitudes == '' ? ends[0] : longitudes
-					},
-					{
-						latitude: latitudets == '' ? ors[1] : latitudets, //缩放时，最远的点多加3分之1的距离
-						longitude: longitudets == '' ? ors[0] : longitudets
-					}
-				];
+				let locs = this.utils.getCenter(lodats);
+				this.longitude = locs[0];
+				this.latitude = locs[1];
+				this.include_points = [{ //根据两个点缩放地图的大小
+					latitude:ends[1],
+					longitude: ends[0]
+				},{
+					latitude: ors[1],
+					longitude: ors[0]
+				}]
+				setTimeout(()=>{
+					uni.createMapContext("midMap").getScale({
+						success: (e) => {
+							that.scale = e.scale;
+						}  
+					})  
+				},500)
 				this.markers = [
 					{
 						latitude: ors[1],
@@ -348,7 +279,7 @@
 						anchor: { x: 0.05, y: 0.8 } //图标偏移位置
 					}
 				];
-				this.parametes((ors[1] + ',' +ors[0]), (ends[1] + ',' +ends[0]),dt.or.name,dt.end.name); //画线
+				this.parametes((ors[1] + ',' +ors[0]), (ends[1] + ',' +ends[0])); //画线
 				let dats = {}; //参数
 				if (dt.opt == 3) {
 					//立即叫车或者预约叫车
@@ -446,10 +377,6 @@
 					url: '/pages-order/pages/order/carorder/carorder'
 				});
 			},
-			isusercbk() {
-				this.isuserlist = false;
-				this.id_list = [];
-			},
 			notclose() {
 				this.blac_show = false;
 				this.shos = false;
@@ -469,10 +396,10 @@
 				for (let p in this.limitNativeRule) {
 					for (let i in this.limitNativeRule[p]) {
 						if (i == 3) {
-							let ks = 0;
+							let ks = '';
 							for (let k in plallist) {
-								for (let p in plallist[k].list) {
-									if (plallist[k].list[p].va == 3 && plallist[k].wg == '请选择违规原因') {
+								for (let j in plallist[k].list) {
+									if (plallist[k].list[j].va == 3 && plallist[k].wg == '请选择违规原因') {
 										uni.showToast({
 											title: '请选择违规原因',
 											duration: 1000,
@@ -480,27 +407,31 @@
 										});
 										return;
 									}
-									if ((plallist[k].names = p && plallist[k].list[p].va == 3)) {
-										ks = plallist[k].index;
-									}
+									ks = plallist[k].wg;
 								}
 							}
 							this.limitNativeRule[p][i] = {
 								usernames: this.limitNativeRule[p][i],
-								reasons: this.rulesReasons[ks].chineseDesc
+								reasons: ks
 							};
+							console.log(this.limitNativeRule)
 						}
 					}
 				}
 				this.dalits.wbp['violation'] = JSON.stringify({
 					information: [this.limitNativeRule]
 				});
+				this.dtlist['pookis'] = this.pookis;//是否走超标审批流
 				this.staleve = false;
-				if (this.pookis) {
+				if (this.isarsrl == false) {//因公非免审
 					this.btntitl = '马上叫车';
+					let dats = {
+						dats:JSON.stringify(this.dalits),
+						data:JSON.stringify(this.dtlist)
+					}
+					uni.setStorageSync('carforck_data',JSON.stringify(dats));
 					uni.navigateTo({
-						url: './carforck?dats=' + encodeURIComponent(JSON.stringify(this.dalits)) + '&data=' + encodeURIComponent(JSON.stringify(
-							this.dtlist))
+						url: './carforck'
 					});
 				} else {
 					this.dalits.wbp.isviolation = 1;
@@ -556,7 +487,6 @@
 					return;
 				}
 				let _this = this;
-				let vehid = _this.vehid; //车类型
 				let usnlist = _this.costcenterlist; //用户信息
 				let uset = [];
 				let gysmc = '';//车平台
@@ -565,8 +495,10 @@
 				_this.platFormType = []; //车平台
 				_this.moneys = []; //价格
 				let cartypes = [];
+				let carGroups = ''; //车类型
 				for (let k in lists) {
 					if (lists[k].carid == true) {//判断是否选中
+						carGroups = lists[k].carGroupId;//车型id
 						gysmc = lists[k].stuname;
 						cxzmc = lists[k].name;
 						_this.platFormType.push(lists[k].id);
@@ -608,6 +540,7 @@
 					});
 				}
 				let ordernos = {
+					estimatePirce:1,
 					startCityName:this.datas.or.cityname,
 					destCityName: this.datas.end.cityname,
 					cxzmc:cxzmc,//车类型
@@ -615,7 +548,7 @@
 					departureTime: this.arttime, //出发日期
 					platformOrderInfo: cartypes,
 					carSaleOrderDetail: carSaleOrderDetail,
-					carGroupId: vehid,
+					carGroupId: carGroups,
 					passengerMobile: this.lxusername.ipone,
 					passengerName: this.lxusername.name
 				};
@@ -637,19 +570,22 @@
 					carSaleOrderVo: newObj
 				};
 				this.btntitl = '提交中...';
-				if (this.typename == 2) {
+				if (this.typename == 2) {//因私
 					//因私
 					this.createUseCarOrder();
 				} else {
+					let arrpo = [];//出行人信息
 					for (let p in usnlist) {
+						arrpo.push(usnlist[p].passengerNo);
 						uset.push({
 							passengerNo: usnlist[p].passengerNo,
 							percentage: parseFloat(usnlist[p].bn / 100).toFixed(2)
 						});
 					}
+					this.isarsrl = await this.apiutils.judgeApprv(arrpo); //用户是否免审  true为免审
 					let dat = {
 						platFormType: _this.platFormType,
-						carGroup: vehid,
+						carGroup: carGroups,
 						moneys: _this.moneys,
 						passengerList: uset,
 						useCarDate: this.arttime
@@ -666,7 +602,6 @@
 								_this.rulesReasons.unshift({
 									chineseDesc: '请选择违规原因'
 								});
-								console.log(JSON.stringify(_this.rulesReasons))
 								let dal = res.data.limitNativeRule; //违规信息
 								this.limitNativeRule = dal;
 								_this.platformlist = [];
@@ -678,21 +613,32 @@
 										wg: '请选择违规原因',
 										name: _this.platnams(k),
 										names: k,
-										list: _this.platname(dal[k])
+										list: _this.platname(dal[k]),
+										ishow:false
 									});
 								}
+								let isplatshows = false;
 								for (let p in _this.platformlist) {
 									for (let k in _this.platformlist[p].list) {
-										if (_this.platformlist[p].list[k].va == 4) {
-											_this.notbooking = true;
+										if(_this.platformlist[p].list[k].va != 1){
+											isplatshows = true;
+											_this.platformlist[p].ishow = true;
+											if (_this.platformlist[p].list[k].va == 4) {
+												_this.notbooking = true;
+											}
+											if (_this.platformlist[p].list[k].va == 5) {
+												_this.pookis = true; //是否超规
+											}
 										}
-										if (_this.platformlist[p].list[k].va == 5) {
-											_this.pookis = true; //是否再次审批
-										}
+										
 									}
 								}
-
-								_this.staleve = true;
+								if(isplatshows == true){
+									_this.staleve = true;
+								} else {
+									this.createUseCarOrder();
+								}
+								
 							}
 						} else {
 
@@ -754,7 +700,7 @@
 					} else if (k == 5) {
 						su.push({
 							va: k,
-							name: '违规再次审批',
+							name: '违规需再次审批',
 							list: list[k]
 						});
 					}
@@ -1079,43 +1025,6 @@
 							latitude: coors[k * 2 - 2]
 						});
 					}
-					// this.markers = [{
-					// 		latitude: points[0].latitude,
-					// 		longitude: points[0].longitude,
-					// 		iconPath: '../../../../static/img/carbus/fit.png',
-					// 		width: 14, //图标大小
-					// 		height: 28,
-					// 		callout: {
-					// 			content: orname,
-					// 			color: '#000000',
-					// 			fontSize: 10,
-					// 			display: 'ALWAYS',
-					// 			borderRadius: 10
-					// 		},
-					// 		anchor: {
-					// 			x: 0.5,
-					// 			y: 1
-					// 		} //图标偏移位置
-					// 	},
-					// 	{
-					// 		latitude: points[points.length-1].latitude,
-					// 		longitude: points[points.length-1].longitude,
-					// 		iconPath: '../../../../static/img/carbus/fend.png',
-					// 		width: 14, //图标大小
-					// 		height: 28,
-					// 		callout: {
-					// 			content: endname,
-					// 			color: '#000000',
-					// 			fontSize: 10,
-					// 			display: 'ALWAYS',
-					// 			borderRadius: 10
-					// 		},
-					// 		anchor: {
-					// 			x: 0.5,
-					// 			y: 1
-					// 		} //图标偏移位置
-					// 	}
-					// ];
 					this.polyline = [{
 						strokeOpacity: 1,     // 线透明度
 						strokeStyle: 'solid',  // 线样式
@@ -1156,64 +1065,6 @@
 					times = parseInt(time) + '秒';
 				}
 				return times;
-			},
-			add(a, b) {
-				//经纬度的 加减乘除
-				var c, d, e;
-				try {
-					c = a.toString().split('.')[1].length;
-				} catch (f) {
-					c = 0;
-				}
-				try {
-					d = b.toString().split('.')[1].length;
-				} catch (f) {
-					d = 0;
-				}
-				return (e = Math.pow(10, Math.max(c, d))), (this.mul(a, e) + this.mul(b, e)) / e;
-			},
-			sub(a, b) {
-				//减法
-				var c, d, e;
-				try {
-					c = a.toString().split('.')[1].length;
-				} catch (f) {
-					c = 0;
-				}
-				try {
-					d = b.toString().split('.')[1].length;
-				} catch (f) {
-					d = 0;
-				}
-				return (e = Math.pow(10, Math.max(c, d))), (this.mul(a, e) - this.mul(b, e)) / e;
-			},
-			accad(a, b) {
-				//除法
-				var c,
-					d,
-					e = 0,
-					f = 0;
-				try {
-					e = a.toString().split('.')[1].length;
-				} catch (g) {}
-				try {
-					f = b.toString().split('.')[1].length;
-				} catch (g) {}
-				return (c = Number(a.toString().replace('.', ''))), (d = Number(b.toString().replace('.', ''))), this.mul(c / d,
-					Math.pow(10, f - e));
-			},
-			mul(a, b) {
-				//乘法
-				var c = 0,
-					d = a.toString(),
-					e = b.toString();
-				try {
-					c += d.split('.')[1].length;
-				} catch (f) {}
-				try {
-					c += e.split('.')[1].length;
-				} catch (f) {}
-				return (Number(d.replace('.', '')) * Number(e.replace('.', ''))) / Math.pow(10, c);
 			},
 			routblock() {
 				// #ifdef H5
@@ -1397,15 +1248,15 @@
 				line-height: 90upx;
 
 				.stalists {
-					height: 491px;
+					max-height: 491px;
 					overflow: scroll;
 					position: relative;
 					background: #f1f1f1;
 				}
 
 				.statop {
-					padding: 5upx 20upx;
-					width:calc(100% - 40upx);
+					padding: 0 20upx;
+						
 					.reds {
 						width: 100%;
 						height: 70upx;
@@ -1413,53 +1264,52 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						color: red;
-
-						.ts_text {
-							padding: 0 20upx;
-							line-height: 50upx;
-							border-radius: 50upx;
-							border: 2upx solid red;
-						}
+						color: #007aff;
+						font-size: 34upx;
+						font-weight: bold;
 					}
-
+						
 					.setlist {
 						line-height: 50upx;
 						font-size: 30upx;
 						margin: 10upx 0;
-
 						.setbod {
-							border: 2upx solid #ffffff;
-							border-radius: 15upx;
-
+							
 							.styul {
 								width: 100%;
 								margin: 10upx 0;
-
 								.styli_top {
 									width: 100%;
-									color: red;
-									text-align: center;
-									font-size: 30upx;
+									color: #333333;
+									font-size: 32upx;
+									font-weight: bold;
 									line-height: 45upx;
+									image{
+										width: 6upx;
+										height: 22upx;
+										margin-left: 20upx;
+									}
+									span{
+										margin-left: 20upx;
+									}
+									
 								}
-
+					
 								.stulis {
 									display: flex;
-
+									font-size: 28upx;
+									color: #666666;
 									.styli_left {
-										width: 25%;
-										text-indent: 10upx;
+										width: 30%;
 										display: flex;
 										align-items: center;
 										justify-content: flex-end;
 									}
-
+					
 									.styli_right {
-										width: 75%;
-										margin-left: 5%;
-										text-indent: 10upx;
+										width: 70%;
 										.wors {
+											margin-left: 10upx;
 											width: 80%;
 											font-size: 30upx;
 											text-indent: 20upx;
@@ -1473,6 +1323,9 @@
 								}
 							}
 						}
+					}
+					.setlist:last-child{
+						border-bottom:1px dashed #e4e4e4;
 					}
 				}
 
@@ -1691,151 +1544,6 @@
 				border-bottom-left-radius: 12upx;
 				border-bottom-right-radius: 12upx;
 				background-color: $uni-color-primary;
-			}
-		}
-
-		.pass_page {
-			position: fixed;
-			z-index: 310;
-			left: 0;
-			top: 0;
-			/*  #ifdef  APP-PLUS || MP-WEIXIN */
-			padding-top: 50upx;
-			/*  #endif  */
-			width: 100%;
-			height: 100%;
-			overflow: scroll;
-			background: #f1f1f1;
-
-			.pa-top {
-				width: calc(100% - 60upx);
-				height: 120upx;
-				padding: 0 30upx;
-				background: #ffffff;
-				display: flex;
-				align-items: center;
-
-				input {
-					width: 100%;
-					height: 80upx;
-				}
-
-				.pa_bok {
-					margin-right: 20upx;
-					display: flex;
-					align-items: center;
-
-					.pa_tou {
-						.pa_tou_img {
-							margin: 0 5upx;
-							width: 60upx;
-							height: 60upx;
-							border-radius: 50%;
-						}
-					}
-				}
-			}
-
-			.sev_bool {
-				position: fixed;
-				left: 0;
-				top: 220upx;
-				width: 100%;
-				background: #ffffff;
-				z-index: 1000;
-				height: 100%;
-
-				.sev_bools {
-					width: calc(100% - 40upx);
-					font-size: 32upx;
-					height: 80upx;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					padding: 0 20upx;
-					border-bottom: 1upx solid #c8c7cc;
-				}
-			}
-
-			.pa_bot {
-				margin-top: 20upx;
-				width: 100%;
-				background: #ffffff;
-
-				.coll_lists {
-					width: 100%;
-					height: 100%;
-					overflow: hidden;
-					background: #ffffff;
-
-					.mix-tree-list {
-						display: flex;
-						flex-direction: column;
-						padding-left: 30upx;
-
-						.mix-tree-item {
-							display: flex;
-							align-items: center;
-							font-size: 30upx;
-							color: #333;
-							height: 0;
-							opacity: 0;
-							transition: 0.2s;
-							position: relative;
-
-							.tsd {
-								display: flex;
-								align-items: center;
-							}
-						}
-
-						.mix-tree-icon {
-							width: 26upx;
-							height: 26upx;
-							margin-right: 8upx;
-							opacity: 0.9;
-						}
-
-						.mix-tree-item.border {}
-
-						.mix-tree-item.show {
-							border-bottom: 2upx solid #eee;
-							height: 80upx;
-							opacity: 1;
-						}
-
-						.mix-tree-item.colors {
-							color: $uni-color-primary;
-						}
-
-						.mix-tree-item.rtlock {
-							color: $uni-color-primary;
-						}
-
-						.mix-tree-item.showchild:before {
-							transform: rotate(90deg);
-						}
-
-						.mix-tree-item.last:before {
-							opacity: 0;
-						}
-					}
-				}
-			}
-
-			.fixd_btn {
-				position: fixed;
-				z-index: 815;
-				bottom: 150upx;
-				right: 30upx;
-				font-size: 35upx;
-				color: #ffffff;
-				text-align: center;
-				line-height: 70upx;
-				width: 160upx;
-				height: 70upx;
-				border-radius: 70upx;
-				background: $uni-color-primary;
 			}
 		}
 	}

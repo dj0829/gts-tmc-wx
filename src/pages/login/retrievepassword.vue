@@ -46,11 +46,12 @@
 		},
 		methods: {
 			rblcok() {
-				// #ifdef H5
-				window.history.back()
+				// #ifdef  APP-PLUS || MP-WEIXIN
+					uni.navigateBack({
+					})
 				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack();
+				// #ifdef  H5 
+					history.back();
 				// #endif
 			},
 			async logins() { //重置密码

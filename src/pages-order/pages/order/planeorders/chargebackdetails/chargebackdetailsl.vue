@@ -13,119 +13,123 @@
 			</view>
 		</view>
 		<view class="navstop" v-if="dtolist.status">
-			<view class="">
+			<view class="toptext">
+				<view style="font-size:42upx;font-weight:bold;">{{rest(dtolist.status)}}</view>
+				<view>
 				订单号：{{dtolist.no}}
-			</view>
-			<view class="">
-				销售单号：{{dtolist.saleNo}}
-			</view>
-			<view class="">
-				退废状态：{{rest(dtolist.status)}}
-			</view>
-			<view class="">
-				申请时间：{{dtolist.createTime}}
+				</view>
+				<view>
+					销售单号：{{dtolist.saleNo}}
+				</view>
+				<!-- <view>
+					退废状态：{{rest(dtolist.status)}}
+				</view> -->
+				<view>
+					申请时间：{{dtolist.createTime}}
+				</view>
 			</view>
 			<view class="lisst">	
 				<view class="citst" style="margin-top: 30upx;" v-for="(item,index) in orderDetailListy" :key="index">
 					<view class="cits_t">
-						<view class="cits_sa">
-							<view class="no_ts" style="display: flex;"> 
-								<view style="color: #007aff;border: #007aff 1upx solid;width: 40upx;height: 40upx;margin-top: 10upx;text-align: center;line-height: 40upx;">
-									{{item.name}}
-								</view>
-								<image :src="item.ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
-								{{company(item.city.airline)}}{{item.city.flightNo}}
-							</view>
-							<view class="no_t" style="text-align: right;">
-								{{yeada(item.city.departDate,1)}}
-							</view>
+						<view class="no_t">
+							<image :src="item.ims" mode="" style="width: 35upx;height: 30upx;padding-top: 15upx;"></image>
+							{{company(item.city.airline)}}{{item.city.flightNo}}
 						</view>
 						<view class="citys">
 							<view class="citys_l">
 								<view class="scis_t">
+									{{yeada(item.city.departDate,1)}}
+								</view>
+								<view class="scis_o">
 									{{yeada(item.city.departDate,0)}}
 								</view>
-								<view class="scis_o">
+								<view class="scis_b">
 									{{citys(item.city.depart)}}
 								</view>
-								<view class="scis_b">
-								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
-								</view>
+								<view class="scis_t" style="color:#007aff;">{{item.name}}</view>
 								<view class="scis_s">
-									{{busdate(item.city.departDate,item.city.arriveTime)}}
-									<view class="sci_l">
-									</view>
-									<view class="sci_r">
-									</view>
+									<view>{{busdate(item.city.departDate,item.city.arriveTime)}}</view>
+									<image src="@/static/img/home/home_bj.png"></image>
+								</view>
+								<view class="scis_b" style="text-align: center;">
 								</view>
 							</view>
 							<view class="citys_l">
-								<view class="scis_t">
-									{{yeada(item.city.arriveTime,0)}}
+								<view class="scis_t" style="margin-left:10upx;">
+									{{yeada(item.city.arriveTime,1)}}
 								</view>
 								<view class="scis_o">
+									{{yeada(item.city.arriveTime,0)}}
+								</view>
+								<view class="scis_b">
 									{{citys(item.city.arrive)}}
 								</view>
 							</view>
 						</view>
 					</view>
 				</view>
-				
-				<view class="btuserlist" >
-					<view class="btuse">
-						乘机人
-						<view class="btul" v-for="(item,index) in newuserlist" :key="index">
-							<view class="user_t">
-								<view class="user_l">
-									{{item.name}}
-								</view>
-								<view class="user_o" >
-									成人票
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									出差事由
-								</view>
-								<view class="user_o">
-									{{Reason}}
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									服务费
-								</view>
-								<view class="user_o">
-									{{item.refundTips}} 元
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									手续费
-								</view>
-								<view class="user_o">
-									{{(item.tips + item.refundFee)}} 元
-								</view>
-							</view>
-							<view class="user_t" v-if="item.refundAmount != null">
-								<view class="user_l">
-									实际应退
-								</view>
-								<view class="user_o">
-									{{item.refundAmount}} 元
-								</view>
-							</view>
-							<view class="user_t">
-								<view class="user_l">
-									{{catype(item.cardType)}}
-								</view>
-								<view class="user_o">
-									{{item.cardNo}}
-								</view>
-							</view>
+			</view>
+		</view>
+		<view class="btuserlist" >
+			<view class="btuse">
+				<view style="font-size:34upx;color:#333333;font-weight:bold;">乘机人</view>
+				<view class="btul" v-for="(item,index) in newuserlist" :key="index">
+					<view class="user_t">
+						<view class="user_l">
+							{{item.name}}
+						</view>
+						<view class="user_o" >
+							成人票
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							出差事由
+						</view>
+						<view class="user_o">
+							{{Reason}}
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							服务费
+						</view>
+						<view class="user_o">
+							{{item.refundTips}} 元
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							手续费
+						</view>
+						<view class="user_o">
+							{{(item.tips + item.refundFee)}} 元
+						</view>
+					</view>
+					<view class="user_t" v-if="item.refundAmount != null">
+						<view class="user_l">
+							实际应退
+						</view>
+						<view class="user_o">
+							{{item.refundAmount}} 元
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							{{catype(item.cardType)}}
+						</view>
+						<view class="user_o">
+							{{utils.TuoMin(item.cardNo,item.cardType)}}
+						</view>
+					</view>
+					<view class="user_t">
+						<view class="user_l">
+							票号
+						</view>
+						<view class="user_o">
+							{{item.ticketNo}}
 						</view>
 					</view>
 				</view>
@@ -209,11 +213,7 @@
 		},
 		methods:{
 			citys(its){//回显城市
-				for (let j = 0; j < this.address.length; j++) {  //循环城市
-					if(this.address[j].airportCode == its){
-						return this.address[j].cityCName
-					}
-				}
+				return this.utils.airportCName(its);
 			},
 			userstatus(it){		//乘客当前状态
 				if(it == 0){
@@ -257,7 +257,7 @@
 						week = 7
 					}
 					let ts = item.substring(5,10).split('-');
-					return ts[0] + '月' + ts[1] + '日' + ' 周' + this.weeks[week-1]
+					return ts[0] + '月' + ts[1] + ' 周' + this.weeks[week-1]
 				}
 			},
 			busdate(num,num1){//总时长
@@ -289,7 +289,29 @@
 					const ret = await certifi.queryAirlineList();//获取航空公司名称
 					
 					if(rea.code == 200){
-						that.Reason = rea.data.saleRefund.reason;//出差事由
+						
+						// let resonList = [{//出行事由
+						// 	id:22,
+						// 	name:'见客户'
+						// },{
+						// 	id:33,
+						// 	name:'参观学习'
+						// },{
+						// 	id:44,
+						// 	name:'其他'
+						// }]
+						// if(rea.data.saleRefund.reason != '' && rea.data.saleRefund.reason != null){//出差事由
+						// 	for(let k in resonList){
+						// 		if(resonList[k].id == rea.data.saleRefund.reason){
+						// 			that.Reason = resonList[k].name; //出差理由
+						// 			break;
+						// 		}
+						// 	}
+						// 	if(that.Reason == ''){
+						// 		that.Reason = rea.data.saleRefund.reason;
+						// 	}
+						// }
+						that.Reason = rea.data.saleRefund.reason;
 						that.dtolist = rea.data.saleRefund;//改签单信息
 						that.hang = ret.data.airlineDds; //航空公司名
 						that.orderStatus = rea.data.saleRefund.status;//退费单状态
@@ -305,13 +327,13 @@
 						let frocitylist = [];
 						if(rea.data.needShowGoFlightInfo == 1){
 							frocitylist.push({
-								name: '往',
+								name: '去程',
 								city:citylists[0]
 							})
 						}
 						if(rea.data.needShowBackFlightInfo == 1){
 							frocitylist.push({
-								name: '返',
+								name: '回程',
 								city: citylists[1]
 							})
 						}
@@ -338,12 +360,7 @@
 				}
 			},
 			rblcok(){
-				// #ifdef H5
-				history.back();
-				// #endif
-				// #ifdef MP-WEIXIN
-				uni.navigateBack()
-				// #endif
+				this.toBlock();
 			},
 		}
 	}
@@ -361,7 +378,7 @@
 			height: 90upx;
 			display: flex;
 			align-items: center;
-			background: #109DED;
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
 			justify-content: space-between;
 			.ongbutns{
 				color: #FFFFFF;
@@ -466,44 +483,42 @@
 			transform: translateY(0);
 		}
 		.navstop{
-			position: relative;
-			width: calc(100% - 80upx);
-			padding: 20upx 40upx 140upx 40upx;
+			width: calc(100% - 40upx);
+			padding: 20upx 20upx 20upx 20upx;
 			font-size: 28upx;
 			color: #FFFFFF;
-			background: #109DED;
+			background: linear-gradient(to right, #4E92FD 0%, #6E46FE 100%);
+			.toptext{
+				margin-left:50upx;
+				font-size: 22upx;
+				view{
+					margin:10upx 0;
+				}
+			}
 			.show {
 				-webkit-transform: translateY(0);
 				transform: translateY(0);
 			}
 			.lisst{
-				position: absolute;
 				left: 0;
 				top: 200upx;
-				width: calc(100% - 40upx);
-				padding:  0 20upx;
+				// width: calc(100% - 40upx);
+				// padding:  0 20upx;
 				.citst{
 					width: 100%;
 					.cits_t{
 						width: calc(100% - 40upx);
 						padding: 20upx;
-						background: #F5FAFD;
-						border-top-left-radius: 15upx;
-						border-top-right-radius: 15upx;
+						background: #FFFFFF;
+						border-radius: 15upx;
 						color: #333333;
-						.cits_sa{
+						.no_t{
+							width: 100%;
+							height: 60upx;
+							line-height: 60upx;
 							display: flex;
-							.no_t{
-								flex: 2;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
-							}
-							.no_ts{
-								flex: 5;
-								width: 100%;
-								height: 60upx;
-								line-height: 60upx;
+							image{
+								margin: 0 10upx;
 							}
 						}
 						.citys{
@@ -518,26 +533,42 @@
 								align-items: center;
 								.scis_t{
 									line-height: 60upx;
-									font-size: 55upx;;
+									font-size: 26upx;
+									color:#333333;
 								}
 								.scis_o{
 									line-height: 80upx;
-									font-size: 35upx;;
+									font-size: 54upx;
+									font-weight: bold;
+									color:#333333;
 								}
 								.scis_b{
 									line-height: 60upx;
-									font-size: 28upx;
-									color: #C8C7CC;
+									font-size: 20upx;
+									color: #666666;
+									text-align: center;
 								}
 								.scis_s{
 									position: relative;
-									margin: 0 auto;
+									margin: 5upx auto;
 									border-radius: 35upx;
 									width: 130upx;
-									line-height: 35upx;
+									display: flex;
+									justify-content: center;
+									align-items: center;
 									height: 35upx;
 									color: $uni-color-primary;
-									border: 2upx solid $uni-color-primary;
+									view{
+										position: absolute;
+										font-size: 20upx;
+										color: #666666;
+										z-index: 1;
+									}
+									image{
+										position: absolute;
+										width: 200upx;
+										height: 40upx;
+									}
 									.sci_l{
 										position: absolute;
 										width: 30upx;
@@ -605,58 +636,59 @@
 						}
 					}
 				}
-				.btuserlist{
-					width: 100%;
-					margin-top: 20upx;
-					border-radius: 15upx;
-					background: #FFFFFF;
-					.btuse{
-						color: #C8C7CC;
-						font-size: 35upx;
-						width: calc(100% - 40upx);
-						padding: 20upx;
-						.btul{
-							margin-top: 10upx;
-							color: #333333;
-							.user_t{
-								display: flex;
-								width: 100%;
-								height: 50upx;
-								line-height: 50upx;
-								font-size: 28upx;
-								.user_l{
-									flex: 3;
-								}
-								.user_o{
-									flex: 5;
-								}
-								.user_r{
-									flex: 4;
-									justify-content: flex-end;
-									display: flex;
-								}
-							}
-						}
-					}
-					.liass{
-						width: calc(100% - 40upx);
-						padding: 0 20upx;
+			}
+		}
+		.btuserlist{
+			width: calc(100% - 40upx);
+			margin: 20upx;
+			margin-top: 20upx;
+			border-radius: 15upx;
+			background: #FFFFFF;
+			.btuse{
+				color: #C8C7CC;
+				font-size: 35upx;
+				width: calc(100% - 40upx);
+				padding: 20upx;
+				.btul{
+					margin-top: 10upx;
+					color: #333333;
+					.user_t{
 						display: flex;
-						color: #C8C7CC;
-						line-height: 80upx;
-						.liass_l{
-							font-size: 35upx;
-							flex: 1;
+						width: 100%;
+						height: 50upx;
+						line-height: 50upx;
+						font-size: 28upx;
+						.user_l{
+							flex: 3;
 						}
-						.liass_r{
-							color: #333333;
-							flex: 1.7;
+						.user_o{
+							flex: 5;
 						}
-						.liass_p{
-							font-size: 35upx;
-							color: #FF9000;
+						.user_r{
+							flex: 4;
+							justify-content: flex-end;
+							display: flex;
 						}
 					}
+				}
+			}
+			.liass{
+				width: calc(100% - 40upx);
+				padding: 0 20upx;
+				display: flex;
+				color: #C8C7CC;
+				line-height: 80upx;
+				.liass_l{
+					font-size: 35upx;
+					flex: 1;
+				}
+				.liass_r{
+					color: #333333;
+					flex: 1.7;
+				}
+				.liass_p{
+					font-size: 35upx;
+					color: #FF9000;
 				}
 			}
 		}

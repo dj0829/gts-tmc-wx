@@ -14,23 +14,23 @@
 						<view class="ok_ioc" v-if="englishname_list[op_ids].val == item.code"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 					<view class="cl_val" v-for="(item, index) in genderlist" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'gender'">
-						<view class="">{{ item.name }}</view>
+						<view  >{{ item.name }}</view>
 						<view class="ok_ioc" v-if="gender_list.val == item.id"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 					<view class="cl_val" v-for="(item, index) in departs" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'department'">
-						<view class="">{{ item.name }}</view>
+						<view  >{{ item.name }}</view>
 						<view class="ok_ioc" v-if="department_list.val == item.id"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 					<view class="cl_val" v-for="(item, index) in positionlist" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'position'">
-						<view class="">{{ item.tslName}}</view>
+						<view  >{{ item.tslName}}</view>
 						<view class="ok_ioc" v-if="position_list.val == item.tslId"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 					<view class="cl_val" v-for="(item, index) in rolelist" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'role'">
-						<view class="">{{ item.name }}</view>
+						<view  >{{ item.name }}</view>
 						<view class="ok_ioc" v-if="role_list.val == item.id"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 					<view class="cl_val" v-for="(item, index) in statelist" :key="index" @click="ad_cion(item, index)" v-if="icontest == 'state'">
-						<view class="">{{ item.name }}</view>
+						<view  >{{ item.name }}</view>
 						<view class="ok_ioc" v-if="state_list.val == item.id"><text class="iconfont" style="color:#007aff;">&#xe60b;</text></view>
 					</view>
 				</view>
@@ -120,7 +120,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="gender_list.value == ''">{{ gender_list.plahth }}</view>
+						<view   v-if="gender_list.value == ''">{{ gender_list.plahth }}</view>
 						<view class="for_value" v-if="gender_list.value !== ''">{{ gender_list.value }}</view>
 					</view>
 				</view>
@@ -135,7 +135,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="dateofbirth_lsit.value == ''">{{ dateofbirth_lsit.plahth }}</view>
+						<view   v-if="dateofbirth_lsit.value == ''">{{ dateofbirth_lsit.plahth }}</view>
 						<view class="for_value" v-if="dateofbirth_lsit.value !== ''">{{ dateofbirth_lsit.value }}</view>
 					</view>
 				</view>
@@ -161,7 +161,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="department_list.value == ''">{{ department_list.plahth }}</view>
+						<view   v-if="department_list.value == ''">{{ department_list.plahth }}</view>
 						<view class="for_value" v-if="department_list.value !== ''">{{ department_list.value }}</view>
 					</view>
 				</view>
@@ -208,7 +208,7 @@
 					<view class="sltrig_bot">
 						<view class="striglist" @click="clslitk(item)" v-for="(item,index) in sli_namelist" :key="index">
 							<view class="stlis_left">
-								<view class="">
+								<view  >
 									{{item.name}}
 								</view>
 							</view>
@@ -233,7 +233,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="position_list.value == ''">{{ position_list.plahth }}</view>
+						<view   v-if="position_list.value == ''">{{ position_list.plahth }}</view>
 						<view class="for_value" v-if="position_list.value !== ''">{{ position_list.value }}</view>
 					</view>
 				</view>
@@ -248,7 +248,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="role_list.value == ''">{{ role_list.plahth }}</view>
+						<view   v-if="role_list.value == ''">{{ role_list.plahth }}</view>
 						<view class="for_value" v-if="role_list.value !== ''">{{ role_list.value }}</view>
 					</view>
 				</view>
@@ -280,7 +280,7 @@
 				</view>
 				<view class="frop_pls">
 					<view class="opls">
-						<view class="" v-if="state_list.value == ''">{{ state_list.plahth }}</view>
+						<view   v-if="state_list.value == ''">{{ state_list.plahth }}</view>
 						<view class="for_value" v-if="state_list.value !== ''">{{ state_list.value }}</view>
 					</view>
 				</view>
@@ -621,13 +621,7 @@ export default{
 					const data = uni.getStorageSync('user_list'+ uni.getStorageSync('appWxId'));     //关于token的用法
 					let baseURL = uni.getStorageSync('baseURL');
 					uni.uploadFile({
-					    // #ifdef  APP-PLUS
-					     url: "http://wx.molintmc.com/dpe/tms/api/user/uploadPassengerImage",//除了h5平台     // 后端api接口
-					    // #endif
-					    // #ifdef  H5 || MP-WEIXIN
-					     url: baseURL+"/tms/api/user/uploadPassengerImage",     // 后端api接口//仅在h5平台
-					    // #endif
-						
+					    url: baseURL+"/tms/api/user/uploadPassengerImage",     // 后端api接口//仅在h5平台				
 						methods: "POST",
 					    filePath: _this.headImg[0], // uni.chooseImage函数调用后获取的本地文件路劲
 					    name:'file',     //后端通过'file'获取上传的文件对象
@@ -908,7 +902,6 @@ export default{
 				}
 			} else if(name == "staff"){
 				for (var i = 0; i < _this.positionlist.length; i++) {
-					console.log(1111,id ,_this.positionlist[i].tslId)
 					if(id == _this.positionlist[i].tslId){
 						return {
 							t_name: "position",

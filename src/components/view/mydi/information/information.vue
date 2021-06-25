@@ -42,7 +42,7 @@
 					</view>
 					<view class="name_right">
 						<view class="olleft" @click="ft_click">
-							<view class="iconfont" style="font-size: 80upx;color: #007aff;" v-if="userinfo.passengerVo.headImg == null">
+							<view class="iconfont" style="font-size: 80upx;color: #007aff;" v-if="userinfo.passengerVo.headImg == null || userinfo.passengerVo.headImg == ''">
 								&#xe63c;
 							</view>
 							<image style="width: 100%;height: 100%;" :src="userinfo.passengerVo.headImg" v-else mode=""></image>
@@ -75,7 +75,7 @@
 						手机号
 					</view>
 					<view class="name_right">
-						{{userinfo.user.phone}}
+						{{utils.TuoMin(userinfo.user.phone,1)}}
 					</view>
 					<view class="img">
 						<view class="iconfont">&#xe8a3;</view>
@@ -226,7 +226,6 @@
 					openId: opnids,
 					type: 1
 					// #endif
-
 					// #ifdef MP-WEIXIN
 					openId: opeids,
 					sessionKey: sessionKey,
@@ -302,7 +301,7 @@
 
 			},
 			passwos() { //修改密码
-				uni.redirectTo({
+				uni.navigateTo({
 					url: '../../../pages/mydi/information/changePassword/changePassword'
 				})
 			},
@@ -326,12 +325,7 @@
 						const data = uni.getStorageSync('user_list' + uni.getStorageSync('appWxId')); //关于token的用法
 						let baseURL = uni.getStorageSync('baseURL');
 						uni.uploadFile({
-							// #ifdef  APP-PLUS
-							url: "http://wx.molintmc.com/dpe/tms/api/user/uploadPassengerImage", //除了h5平台     // 后端api接口
-							// #endif
-							// #ifdef  H5 || MP-WEIXIN
 							url: baseURL + "/tms/api/user/uploadPassengerImage", // 后端api接口//仅在h5平台
-							// #endif
 							methods: "POST",
 							filePath: _this.headImg[0], // uni.chooseImage函数调用后获取的本地文件路劲
 							name: 'file', //后端通过'file'获取上传的文件对象
@@ -413,35 +407,35 @@
 
 			},
 			changphone() {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: '/pages-mydi/pages/mydi/information/changePhone/changePhone',
 				});
 			},
 			pas_click() {
-				uni.reLaunch({
+				uni.navigateTo({
 					url: '/pages/login/login?ts=1',
 				});
 			},
 			jurisdiction() {
 				let _this = this
-				uni.redirectTo({
+				uni.navigateTo({
 					url: '/pages-mydi/pages/mydi/information/jurisdiction/jurisdiction',
 				});
 			},
 			Certificate() {
 				let _this = this
-				uni.redirectTo({
+				uni.navigateTo({
 					url: '/pages-mydi/pages/mydi/information/certificate/certificate',
 				});
 			},
 			TravelPolicy() {
 				let _this = this
-				uni.redirectTo({
-					url: '/pages-mydi/pages/mydi/information/travelPolicy/travelPolicy',
+				uni.navigateTo({
+					url: '/pages-mydi/pages/mydi/information/travelPolicy/travelPolicy?type=row',
 				});
 			},
 			TravelPolicys() {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: '/pages-mydi/pages/mydi/frequenttravellers/frequenttravellers',
 				});
 			},
